@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{E7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ordering", "Ordering", "{6E6883CF-EFB5-4885-AB5E-E6648BBD9375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.IdentityService", "Services\Identity\Biz.BrightOnion.IdentityService\Biz.BrightOnion.IdentityService.csproj", "{1E6EDA8C-B1AD-4A79-838D-0B0A477CC0BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Identity.API", "Services\Identity\Biz.BrightOnion.Identity.API\Biz.BrightOnion.Identity.API.csproj", "{1E6EDA8C-B1AD-4A79-838D-0B0A477CC0BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.IdentityService.UnitTests", "Services\Identity\Biz.BrightOnion.IdentityService.UnitTests\Biz.BrightOnion.IdentityService.UnitTests.csproj", "{0AF0B6FF-4EAB-4F69-AD55-A071728D14A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Identity.UnitTests", "Services\Identity\Biz.BrightOnion.Identity.UnitTests\Biz.BrightOnion.Identity.UnitTests.csproj", "{0AF0B6FF-4EAB-4F69-AD55-A071728D14A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.OrderingService", "Services\Ordering\Biz.BrightOnion.OrderingService\Biz.BrightOnion.OrderingService.csproj", "{0C4F1E9E-629C-4BF4-857F-8106B3821A7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.API", "Services\Ordering\Biz.BrightOnion.Ordering.API\Biz.BrightOnion.Ordering.API.csproj", "{0C4F1E9E-629C-4BF4-857F-8106B3821A7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.OrderingService.UnitTests", "Services\Ordering\Biz.BrightOnion.OrderingService.UnitTests\Biz.BrightOnion.OrderingService.UnitTests.csproj", "{71E15691-3ED8-4D14-86DE-CF0CC510692E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.UnitTests", "Services\Ordering\Biz.BrightOnion.Ordering.UnitTests\Biz.BrightOnion.Ordering.UnitTests.csproj", "{71E15691-3ED8-4D14-86DE-CF0CC510692E}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4E76A116-B89E-4C5E-9933-D2D840F7BD6B}"
 EndProject

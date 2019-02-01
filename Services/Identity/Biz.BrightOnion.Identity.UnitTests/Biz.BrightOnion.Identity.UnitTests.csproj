@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Biz.BrightOnion.IdentityService\Biz.BrightOnion.IdentityService.csproj" />
+    <ProjectReference Include="..\Biz.BrightOnion.Identity.API\Biz.BrightOnion.Identity.API.csproj" />
   </ItemGroup>
 
 </Project>

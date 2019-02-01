@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biz.BrightOnion.IdentityService.DTOs
+namespace Biz.BrightOnion.Identity.API.Dto
 {
   public class ErrorDTO
   {

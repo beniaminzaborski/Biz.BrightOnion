@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Biz.BrightOnion.IdentityService
+namespace Biz.BrightOnion.Identity.API
 {
   public class Startup
   {

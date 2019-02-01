@@ -5,11 +5,11 @@ services:
     image: ${DOCKER_REGISTRY-}bizbrightonionidentityservice
     build:
       context: .
-      dockerfile: Services/Identity/Biz.BrightOnion.IdentityService/Dockerfile
+      dockerfile: Services/Identity/Biz.BrightOnion.Identity.API/Dockerfile
 
   biz.brightonion.orderingservice:
     image: ${DOCKER_REGISTRY-}bizbrightonionorderingservice
     build:
       context: .
-      dockerfile: Services/Ordering/Biz.BrightOnion.OrderingService/Dockerfile
+      dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
 

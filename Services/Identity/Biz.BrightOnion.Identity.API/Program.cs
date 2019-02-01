@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Biz.BrightOnion.OrderingService
+namespace Biz.BrightOnion.Identity.API
 {
   public class Program
   {

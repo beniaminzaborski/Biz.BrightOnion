@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Biz.BrightOnion.OrderingService.UnitTests
+namespace Biz.BrightOnion.Ordering.UnitTests
 {
   public class UnitTest1
   {

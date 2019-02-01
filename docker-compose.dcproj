@@ -6,7 +6,7 @@
     <ProjectGuid>4e76a116-b89e-4c5e-9933-d2d840f7bd6b</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/api/values</DockerServiceUrl>
-    <DockerServiceName>biz.brightonion.identityservice</DockerServiceName>
+    <DockerServiceName>biz.brightonion.identity.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

@@ -1,12 +1,12 @@
-﻿using Biz.BrightOnion.IdentityService.Controllers;
-using Biz.BrightOnion.IdentityService.DTOs;
+﻿using Biz.BrightOnion.Identity.API.Controllers;
+using Biz.BrightOnion.Identity.API.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Biz.BrightOnion.IdentityService.UnitTests.Controllers
+namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
   public class AccountControllerTests
   {
