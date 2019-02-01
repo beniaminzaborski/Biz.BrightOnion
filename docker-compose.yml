@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  biz.brightonion.identityservice:
+    image: ${DOCKER_REGISTRY-}bizbrightonionidentityservice
+    build:
+      context: .
+      dockerfile: Services/Identity/Biz.BrightOnion.IdentityService/Dockerfile
+
+  biz.brightonion.orderingservice:
+    image: ${DOCKER_REGISTRY-}bizbrightonionorderingservice
+    build:
+      context: .
+      dockerfile: Services/Ordering/Biz.BrightOnion.OrderingService/Dockerfile
+
