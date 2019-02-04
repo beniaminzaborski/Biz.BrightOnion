@@ -1,4 +1,5 @@
-﻿using Biz.BrightOnion.Identity.API.Data;
+﻿using BarsGroup.CodeGuard;
+using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
   public class Repository<TEntity> : IUserRepository<TEntity>
     where TEntity : Entity
   {
-    private readonly ApplicationContext dbContext;
+    protected readonly ApplicationContext dbContext;
     public Repository(ApplicationContext dbContext)
     {
       this.dbContext = dbContext;
@@ -31,12 +32,16 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
 
     public async Task Create(TEntity entity)
     {
+      Guard.That(entity).IsNotNull();
+
       await dbContext.Set<TEntity>().AddAsync(entity);
       await dbContext.SaveChangesAsync();
     }
 
     public async Task Update(long id, TEntity entity)
     {
+      Guard.That(entity).IsNotNull();
+
       dbContext.Set<TEntity>().Update(entity);
       await dbContext.SaveChangesAsync();
     }
