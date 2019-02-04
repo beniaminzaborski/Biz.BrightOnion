@@ -18,13 +18,16 @@ namespace Biz.BrightOnion.Identity.API.Controllers
   {
     private readonly IUserRepository userRepository;
     private readonly IPasswordHasher passwordHasher;
+    private readonly IAuthenticationService authenticationService;
 
     public AccountController(
       IUserRepository userRepository,
-      IPasswordHasher passwordHasher)
+      IPasswordHasher passwordHasher,
+      IAuthenticationService authenticationService)
     {
       this.userRepository = userRepository;
       this.passwordHasher = passwordHasher;
+      this.authenticationService = authenticationService;
     }
 
     [HttpPost]
@@ -46,8 +49,9 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
 
       // TODO: Generate Auth Token
+      string jwtToken = authenticationService.CreateToken(user);
 
-      return new ObjectResult(new AuthTokenDTO { Token = "1234567890" });
+      return new ObjectResult(new AuthTokenDTO { Token = jwtToken });
     }
   }
 }

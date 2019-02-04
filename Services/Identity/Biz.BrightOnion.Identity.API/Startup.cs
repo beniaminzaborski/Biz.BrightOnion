@@ -35,6 +35,7 @@ namespace Biz.BrightOnion.Identity.API
       services.AddScoped<IUserRepository, UserRepository>();
 
       services.AddScoped<IPasswordHasher, Md5PasswordHasher>();
+      services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
