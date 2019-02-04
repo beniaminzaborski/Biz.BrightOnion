@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Identity.API.Dto;
+using Biz.BrightOnion.Identity.API.Entities;
 using Biz.BrightOnion.Identity.API.Infrastructure.Repositories;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
@@ -30,7 +31,38 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       this.authenticationService = authenticationService;
     }
 
-    [HttpPost]
+    [HttpPost("register")]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> Register([FromBody]RegisterUserDTO registerUserDTO)
+    {
+      if (registerUserDTO == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Register data is null" });
+
+      if (string.IsNullOrWhiteSpace(registerUserDTO.Email)
+        || string.IsNullOrWhiteSpace(registerUserDTO.Password)
+        || string.IsNullOrWhiteSpace(registerUserDTO.Password2))
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is empty" });
+
+      if (registerUserDTO.Password.Length < 7)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Password is too short" });
+
+      if (registerUserDTO.Password != registerUserDTO.Password2)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are not the same" });
+
+      var user = userRepository.GetByEmail(registerUserDTO.Email);
+      if (user != null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does exist" });
+
+      var passwordHash = passwordHasher.Hash(registerUserDTO.Email, registerUserDTO.Password);
+      user = new User { Email = registerUserDTO.Email, PasswordHash = passwordHash };
+
+      await userRepository.Create(user);
+
+      return Ok();
+    }
+
+    [HttpPost("login")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(AuthTokenDTO), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> Login([FromBody]LoginDTO loginDTO)
