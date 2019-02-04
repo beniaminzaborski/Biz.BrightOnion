@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BarsGroup.CodeGuard;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biz.BrightOnion.Identity.API.Repositories
 {
@@ -13,11 +14,11 @@ namespace Biz.BrightOnion.Identity.API.Repositories
   {
     public UserRepository(ApplicationContext dbContext) : base(dbContext) { }
 
-    public User GetByEmail(string email)
+    public async Task<User> GetByEmail(string email)
     {
       Guard.That(email).IsNotNullOrWhiteSpace();
 
-      return dbContext.Users.FirstOrDefault(u => u.Email == email);
+      return await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
   }
 }

@@ -9,6 +9,6 @@ namespace Biz.BrightOnion.Identity.API.Repositories
 {
   public interface IUserRepository : IUserRepository<User>
   {
-    User GetByEmail(string email);
+    Task<User> GetByEmail(string email);
   }
 }

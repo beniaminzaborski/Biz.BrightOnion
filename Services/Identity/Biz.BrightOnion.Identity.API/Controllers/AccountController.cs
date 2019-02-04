@@ -48,9 +48,9 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Password is too short" });
 
       if (registerUserDTO.Password != registerUserDTO.Password2)
-        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are not the same" });
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are not equal" });
 
-      var user = userRepository.GetByEmail(registerUserDTO.Email);
+      var user = await userRepository.GetByEmail(registerUserDTO.Email);
       if (user != null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does exist" });
 
@@ -73,7 +73,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (string.IsNullOrWhiteSpace(loginDTO.Email) || string.IsNullOrWhiteSpace(loginDTO.Password))
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is empty" });
 
-      var user = userRepository.GetByEmail(loginDTO.Email);
+      var user = await userRepository.GetByEmail(loginDTO.Email);
       if(user == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
       var passwordHash = passwordHasher.Hash(loginDTO.Email, loginDTO.Password);
@@ -83,6 +83,34 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       string jwtToken = authenticationService.CreateToken(user);
 
       return new ObjectResult(new AuthTokenDTO { Token = jwtToken });
+    }
+
+    [HttpPost("changepassword")]
+    public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDTO changePasswordDTO)
+    {
+      if (changePasswordDTO == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Password data is null" });
+
+      if (string.IsNullOrWhiteSpace(changePasswordDTO.Password) 
+        || string.IsNullOrWhiteSpace(changePasswordDTO.Password2)
+        || string.IsNullOrWhiteSpace(changePasswordDTO.OldPassword))
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are empty" });
+
+      var user = await userRepository.GetByEmail(changePasswordDTO.Email);
+      if (user == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
+      var passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.OldPassword);
+      if (passwordHash != user.PasswordHash)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
+
+      if(changePasswordDTO.Password != changePasswordDTO.Password2)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are not equal" });
+
+      passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.Password);
+      user.PasswordHash = passwordHash;
+      await userRepository.Update(user.Id, user);
+
+      return Ok();
     }
 
     [HttpPost]
