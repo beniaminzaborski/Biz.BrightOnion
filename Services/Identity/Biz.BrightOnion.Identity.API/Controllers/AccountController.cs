@@ -84,5 +84,28 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       return new ObjectResult(new AuthTokenDTO { Token = jwtToken });
     }
+
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(AuthTokenDTO), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> Update([FromBody]UserDTO userDTO)
+    {
+      if (userDTO == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User data is null" });
+
+      var user = await userRepository.GetById(userDTO.Id);
+      if(user == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
+
+      if (user.NotificationEnabled != userDTO.NotificationEnabled)
+      {
+        user.NotificationEnabled = userDTO.NotificationEnabled;
+        await userRepository.Update(user.Id, user);
+
+        // TODO: Raise integration event: UserNotificationChangedEvent
+      }
+
+      return Ok();
+    }
   }
 }

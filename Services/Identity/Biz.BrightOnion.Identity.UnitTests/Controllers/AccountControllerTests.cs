@@ -11,6 +11,7 @@ using System.Text;
 using Xunit;
 using System.Linq;
 using Biz.BrightOnion.Identity.API.Entities;
+using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
@@ -265,6 +266,53 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Assert
       var objectResult = Assert.IsType<ObjectResult>(actionResult);
       Assert.IsAssignableFrom<AuthTokenDTO>(objectResult.Value);
+    }
+
+    [Fact]
+    public async void Update_NullData_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.Update(null);
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("User data is null", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void Update_UserDoesNotExist_ShouldReturnBadRequest()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("User does not exist", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void Update_ShouldReturnOk()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
+
+      // Assert
+      Assert.IsType<OkResult>(actionResult);
     }
   }
 }
