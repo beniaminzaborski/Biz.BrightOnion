@@ -38,8 +38,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (string.IsNullOrWhiteSpace(loginDTO.Email) || string.IsNullOrWhiteSpace(loginDTO.Password))
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is empty" });
 
-      var user = userRepository.GetAll()
-        .Where(x => x.Email == loginDTO.Email).FirstOrDefault();
+      var user = userRepository.GetByEmail(loginDTO.Email);
       if(user == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
       var passwordHash = passwordHasher.Hash(loginDTO.Email, loginDTO.Password);
