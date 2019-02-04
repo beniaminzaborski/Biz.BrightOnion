@@ -48,7 +48,6 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if(passwordHash != user.PasswordHash)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
 
-      // TODO: Generate Auth Token
       string jwtToken = authenticationService.CreateToken(user);
 
       return new ObjectResult(new AuthTokenDTO { Token = jwtToken });

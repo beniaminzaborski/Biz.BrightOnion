@@ -18,18 +18,20 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
   {
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
+    private readonly Mock<IAuthenticationService> authenticationService;
 
     public AccountControllerTests()
     {
       userRepositoryMock = new Mock<IUserRepository>();
       passwordHasherMock = new Mock<IPasswordHasher>();
+      authenticationService = new Mock<IAuthenticationService>();
     }
 
     [Fact]
     public async void Login_NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(null);
@@ -45,7 +47,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "", Password = "Secret123" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -61,7 +63,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -78,10 +80,9 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      var users = new List<User> { };
-      userRepositoryMock.Setup(x => x.GetAll()).Returns(users.AsQueryable());
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns((User)null);
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -98,12 +99,11 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      var users = new List<User> { new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" } };
-      userRepositoryMock.Setup(x => x.GetAll()).Returns(users.AsQueryable());
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" });
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -120,12 +120,13 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      var users = new List<User> { new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" } };
-      userRepositoryMock.Setup(x => x.GetAll()).Returns(users.AsQueryable());
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" });
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("Hash123");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object);
+      authenticationService.Setup(x => x.CreateToken(It.IsAny<User>())).Returns("JWTTOKEN");
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
