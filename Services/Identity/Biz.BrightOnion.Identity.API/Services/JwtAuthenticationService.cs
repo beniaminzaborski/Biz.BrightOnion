@@ -5,17 +5,26 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Biz.BrightOnion.Identity.API.Configuration;
 using Biz.BrightOnion.Identity.API.Entities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Biz.BrightOnion.Identity.API.Services
 {
   public class JwtAuthenticationService : IAuthenticationService
   {
+    private readonly AppSettings appSettings;
+
+    public JwtAuthenticationService(IOptions<AppSettings> appSettings)
+    {
+      this.appSettings = appSettings.Value;
+    }
+
     public string CreateToken(User user)
     {
       var tokenHandler = new JwtSecurityTokenHandler();
-      var key = Encoding.ASCII.GetBytes("THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING"); // TODO: Move to settings
+      var key = Encoding.ASCII.GetBytes(appSettings.Secret);
       var tokenDescriptor = new SecurityTokenDescriptor
       {
         Subject = new ClaimsIdentity(new Claim[]

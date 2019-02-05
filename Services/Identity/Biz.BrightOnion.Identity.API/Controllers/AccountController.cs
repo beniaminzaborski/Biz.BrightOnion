@@ -8,11 +8,13 @@ using Biz.BrightOnion.Identity.API.Entities;
 using Biz.BrightOnion.Identity.API.Infrastructure.Repositories;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biz.BrightOnion.Identity.API.Controllers
 {
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class AccountController : ControllerBase
@@ -31,6 +33,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       this.authenticationService = authenticationService;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.OK)]
@@ -62,6 +65,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       return Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(AuthTokenDTO), (int)HttpStatusCode.OK)]
