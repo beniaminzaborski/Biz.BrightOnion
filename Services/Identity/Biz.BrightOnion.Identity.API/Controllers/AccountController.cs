@@ -91,6 +91,9 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (changePasswordDTO == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Password data is null" });
 
+      if (string.IsNullOrWhiteSpace(changePasswordDTO.Email))
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email is empty" });
+
       if (string.IsNullOrWhiteSpace(changePasswordDTO.Password) 
         || string.IsNullOrWhiteSpace(changePasswordDTO.Password2)
         || string.IsNullOrWhiteSpace(changePasswordDTO.OldPassword))

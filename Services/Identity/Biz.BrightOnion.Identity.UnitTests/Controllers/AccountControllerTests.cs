@@ -269,6 +269,154 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     }
 
     [Fact]
+    public async void ChangePassword_NullData_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(null);
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Password data is null", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_EmptyEmail_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Email is empty", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_EmptyPassword_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Passwords are empty", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_EmptyPassword2_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Passwords are empty", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_EmptyOldPassword_ShouldReturnBadRequest()
+    {
+      // Arrange
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Passwords are empty", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_UserDoesNotExist_ShouldReturnBadRequest()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("User does not exist", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_IncorrectOldPassword_ShouldReturnBadRequest()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "Hash123" }));
+
+      passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Email or password is incorrect", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_PasswordsAreNotEqual_ShouldReturnBadRequest()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
+
+      passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123___", OldPassword = "asddsa" });
+
+      // Assert
+      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
+      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
+      Assert.Equal("Passwords are not equal", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+    }
+
+    [Fact]
+    public async void ChangePassword_ShouldReturnOk()
+    {
+      // Arrange
+      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
+
+      passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "asddsa")).Returns("HashXYZ");
+      passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "123321")).Returns("Hash123");
+
+      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+
+      // Act
+      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+
+      // Assert
+      Assert.IsType<OkResult>(actionResult);
+    }
+
+    [Fact]
     public async void Update_NullData_ShouldReturnBadRequest()
     {
       // Arrange
