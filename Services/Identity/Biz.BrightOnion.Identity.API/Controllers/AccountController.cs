@@ -86,6 +86,8 @@ namespace Biz.BrightOnion.Identity.API.Controllers
     }
 
     [HttpPost("changepassword")]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDTO changePasswordDTO)
     {
       if (changePasswordDTO == null)
@@ -118,7 +120,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(AuthTokenDTO), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<IActionResult> Update([FromBody]UserDTO userDTO)
     {
       if (userDTO == null)
