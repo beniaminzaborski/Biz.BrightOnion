@@ -1,0 +1,20 @@
+FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM microsoft/dotnet:2.2-sdk AS build
+WORKDIR /src
+COPY Services/Analytics/Biz.BrightOnion.Analytics.API/Biz.BrightOnion.Analytics.API.csproj Services/Analytics/Biz.BrightOnion.Analytics.API/
+RUN dotnet restore Services/Analytics/Biz.BrightOnion.Analytics.API/Biz.BrightOnion.Analytics.API.csproj
+COPY . .
+WORKDIR /src/Services/Analytics/Biz.BrightOnion.Analytics.API
+RUN dotnet build Biz.BrightOnion.Analytics.API.csproj -c Release -o /app
+
+FROM build AS publish
+RUN dotnet publish Biz.BrightOnion.Analytics.API.csproj -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "Biz.BrightOnion.Analytics.API.dll"]

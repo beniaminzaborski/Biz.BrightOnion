@@ -13,3 +13,17 @@ services:
       context: .
       dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
 
+
+  biz.brightonion.analytics.api:
+    image: ${DOCKER_REGISTRY-}bizbrightonionanalyticsapi
+    build:
+      context: .
+      dockerfile: Services/Analytics/Biz.BrightOnion.Analytics.API/Dockerfile
+
+
+  biz.brightonion.catalog.api:
+    image: ${DOCKER_REGISTRY-}bizbrightonioncatalogapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/Biz.BrightOnion.Catalog.API/Dockerfile
+
