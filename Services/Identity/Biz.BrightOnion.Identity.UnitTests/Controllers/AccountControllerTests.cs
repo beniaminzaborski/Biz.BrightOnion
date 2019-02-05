@@ -120,7 +120,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
       Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
-      Assert.Equal("Passwords are not the same", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+      Assert.Equal("Passwords are not equal", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
     }
 
     [Fact]
