@@ -21,4 +21,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.Domain.Infrastructure\Biz.BrightOnion.Domain.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

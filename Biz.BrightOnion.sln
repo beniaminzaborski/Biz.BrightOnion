@@ -33,13 +33,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{B466
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analytics", "Analytics", "{F8776B61-499B-4CF7-9F0F-7323E6A4C104}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Catalog.API", "Services\Catalog\Biz.BrightOnion.Catalog.API\Biz.BrightOnion.Catalog.API.csproj", "{FD40C531-7FF0-4248-B260-10987CF7D59E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Catalog.API", "Services\Catalog\Biz.BrightOnion.Catalog.API\Biz.BrightOnion.Catalog.API.csproj", "{FD40C531-7FF0-4248-B260-10987CF7D59E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Catalog.UnitTests", "Services\Catalog\Biz.BrightOnion.Catalog.UnitTests\Biz.BrightOnion.Catalog.UnitTests.csproj", "{59AF8D00-3928-4DC2-ADAF-5AAEF0A3DD74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Catalog.UnitTests", "Services\Catalog\Biz.BrightOnion.Catalog.UnitTests\Biz.BrightOnion.Catalog.UnitTests.csproj", "{59AF8D00-3928-4DC2-ADAF-5AAEF0A3DD74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Analytics.API", "Services\Analytics\Biz.BrightOnion.Analytics.API\Biz.BrightOnion.Analytics.API.csproj", "{70002F2F-A37D-4254-A895-460C1489C289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Analytics.API", "Services\Analytics\Biz.BrightOnion.Analytics.API\Biz.BrightOnion.Analytics.API.csproj", "{70002F2F-A37D-4254-A895-460C1489C289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Analytics.UnitTests", "Services\Analytics\Biz.BrightOnion.Analytics.UnitTests\Biz.BrightOnion.Analytics.UnitTests.csproj", "{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Analytics.UnitTests", "Services\Analytics\Biz.BrightOnion.Analytics.UnitTests\Biz.BrightOnion.Analytics.UnitTests.csproj", "{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Domain.Infrastructure", "Infrastructure\Biz.BrightOnion.Domain.Infrastructure\Biz.BrightOnion.Domain.Infrastructure.csproj", "{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +87,10 @@ Global
 		{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +108,7 @@ Global
 		{59AF8D00-3928-4DC2-ADAF-5AAEF0A3DD74} = {B466F5C9-5F34-4ED6-AAE0-717676D6EE04}
 		{70002F2F-A37D-4254-A895-460C1489C289} = {F8776B61-499B-4CF7-9F0F-7323E6A4C104}
 		{2693D9C7-3CA8-4DDF-A1E1-B2515010A32C} = {F8776B61-499B-4CF7-9F0F-7323E6A4C104}
+		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB} = {4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}

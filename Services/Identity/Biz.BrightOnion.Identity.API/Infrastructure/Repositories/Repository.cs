@@ -1,6 +1,6 @@
 ﻿using BarsGroup.CodeGuard;
+using Biz.BrightOnion.Domain.Infrastructure.Entities;
 using Biz.BrightOnion.Identity.API.Data;
-using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

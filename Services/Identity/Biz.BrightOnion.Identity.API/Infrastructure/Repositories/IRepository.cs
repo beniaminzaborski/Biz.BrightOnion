@@ -1,4 +1,4 @@
-﻿using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
+﻿using Biz.BrightOnion.Domain.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
