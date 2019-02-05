@@ -33,6 +33,9 @@ namespace Biz.BrightOnion.Identity.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddHealthChecks()
+        .AddDbContextCheck<ApplicationContext>();
+
       services.AddDbContext<ApplicationContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -82,6 +85,8 @@ namespace Biz.BrightOnion.Identity.API
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
       }
+
+      app.UseHealthChecks("/hc");
 
       // global cors policy
       app.UseCors(x => x
