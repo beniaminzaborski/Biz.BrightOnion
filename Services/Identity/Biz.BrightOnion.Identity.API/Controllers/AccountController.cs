@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Dto;
 using Biz.BrightOnion.Identity.API.Entities;
 using Biz.BrightOnion.Identity.API.Infrastructure.Repositories;
@@ -19,15 +20,18 @@ namespace Biz.BrightOnion.Identity.API.Controllers
   [ApiController]
   public class AccountController : ControllerBase
   {
+    private readonly ApplicationContext dbContext;
     private readonly IUserRepository userRepository;
     private readonly IPasswordHasher passwordHasher;
     private readonly IAuthenticationService authenticationService;
 
     public AccountController(
+      ApplicationContext dbContext,
       IUserRepository userRepository,
       IPasswordHasher passwordHasher,
       IAuthenticationService authenticationService)
     {
+      this.dbContext = dbContext;
       this.userRepository = userRepository;
       this.passwordHasher = passwordHasher;
       this.authenticationService = authenticationService;
@@ -61,6 +65,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       user = new User { Email = registerUserDTO.Email, PasswordHash = passwordHash };
 
       await userRepository.CreateAsync(user);
+      await dbContext.SaveChangesAsync();
 
       return Ok();
     }
@@ -118,6 +123,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.Password);
       user.PasswordHash = passwordHash;
       await userRepository.UpdateAsync(user.Id, user);
+      await dbContext.SaveChangesAsync();
 
       return Ok();
     }
@@ -140,6 +146,8 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         await userRepository.UpdateAsync(user.Id, user);
 
         // TODO: Raise integration event: UserNotificationChangedEvent
+
+        await dbContext.SaveChangesAsync();
       }
 
       return Ok();

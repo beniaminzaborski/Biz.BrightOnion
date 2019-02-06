@@ -35,7 +35,6 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       Guard.That(entity).IsNotNull();
 
       await dbContext.Set<TEntity>().AddAsync(entity);
-      await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(long id, TEntity entity)
@@ -43,14 +42,12 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       Guard.That(entity).IsNotNull();
 
       dbContext.Set<TEntity>().Update(entity);
-      await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(long id)
     {
       var entity = await GetByIdAsync(id);
       dbContext.Set<TEntity>().Remove(entity);
-      await dbContext.SaveChangesAsync();
     }
   }
 }

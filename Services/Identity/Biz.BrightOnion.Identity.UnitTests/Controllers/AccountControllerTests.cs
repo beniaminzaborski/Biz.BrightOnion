@@ -12,17 +12,20 @@ using Xunit;
 using System.Linq;
 using Biz.BrightOnion.Identity.API.Entities;
 using System.Threading.Tasks;
+using Biz.BrightOnion.Identity.API.Data;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
   public class AccountControllerTests
   {
+    private readonly Mock<ApplicationContext> dbContextMock;
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
 
     public AccountControllerTests()
     {
+      dbContextMock = new Mock<ApplicationContext>();
       userRepositoryMock = new Mock<IUserRepository>();
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
@@ -32,7 +35,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void Register_NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(null);
@@ -48,7 +51,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "", Password = "Secret123", Password2 = "Secret123" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -64,7 +67,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "", Password2 = "Secret123" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -80,7 +83,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "Secret123", Password2 = "" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -96,7 +99,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "123", Password2 = "123" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -112,7 +115,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "secret123", Password2 = "secretXXX" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -131,7 +134,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "jan.test@asf.pl", PasswordHash = "Hash123" }));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -150,7 +153,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Register(registerUserDTO);
@@ -163,7 +166,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void Login_NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(null);
@@ -179,7 +182,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "", Password = "Secret123" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -195,7 +198,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "" };
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -214,7 +217,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -235,7 +238,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -258,7 +261,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       authenticationService.Setup(x => x.CreateToken(It.IsAny<User>())).Returns("JWTTOKEN");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Login(loginDTO);
@@ -272,7 +275,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(null);
@@ -287,7 +290,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_EmptyEmail_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "" });
@@ -302,7 +305,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_EmptyPassword_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl" });
@@ -317,7 +320,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_EmptyPassword2_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321" });
@@ -332,7 +335,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_EmptyOldPassword_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321" });
@@ -349,7 +352,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
@@ -368,7 +371,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
@@ -387,7 +390,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123___", OldPassword = "asddsa" });
@@ -407,7 +410,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "asddsa")).Returns("HashXYZ");
       passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "123321")).Returns("Hash123");
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
@@ -420,7 +423,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void Update_NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Update(null);
@@ -437,7 +440,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
@@ -454,7 +457,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
 
-      var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
       var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
