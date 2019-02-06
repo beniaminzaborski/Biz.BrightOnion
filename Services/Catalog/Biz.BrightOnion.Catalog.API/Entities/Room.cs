@@ -1,4 +1,4 @@
-﻿using Biz.BrightOnion.Domain.Infrastructure.Entities;
+﻿using Biz.BrightOnion.Catalog.API.Infrastructure.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +11,6 @@ namespace Biz.BrightOnion.Catalog.API.Entities
   {
     [Required]
     [MaxLength(25)]
-    public string Name { get; set; }
+    public virtual string Name { get; set; }
   }
 }

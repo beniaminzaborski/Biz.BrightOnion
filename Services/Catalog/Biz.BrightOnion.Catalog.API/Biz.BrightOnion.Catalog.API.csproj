@@ -9,18 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BarsGroup.CodeGuard" Version="3.2.43" />
+    <PackageReference Include="FluentNHibernate" Version="2.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.2105168" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.Domain.Infrastructure\Biz.BrightOnion.Domain.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using BarsGroup.CodeGuard;
-using Biz.BrightOnion.Domain.Infrastructure.Entities;
 using Biz.BrightOnion.Identity.API.Data;
+using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
 {
-  public class Repository<TEntity> : IUserRepository<TEntity>
+  public class Repository<TEntity> : IRepository<TEntity>
     where TEntity : Entity
   {
     protected readonly ApplicationContext dbContext;

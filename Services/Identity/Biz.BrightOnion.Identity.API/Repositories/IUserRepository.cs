@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Identity.API.Repositories
 {
-  public interface IUserRepository : IUserRepository<User>
+  public interface IUserRepository : IRepository<User>
   {
     Task<User> GetByEmail(string email);
   }

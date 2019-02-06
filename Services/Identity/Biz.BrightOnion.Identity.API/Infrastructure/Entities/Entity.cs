@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Biz.BrightOnion.Domain.Infrastructure.Entities
+namespace Biz.BrightOnion.Identity.API.Infrastructure.Entities
 {
   public abstract class Entity
   {
