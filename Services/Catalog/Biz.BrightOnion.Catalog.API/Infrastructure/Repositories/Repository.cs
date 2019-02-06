@@ -23,27 +23,27 @@ namespace Biz.BrightOnion.Catalog.API.Infrastructure.Repositories
       return session.Query<TEntity>();
     }
 
-    public async Task<TEntity> GetById(long id)
+    public async Task<TEntity> GetByIdAsync(long id)
     {
       return await session.Query<TEntity>()
                   .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<long> Create(TEntity entity)
+    public async Task<long> CreateAsync(TEntity entity)
     {
       Guard.That(entity).IsNotNull();
 
       return await session.SaveAsync(entity).ContinueWith(t => (long)t.Result);
     }
 
-    public async Task Update(long id, TEntity entity)
+    public async Task UpdateAsync(long id, TEntity entity)
     {
       Guard.That(entity).IsNotNull();
 
       await session.SaveOrUpdateAsync(entity);
     }
 
-    public async Task Delete(long id)
+    public async Task DeleteAsync(long id)
     {
       var entity = await session.LoadAsync<TEntity>(id);
       await session.DeleteAsync(entity);

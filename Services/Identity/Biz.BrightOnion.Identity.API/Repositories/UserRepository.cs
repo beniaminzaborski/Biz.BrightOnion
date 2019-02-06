@@ -14,7 +14,7 @@ namespace Biz.BrightOnion.Identity.API.Repositories
   {
     public UserRepository(ApplicationContext dbContext) : base(dbContext) { }
 
-    public async Task<User> GetByEmail(string email)
+    public async Task<User> GetByEmailAsync(string email)
     {
       Guard.That(email).IsNotNullOrWhiteSpace();
 

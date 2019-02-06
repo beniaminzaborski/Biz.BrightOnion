@@ -129,7 +129,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "secret123", Password2 = "secret123" };
 
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "jan.test@asf.pl", PasswordHash = "Hash123" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "jan.test@asf.pl", PasswordHash = "Hash123" }));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
@@ -148,7 +148,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "secret123", Password2 = "secret123" };
 
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
@@ -212,7 +212,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
@@ -231,7 +231,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" }));
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
@@ -252,7 +252,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "Secret123" };
 
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult(new User() { Id = 1, Email = "johny.smith@exmaple-email-123.com", PasswordHash = "Hash123" }));
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("Hash123");
 
@@ -347,7 +347,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_UserDoesNotExist_ShouldReturnBadRequest()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
+      userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
@@ -364,7 +364,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_IncorrectOldPassword_ShouldReturnBadRequest()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "Hash123" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "Hash123" }));
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
@@ -383,7 +383,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_PasswordsAreNotEqual_ShouldReturnBadRequest()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
@@ -402,7 +402,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ChangePassword_ShouldReturnOk()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
+      userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
 
       passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "asddsa")).Returns("HashXYZ");
       passwordHasherMock.Setup(x => x.Hash("jan.test@tyu.pl", "123321")).Returns("Hash123");
@@ -435,7 +435,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void Update_UserDoesNotExist_ShouldReturnBadRequest()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
+      userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
@@ -452,7 +452,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void Update_ShouldReturnOk()
     {
       // Arrange
-      userRepositoryMock.Setup(x => x.GetById(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
+      userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
 
       var accountController = new AccountController(userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 

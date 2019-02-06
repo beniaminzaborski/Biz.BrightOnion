@@ -23,14 +23,14 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       return dbContext.Set<TEntity>().AsNoTracking();
     }
 
-    public async Task<TEntity> GetById(long id)
+    public async Task<TEntity> GetByIdAsync(long id)
     {
       return await dbContext.Set<TEntity>()
                   .AsNoTracking()
                   .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task Create(TEntity entity)
+    public async Task CreateAsync(TEntity entity)
     {
       Guard.That(entity).IsNotNull();
 
@@ -38,7 +38,7 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       await dbContext.SaveChangesAsync();
     }
 
-    public async Task Update(long id, TEntity entity)
+    public async Task UpdateAsync(long id, TEntity entity)
     {
       Guard.That(entity).IsNotNull();
 
@@ -46,9 +46,9 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       await dbContext.SaveChangesAsync();
     }
 
-    public async Task Delete(long id)
+    public async Task DeleteAsync(long id)
     {
-      var entity = await GetById(id);
+      var entity = await GetByIdAsync(id);
       dbContext.Set<TEntity>().Remove(entity);
       await dbContext.SaveChangesAsync();
     }

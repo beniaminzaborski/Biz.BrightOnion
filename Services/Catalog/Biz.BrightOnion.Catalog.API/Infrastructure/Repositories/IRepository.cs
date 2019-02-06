@@ -11,12 +11,12 @@ namespace Biz.BrightOnion.Catalog.API.Infrastructure.Repositories
   {
     IQueryable<TEntity> GetAll();
 
-    Task<TEntity> GetById(long id);
+    Task<TEntity> GetByIdAsync(long id);
 
-    Task<long> Create(TEntity entity);
+    Task<long> CreateAsync(TEntity entity);
 
-    Task Update(long id, TEntity entity);
+    Task UpdateAsync(long id, TEntity entity);
 
-    Task Delete(long id);
+    Task DeleteAsync(long id);
   }
 }

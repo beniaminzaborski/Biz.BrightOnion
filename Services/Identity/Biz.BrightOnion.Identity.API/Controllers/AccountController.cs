@@ -53,14 +53,14 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (registerUserDTO.Password != registerUserDTO.Password2)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are not equal" });
 
-      var user = await userRepository.GetByEmail(registerUserDTO.Email);
+      var user = await userRepository.GetByEmailAsync(registerUserDTO.Email);
       if (user != null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does exist" });
 
       var passwordHash = passwordHasher.Hash(registerUserDTO.Email, registerUserDTO.Password);
       user = new User { Email = registerUserDTO.Email, PasswordHash = passwordHash };
 
-      await userRepository.Create(user);
+      await userRepository.CreateAsync(user);
 
       return Ok();
     }
@@ -77,7 +77,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (string.IsNullOrWhiteSpace(loginDTO.Email) || string.IsNullOrWhiteSpace(loginDTO.Password))
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is empty" });
 
-      var user = await userRepository.GetByEmail(loginDTO.Email);
+      var user = await userRepository.GetByEmailAsync(loginDTO.Email);
       if(user == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email or password is incorrect" });
       var passwordHash = passwordHasher.Hash(loginDTO.Email, loginDTO.Password);
@@ -105,7 +105,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         || string.IsNullOrWhiteSpace(changePasswordDTO.OldPassword))
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Passwords are empty" });
 
-      var user = await userRepository.GetByEmail(changePasswordDTO.Email);
+      var user = await userRepository.GetByEmailAsync(changePasswordDTO.Email);
       if (user == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
       var passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.OldPassword);
@@ -117,7 +117,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.Password);
       user.PasswordHash = passwordHash;
-      await userRepository.Update(user.Id, user);
+      await userRepository.UpdateAsync(user.Id, user);
 
       return Ok();
     }
@@ -130,14 +130,14 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (userDTO == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User data is null" });
 
-      var user = await userRepository.GetById(userDTO.Id);
+      var user = await userRepository.GetByIdAsync(userDTO.Id);
       if(user == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
 
       if (user.NotificationEnabled != userDTO.NotificationEnabled)
       {
         user.NotificationEnabled = userDTO.NotificationEnabled;
-        await userRepository.Update(user.Id, user);
+        await userRepository.UpdateAsync(user.Id, user);
 
         // TODO: Raise integration event: UserNotificationChangedEvent
       }
