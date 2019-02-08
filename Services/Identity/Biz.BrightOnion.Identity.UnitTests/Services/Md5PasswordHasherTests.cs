@@ -10,69 +10,69 @@ namespace Biz.BrightOnion.Identity.UnitTests.Services
   public class Md5PasswordHasherTests
   {
     [Fact]
-    public void Hash_NullLogin_ShouldThrowException()
+    public void Hash_NullLogin_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash(null, "Secret123"));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash(null, "Secret123"));
     }
 
     [Fact]
-    public void Hash_EmptyLogin_ShouldThrowException()
+    public void Hash_EmptyLogin_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash("", "Secret123"));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash("", "Secret123"));
     }
 
     [Fact]
-    public void Hash_WhitespaceLogin_ShouldThrowException()
+    public void Hash_WhitespaceLogin_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash("   ", "Secret123"));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash("   ", "Secret123"));
     }
 
     [Fact]
-    public void Hash_NullPassword_ShouldThrowException()
+    public void Hash_NullPassword_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", null));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", null));
     }
 
     [Fact]
-    public void Hash_EmptyPassword_ShouldThrowException()
+    public void Hash_EmptyPassword_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", ""));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", ""));
     }
 
     [Fact]
-    public void Hash_WhitespacePassword_ShouldThrowException()
+    public void Hash_WhitespacePassword_ShouldThrowArgumentException()
     {
       // Arrange
       var md5PasswordHasher = new Md5PasswordHasher();
 
       // Act
       // Assert
-      Exception ex = Assert.ThrowsAny<Exception>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", "   "));
+      Exception ex = Assert.ThrowsAny<ArgumentException>(() => md5PasswordHasher.Hash("jan.k@qwe.pl", "   "));
     }
 
     [Fact]

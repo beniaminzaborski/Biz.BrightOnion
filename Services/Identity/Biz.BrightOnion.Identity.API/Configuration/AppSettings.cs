@@ -7,6 +7,6 @@ namespace Biz.BrightOnion.Identity.API.Configuration
 {
   public class AppSettings
   {
-    public string Secret { get; set; }
+    public virtual string Secret { get; set; }
   }
 }
