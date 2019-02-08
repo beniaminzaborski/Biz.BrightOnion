@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BarsGroup.CodeGuard;
 using Microsoft.EntityFrameworkCore;
+using NGuard;
 
 namespace Biz.BrightOnion.Identity.API.Repositories
 {
@@ -16,7 +16,7 @@ namespace Biz.BrightOnion.Identity.API.Repositories
 
     public async Task<User> GetByEmailAsync(string email)
     {
-      Guard.That(email).IsNotNullOrWhiteSpace();
+      Guard.Requires(email, nameof(email)).IsNotNullOrEmptyOrWhiteSpace();
 
       return await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }

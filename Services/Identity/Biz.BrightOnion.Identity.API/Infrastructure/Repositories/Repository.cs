@@ -1,7 +1,7 @@
-﻿using BarsGroup.CodeGuard;
-using Biz.BrightOnion.Identity.API.Data;
+﻿using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
+using NGuard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,14 +32,14 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
 
     public async Task CreateAsync(TEntity entity)
     {
-      Guard.That(entity).IsNotNull();
+      Guard.Requires(entity, nameof(entity)).IsNotNull();
 
       await dbContext.Set<TEntity>().AddAsync(entity);
     }
 
     public async Task UpdateAsync(long id, TEntity entity)
     {
-      Guard.That(entity).IsNotNull();
+      Guard.Requires(entity, nameof(entity)).IsNotNull();
 
       dbContext.Set<TEntity>().Update(entity);
     }

@@ -9,6 +9,7 @@ using Biz.BrightOnion.Identity.API.Configuration;
 using Biz.BrightOnion.Identity.API.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NGuard;
 
 namespace Biz.BrightOnion.Identity.API.Services
 {
@@ -23,6 +24,8 @@ namespace Biz.BrightOnion.Identity.API.Services
 
     public string CreateToken(User user)
     {
+      Guard.Requires(user, nameof(user)).IsNotNull();
+
       var tokenHandler = new JwtSecurityTokenHandler();
       var key = Encoding.ASCII.GetBytes(appSettings.Secret);
       var tokenDescriptor = new SecurityTokenDescriptor

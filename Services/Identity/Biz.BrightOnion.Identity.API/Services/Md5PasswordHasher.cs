@@ -1,4 +1,4 @@
-﻿using BarsGroup.CodeGuard;
+﻿using NGuard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +12,8 @@ namespace Biz.BrightOnion.Identity.API.Services
   {
     public string Hash(string login, string password)
     {
-      Guard.That(login).IsNotNullOrWhiteSpace();
-      Guard.That(password).IsNotNullOrWhiteSpace();
+      Guard.Requires(login, nameof(login)).IsNotNullOrEmptyOrWhiteSpace();
+      Guard.Requires(password, nameof(password)).IsNotNullOrEmptyOrWhiteSpace();
 
       return CalculateMD5Hash(login + "." + password);
     }

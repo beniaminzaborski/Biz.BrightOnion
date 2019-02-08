@@ -32,7 +32,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Services
 
       // Act
       // Assert
-      Assert.Throws<ArgumentException>(() => jwtAuthenticationService.CreateToken(null));
+      Assert.ThrowsAny<ArgumentException>(() => jwtAuthenticationService.CreateToken(null));
     }
 
     [Fact]
