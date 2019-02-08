@@ -1,5 +1,5 @@
-﻿using BarsGroup.CodeGuard;
-using Biz.BrightOnion.Catalog.API.Infrastructure.Entities;
+﻿using Biz.BrightOnion.Catalog.API.Infrastructure.Entities;
+using NGuard;
 using NHibernate;
 using NHibernate.Linq;
 using System;
@@ -31,14 +31,14 @@ namespace Biz.BrightOnion.Catalog.API.Infrastructure.Repositories
 
     public async Task<long> CreateAsync(TEntity entity)
     {
-      Guard.That(entity).IsNotNull();
+      Guard.Requires(entity, nameof(entity)).IsNotNull();
 
       return await session.SaveAsync(entity).ContinueWith(t => (long)t.Result);
     }
 
     public async Task UpdateAsync(long id, TEntity entity)
     {
-      Guard.That(entity).IsNotNull();
+      Guard.Requires(entity, nameof(entity)).IsNotNull();
 
       await session.SaveOrUpdateAsync(entity);
     }
