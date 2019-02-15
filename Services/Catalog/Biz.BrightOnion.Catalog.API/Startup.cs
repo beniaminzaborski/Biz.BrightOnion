@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Catalog.API.Data;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,7 +29,18 @@ namespace Biz.BrightOnion.Catalog.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddSingleton<ISessionFactory>(NhSessionFactoryBuilder.Build(Configuration.GetConnectionString("DefaultConnection")));
+      string connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+      // Database migrations
+      services
+        .AddFluentMigratorCore()
+        .ConfigureRunner(rb => rb
+          .AddSqlServer()
+          .WithGlobalConnectionString(connectionString)
+          .ScanIn(typeof(Migrations._20190206213801_CreateTable_Room).Assembly).For.Migrations()
+      );
+
+      services.AddSingleton<ISessionFactory>(NhSessionFactoryBuilder.Build(connectionString));
       services.AddScoped<ISession>(c => c.GetService<ISessionFactory>().OpenSession());
 
       services.AddScoped<IRoomRepository, RoomRepository>();
