@@ -35,7 +35,7 @@ namespace Biz.BrightOnion.Catalog.API.Data
                 .Conventions.Setup(c =>
                 {
                   c.Add<ForeignKeyMappingConvention>();
-                  c.Add(ConventionBuilder.Id.Always(x => x.GeneratedBy.Assigned()));
+                  c.Add(ConventionBuilder.Id.Always(x => x.GeneratedBy.Identity()));
                 })
             )
          )

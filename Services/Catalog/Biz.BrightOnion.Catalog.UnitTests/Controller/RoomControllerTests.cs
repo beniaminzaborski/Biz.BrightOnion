@@ -94,7 +94,8 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       var actionResult = await roomController.Create(roomDTO);
 
       // Assert
-      var objectResult = Assert.IsType<OkResult>(actionResult);
+      var objectResult = Assert.IsType<ObjectResult>(actionResult);
+      Assert.IsAssignableFrom<RoomDTO>(objectResult.Value);
     }
   }
 }

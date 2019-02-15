@@ -57,10 +57,10 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       using (var transaction = session.BeginTransaction())
       {
         id = await roomRepository.CreateAsync(room);
-        transaction.Commit();
+        transaction?.Commit();
       }
 
-      return new ObjectResult(new { Id = id });
+      return new ObjectResult(new RoomDTO { Id = id, Name = room.Name });
     }
   }
 }
