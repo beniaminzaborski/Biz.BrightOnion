@@ -9,6 +9,6 @@ namespace Biz.BrightOnion.Catalog.API.Repositories
 {
   public interface IRoomRepository : IRepository<Room>
   {
-
+    Task<Room> GetByNameAsync(string name);
   }
 }
