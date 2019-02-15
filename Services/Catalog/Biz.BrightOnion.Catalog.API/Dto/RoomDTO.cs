@@ -7,6 +7,7 @@ namespace Biz.BrightOnion.Catalog.API.Dto
 {
   public class RoomDTO
   {
+    public long Id { get; set; }
     public string Name { get; set; }
   }
 }

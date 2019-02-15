@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Repositories;
@@ -25,10 +26,13 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
     }
 
     [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
     public async Task<ActionResult<List<RoomDTO>>> GetAllAsync()
     {
       var rooms = roomRepository.GetAll().ToList();
-      throw new NotImplementedException();
+      IList<RoomDTO> result = new List<RoomDTO>();
+      rooms.ForEach(r => result.Add(new RoomDTO { Id = r.Id, Name = r.Name }));
+      return new ObjectResult(result);
     }
   }
 }
