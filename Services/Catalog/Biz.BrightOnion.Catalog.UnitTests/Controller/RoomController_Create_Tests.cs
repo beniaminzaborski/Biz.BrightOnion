@@ -25,7 +25,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void Create_NullData_ShouldReturnBadRequest()
+    public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
@@ -40,7 +40,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void Create_EmptyName_ShouldReturnBadRequest()
+    public async void EmptyName_ShouldReturnBadRequest()
     {
       // Arrange
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
@@ -55,7 +55,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void Create_RoomWithPassedNameExists_ShouldReturnBadRequest()
+    public async void RoomWithPassedNameExists_ShouldReturnBadRequest()
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
@@ -71,7 +71,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void Create_ShouldReturnOk()
+    public async void ShouldReturnOk()
     {
       // Arrange
       var roomDTO = new RoomDTO { Name = "test" };

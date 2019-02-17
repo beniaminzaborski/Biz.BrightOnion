@@ -25,7 +25,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void GetAllAsync_ShouldReturnActionResultWithRoomDtoList()
+    public async void ShouldReturnActionResultWithRoomDtoList()
     {
       // Arrange
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
