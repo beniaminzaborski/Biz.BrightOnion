@@ -62,5 +62,37 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
       return new ObjectResult(new RoomDTO { Id = id, Name = room.Name });
     }
+
+    [HttpPut]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> Update([FromBody]RoomDTO roomDTO)
+    {
+      if (roomDTO == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room data is null" });
+
+      if (string.IsNullOrWhiteSpace(roomDTO.Name))
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room name is empty" });
+
+      var room = await roomRepository.GetByIdAsync(roomDTO.Id);
+      if (room == null)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room does not exist" });
+
+      bool roomWithNameExists = roomRepository.GetAll().Any(r => r.Id != roomDTO.Id && r.Name == roomDTO.Name);
+      if(roomWithNameExists)
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room with passed name does exist" });
+
+      room.Name = roomDTO.Name;
+
+      using (var transaction = session.BeginTransaction())
+      {
+        await roomRepository.UpdateAsync(room.Id, room);
+        transaction?.Commit();
+      }
+
+      // TODO: Raise integration event: RoomUpdateEvent
+
+      return NoContent();
+    }
   }
 }

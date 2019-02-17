@@ -13,28 +13,15 @@ using Xunit;
 
 namespace Biz.BrightOnion.Catalog.UnitTests.Controller
 {
-  public class RoomControllerTests
+  public class RoomController_Create_Tests
   {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IRoomRepository> roomRepositoryMock;
 
-    public RoomControllerTests()
+    public RoomController_Create_Tests()
     {
       sessionMock = new Mock<ISession>();
       roomRepositoryMock = new Mock<IRoomRepository>();
-    }
-
-    [Fact]
-    public async void GetAllAsync_ShouldReturnActionResultWithRoomDtoList()
-    {
-      // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
-
-      // Act
-      var actionResult = await roomController.GetAllAsync();
-
-      // Assert
-      Assert.IsType<ActionResult<List<RoomDTO>>>(actionResult);
     }
 
     [Fact]
