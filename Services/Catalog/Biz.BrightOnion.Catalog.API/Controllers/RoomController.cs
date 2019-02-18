@@ -94,7 +94,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
 
       bool roomWithNameExists = roomRepository.GetAll().Any(r => r.Id != roomDTO.Id && r.Name == roomDTO.Name);
-      if(roomWithNameExists)
+      if (roomWithNameExists)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room with passed name does exist" });
 
       room.Name = roomDTO.Name;
@@ -105,7 +105,27 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         transaction?.Commit();
       }
 
-      // TODO: Raise integration event: RoomUpdateEvent
+      // TODO: Raise integration event: RoomUpdatedEvent
+
+      return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    public async Task<ActionResult> DeleteAsync(long id)
+    {
+      var room = await roomRepository.GetByIdAsync(id);
+      if (room == null)
+        return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
+
+      using (var transaction = session.BeginTransaction())
+      {
+        await roomRepository.DeleteAsync(id);
+        transaction?.Commit();
+      }
+
+      // TODO: Raise integration event: RoomDeletedEvent
 
       return NoContent();
     }
