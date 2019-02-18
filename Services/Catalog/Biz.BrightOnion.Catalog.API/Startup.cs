@@ -40,6 +40,8 @@ namespace Biz.BrightOnion.Catalog.API
           .ScanIn(typeof(Migrations._20190206213801_CreateTable_Room).Assembly).For.Migrations()
       );
 
+      services.AddHealthChecks();
+
       services.AddSingleton<ISessionFactory>(NhSessionFactoryBuilder.Build(connectionString));
       services.AddScoped<ISession>(c => c.GetService<ISessionFactory>().OpenSession());
 
@@ -61,6 +63,8 @@ namespace Biz.BrightOnion.Catalog.API
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
       }
+
+      app.UseHealthChecks("/hc");
 
       // global cors policy
       app.UseCors(x => x
