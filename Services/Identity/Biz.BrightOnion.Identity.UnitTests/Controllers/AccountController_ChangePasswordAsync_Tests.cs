@@ -16,14 +16,14 @@ using Biz.BrightOnion.Identity.API.Data;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
-  public class AccountController_ChangePassword_Tests
+  public class AccountController_ChangePasswordAsync_Tests
   {
     private readonly Mock<ApplicationContext> dbContextMock;
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
 
-    public AccountController_ChangePassword_Tests()
+    public AccountController_ChangePasswordAsync_Tests()
     {
       dbContextMock = new Mock<ApplicationContext>();
       userRepositoryMock = new Mock<IUserRepository>();
@@ -38,7 +38,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(null);
+      var actionResult = await accountController.ChangePasswordAsync(null);
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -53,7 +53,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -68,7 +68,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -83,7 +83,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -98,7 +98,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -115,7 +115,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -134,7 +134,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -153,7 +153,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123___", OldPassword = "asddsa" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123___", OldPassword = "asddsa" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -173,7 +173,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.ChangePassword(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
+      var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
 
       // Assert
       Assert.IsType<OkResult>(actionResult);

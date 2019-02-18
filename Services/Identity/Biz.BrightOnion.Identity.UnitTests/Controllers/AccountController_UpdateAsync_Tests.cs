@@ -16,14 +16,14 @@ using Biz.BrightOnion.Identity.API.Data;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
-  public class AccountController_Update_Tests
+  public class AccountController_UpdateAsync_Tests
   {
     private readonly Mock<ApplicationContext> dbContextMock;
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
 
-    public AccountController_Update_Tests()
+    public AccountController_UpdateAsync_Tests()
     {
       dbContextMock = new Mock<ApplicationContext>();
       userRepositoryMock = new Mock<IUserRepository>();
@@ -38,7 +38,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.Update(null);
+      var actionResult = await accountController.UpdateAsync(null);
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -55,7 +55,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
+      var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -72,7 +72,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
 
       // Act
-      var actionResult = await accountController.Update(new UserDTO { Id = 1, NotificationEnabled = true });
+      var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });
 
       // Assert
       Assert.IsType<OkResult>(actionResult);
