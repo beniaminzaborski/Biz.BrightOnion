@@ -44,7 +44,8 @@ namespace Biz.BrightOnion.Catalog.API
           .ScanIn(typeof(Migrations._20190206213801_CreateTable_Room).Assembly).For.Migrations()
       );
 
-      services.AddHealthChecks();
+      services.AddHealthChecks()
+        .AddSqlServer(connectionString);
 
       services.AddSingleton<ISessionFactory>(NhSessionFactoryBuilder.Build(connectionString));
       services.AddScoped<ISession>(c => c.GetService<ISessionFactory>().OpenSession());
