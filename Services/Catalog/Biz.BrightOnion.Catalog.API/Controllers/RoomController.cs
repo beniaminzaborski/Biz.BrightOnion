@@ -35,10 +35,23 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       return new ObjectResult(result);
     }
 
+    [HttpGet("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(RoomDTO), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<RoomDTO>> GetAsync(long id)
+    {
+      var room = await roomRepository.GetByIdAsync(id);
+
+      if (room == null)
+        return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
+
+      return Ok(new RoomDTO { Id = room.Id, Name = room.Name });
+    }
+
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult> Create([FromBody]RoomDTO roomDTO)
+    [ProducesResponseType(typeof(RoomDTO), (int)HttpStatusCode.Created)]
+    public async Task<ActionResult> CreateAsync([FromBody]RoomDTO roomDTO)
     {
       long id;
 
@@ -60,13 +73,13 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         transaction?.Commit();
       }
 
-      return new ObjectResult(new RoomDTO { Id = id, Name = room.Name });
+      return CreatedAtAction(nameof(GetAsync), new { id = room.Id }, new RoomDTO { Id = room.Id, Name = room.Name });
     }
 
     [HttpPut]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(long), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult> Update([FromBody]RoomDTO roomDTO)
+    public async Task<ActionResult> UpdateAsync([FromBody]RoomDTO roomDTO)
     {
       if (roomDTO == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room data is null" });
@@ -76,7 +89,9 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
       var room = await roomRepository.GetByIdAsync(roomDTO.Id);
       if (room == null)
-        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room does not exist" });
+        // return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room does not exist" });
+        return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
+
 
       bool roomWithNameExists = roomRepository.GetAll().Any(r => r.Id != roomDTO.Id && r.Name == roomDTO.Name);
       if(roomWithNameExists)

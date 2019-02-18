@@ -7,19 +7,18 @@ using Moq;
 using NHibernate;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Biz.BrightOnion.Catalog.UnitTests.Controller
 {
-  public class RoomController_Update_Tests
+  public class RoomController_CreateAsync_Tests
   {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IRoomRepository> roomRepositoryMock;
 
-    public RoomController_Update_Tests()
+    public RoomController_CreateAsync_Tests()
     {
       sessionMock = new Mock<ISession>();
       roomRepositoryMock = new Mock<IRoomRepository>();
@@ -32,7 +31,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
 
       // Act
-      var actionResult = await roomController.Update(null);
+      var actionResult = await roomController.CreateAsync(null);
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -47,7 +46,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
 
       // Act
-      var actionResult = await roomController.Update(new RoomDTO { Id = 1, Name = "" });
+      var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
@@ -56,53 +55,36 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     }
 
     [Fact]
-    public async void RoomDoesNotExist_ShouldReturnBadRequest()
+    public async void RoomWithPassedNameExists_ShouldReturnBadRequest()
     {
       // Arrange
-      roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult((Room)null));
+      roomRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
 
       // Act
-      var actionResult = await roomController.Update(new RoomDTO { Id = 1, Name = "test" });
+      var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "test" });
 
       // Assert
       var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
       Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
-      Assert.Equal("Room does not exist", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
+      Assert.Equal("Room does exist", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
     }
 
     [Fact]
-    public async void OtherRoomWithPassedNameExists_ShouldReturnBadRequest()
+    public async void ShouldReturnCreated()
     {
       // Arrange
-      roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
-      IQueryable<Room> rooms = (new List<Room> { new Room() { Id = 2, Name = "test" } }).AsQueryable();
-      roomRepositoryMock.Setup(x => x.GetAll()).Returns(rooms);
+      var roomDTO = new RoomDTO { Name = "test" };
       var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
 
       // Act
-      var actionResult = await roomController.Update(new RoomDTO { Id = 1, Name = "test" });
+      var actionResult = await roomController.CreateAsync(roomDTO);
 
       // Assert
-      var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actionResult);
-      Assert.IsAssignableFrom<ErrorDTO>(badRequestObjectResult.Value);
-      Assert.Equal("Room with passed name does exist", ((ErrorDTO)badRequestObjectResult.Value).ErrorMessage);
-    }
-
-    [Fact]
-    public async void ShouldReturnNoContentResult()
-    {
-      // Arrange
-      roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
-      //IQueryable<Room> rooms = (new List<Room> { new Room() { Id = 2, Name = "test" } }).AsQueryable();
-      //roomRepositoryMock.Setup(x => x.GetAll()).Returns(rooms);
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
-
-      // Act
-      var actionResult = await roomController.Update(new RoomDTO { Id = 1, Name = "test" });
-
-      // Assert
-      Assert.IsType<NoContentResult>(actionResult);
+      var result = Assert.IsType<CreatedAtActionResult>(actionResult);
+      Assert.IsAssignableFrom<RoomDTO>(result.Value);
+      //var objectResult = Assert.IsType<ObjectResult>(actionResult);
+      //Assert.IsAssignableFrom<RoomDTO>(objectResult.Value);
     }
   }
 }
