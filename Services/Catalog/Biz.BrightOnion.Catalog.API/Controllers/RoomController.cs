@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Entities;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
 
 namespace Biz.BrightOnion.Catalog.API.Controllers
 {
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class RoomController : ControllerBase
