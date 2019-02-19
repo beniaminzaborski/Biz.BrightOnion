@@ -19,13 +19,13 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
 {
   public class RabbitMqEventBus : IEventBus, IDisposable
   {
-    const string BROKER_NAME = "eshop_event_bus";
+    const string BROKER_NAME = "brightonion_event_bus";
 
     private readonly IRabbitMQPersistentConnection persistentConnection;
     private readonly ILogger<RabbitMqEventBus> logger;
     private readonly IEventBusSubscriptionsManager subsManager;
     private readonly ILifetimeScope autofac;
-    private readonly string AUTOFAC_SCOPE_NAME = "eshop_event_bus";
+    private readonly string AUTOFAC_SCOPE_NAME = "brightonion_event_bus";
     private readonly int retryCount;
 
     private IModel consumerChannel;
