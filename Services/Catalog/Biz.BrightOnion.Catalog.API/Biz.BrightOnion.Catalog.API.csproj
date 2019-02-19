@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus.RabbitMQ\Biz.BrightOnion.EventBus.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus\Biz.BrightOnion.EventBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="run_database_migration.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -21,4 +21,9 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus.RabbitMQ\Biz.BrightOnion.EventBus.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus\Biz.BrightOnion.EventBus.csproj" />
+  </ItemGroup>
+
 </Project>

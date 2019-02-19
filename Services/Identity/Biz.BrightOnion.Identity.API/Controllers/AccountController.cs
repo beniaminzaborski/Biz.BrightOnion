@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Dto;
 using Biz.BrightOnion.Identity.API.Entities;
-using Biz.BrightOnion.Identity.API.Infrastructure.Repositories;
+using Biz.BrightOnion.Identity.API.Events;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Biz.BrightOnion.Identity.API.Controllers
@@ -24,17 +22,20 @@ namespace Biz.BrightOnion.Identity.API.Controllers
     private readonly IUserRepository userRepository;
     private readonly IPasswordHasher passwordHasher;
     private readonly IAuthenticationService authenticationService;
+    // private readonly IEventBus eventBus;
 
     public AccountController(
       ApplicationContext dbContext,
       IUserRepository userRepository,
       IPasswordHasher passwordHasher,
-      IAuthenticationService authenticationService)
+      IAuthenticationService authenticationService/*,
+      IEventBus eventBus*/)
     {
       this.dbContext = dbContext;
       this.userRepository = userRepository;
       this.passwordHasher = passwordHasher;
       this.authenticationService = authenticationService;
+      // this.eventBus = eventBus;
     }
 
     [AllowAnonymous]
@@ -144,10 +145,10 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       {
         user.NotificationEnabled = userDTO.NotificationEnabled;
         await userRepository.UpdateAsync(user.Id, user);
+        await dbContext.SaveChangesAsync();
 
         // TODO: Raise integration event: UserNotificationChangedEvent
-
-        await dbContext.SaveChangesAsync();
+        // eventBus.Publish(new UserNotificationChangedEvent(user.Id, user.NotificationEnabled));
       }
 
       return Ok();

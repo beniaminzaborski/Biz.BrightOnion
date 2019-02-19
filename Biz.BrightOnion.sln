@@ -22,9 +22,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{5DE4117C-F169-42B9-8540-1A6DD7A5E8A1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{9D569732-F7D9-42E6-B619-6D88E697969F}"
-	ProjectSection(SolutionItems) = preProject
-		Web\README.txt = Web\README.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{B466F5C9-5F34-4ED6-AAE0-717676D6EE04}"
 EndProject
@@ -45,6 +42,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.ApiGateway", "ApiGateways\Biz.BrightOnion.ApiGateway\Biz.BrightOnion.ApiGateway.csproj", "{11C5CC50-5CB6-49A5-910F-71B3CE279E03}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Web", "Web\Biz.BrightOnion.Web\Biz.BrightOnion.Web.csproj", "{F87021C0-3B56-4B44-B4F9-66ADA0197003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.EventBus", "Infrastructure\Biz.BrightOnion.EventBus\Biz.BrightOnion.EventBus.csproj", "{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.EventBus.RabbitMQ", "Infrastructure\Biz.BrightOnion.EventBus.RabbitMQ\Biz.BrightOnion.EventBus.RabbitMQ.csproj", "{82B105E8-AF07-481A-8F49-A51F0F57CBE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,6 +101,14 @@ Global
 		{F87021C0-3B56-4B44-B4F9-66ADA0197003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F87021C0-3B56-4B44-B4F9-66ADA0197003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F87021C0-3B56-4B44-B4F9-66ADA0197003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82B105E8-AF07-481A-8F49-A51F0F57CBE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82B105E8-AF07-481A-8F49-A51F0F57CBE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82B105E8-AF07-481A-8F49-A51F0F57CBE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82B105E8-AF07-481A-8F49-A51F0F57CBE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +129,8 @@ Global
 		{536FD1C3-25A0-428E-990C-2D8D2A1BF0DB} = {4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}
 		{11C5CC50-5CB6-49A5-910F-71B3CE279E03} = {5DE4117C-F169-42B9-8540-1A6DD7A5E8A1}
 		{F87021C0-3B56-4B44-B4F9-66ADA0197003} = {9D569732-F7D9-42E6-B619-6D88E697969F}
+		{0C673B6B-B9AF-427F-AD32-17CD44FAB4E6} = {4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}
+		{82B105E8-AF07-481A-8F49-A51F0F57CBE7} = {4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}

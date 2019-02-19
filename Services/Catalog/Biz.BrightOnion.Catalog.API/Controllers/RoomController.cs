@@ -5,7 +5,9 @@ using System.Net;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Entities;
+using Biz.BrightOnion.Catalog.API.Events;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHibernate;
@@ -19,13 +21,16 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
   {
     private readonly ISession session;
     private readonly IRoomRepository roomRepository;
+    // private readonly IEventBus eventBus;
 
     public RoomController(
       ISession session,
-      IRoomRepository roomRepository)
+      IRoomRepository roomRepository/*,
+      IEventBus eventBus*/)
     {
       this.session = session;
       this.roomRepository = roomRepository;
+      // this.eventBus = eventBus;
     }
 
     [HttpGet]
@@ -99,15 +104,19 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (roomWithNameExists)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room with passed name does exist" });
 
-      room.Name = roomDTO.Name;
-
-      using (var transaction = session.BeginTransaction())
+      if (room.Name != roomDTO.Name)
       {
-        await roomRepository.UpdateAsync(room.Id, room);
-        transaction?.Commit();
-      }
+        room.Name = roomDTO.Name;
 
-      // TODO: Raise integration event: RoomUpdatedEvent
+        using (var transaction = session.BeginTransaction())
+        {
+          await roomRepository.UpdateAsync(room.Id, room);
+          transaction?.Commit();
+        }
+
+        // TODO: Raise integration event: RoomNameChangedEvent
+        // eventBus.Publish(new RoomNameChangedEvent(room.Id, room.Name));
+      }
 
       return NoContent();
     }
@@ -128,6 +137,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       }
 
       // TODO: Raise integration event: RoomDeletedEvent
+      // eventBus.Publish(new RoomDeletedEvent(room.Id));
 
       return NoContent();
     }
