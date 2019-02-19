@@ -21,16 +21,16 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
   {
     private readonly ISession session;
     private readonly IRoomRepository roomRepository;
-    // private readonly IEventBus eventBus;
+    private readonly IEventBus eventBus;
 
     public RoomController(
       ISession session,
-      IRoomRepository roomRepository/*,
-      IEventBus eventBus*/)
+      IRoomRepository roomRepository,
+      IEventBus eventBus)
     {
       this.session = session;
       this.roomRepository = roomRepository;
-      // this.eventBus = eventBus;
+      this.eventBus = eventBus;
     }
 
     [HttpGet]
@@ -114,8 +114,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
           transaction?.Commit();
         }
 
-        // TODO: Raise integration event: RoomNameChangedEvent
-        // eventBus.Publish(new RoomNameChangedEvent(room.Id, room.Name));
+        // Raise integration event: RoomNameChangedEvent
+        eventBus.Publish(new RoomNameChangedEvent(room.Id, room.Name));
       }
 
       return NoContent();
@@ -136,8 +136,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         transaction?.Commit();
       }
 
-      // TODO: Raise integration event: RoomDeletedEvent
-      // eventBus.Publish(new RoomDeletedEvent(room.Id));
+      // Raise integration event: RoomDeletedEvent
+      eventBus.Publish(new RoomDeletedEvent(room.Id));
 
       return NoContent();
     }

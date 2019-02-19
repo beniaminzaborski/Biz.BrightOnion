@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Biz.BrightOnion.Catalog.API.Configuration;
 using Biz.BrightOnion.Catalog.API.Data;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.EventBus;
+using Biz.BrightOnion.EventBus.Abstractions;
+using Biz.BrightOnion.EventBus.RabbitMQ;
 using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NHibernate;
+using RabbitMQ.Client;
 
 namespace Biz.BrightOnion.Catalog.API
 {
@@ -31,7 +37,7 @@ namespace Biz.BrightOnion.Catalog.API
     public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
+    public IServiceProvider ConfigureServices(IServiceCollection services)
     {
       string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
@@ -51,6 +57,8 @@ namespace Biz.BrightOnion.Catalog.API
       services.AddScoped<ISession>(c => c.GetService<ISessionFactory>().OpenSession());
 
       services.AddScoped<IRoomRepository, RoomRepository>();
+
+      services.AddEventBus(Configuration);
 
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -79,6 +87,10 @@ namespace Biz.BrightOnion.Catalog.API
           ValidateAudience = false
         };
       });
+
+      var container = new ContainerBuilder();
+      container.Populate(services);
+      return new AutofacServiceProvider(container.Build());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,6 +118,69 @@ namespace Biz.BrightOnion.Catalog.API
 
       app.UseHttpsRedirection();
       app.UseMvc();
+    }
+  }
+
+  public static class CustomExtensionMethods
+  {
+    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
+    {
+      var appSettingsSection = configuration.GetSection("AppSettings");
+      var appSettings = appSettingsSection.Get<AppSettings>();
+
+      // RabbitMQ Persistent Connection
+      services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
+      {
+        var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
+
+        var factory = new ConnectionFactory()
+        {
+          HostName = appSettings.EventBusConnection // configuration["EventBusConnection"]
+        };
+
+        if (!string.IsNullOrEmpty(appSettings.EventBusUserName))
+        {
+          factory.UserName = appSettings.EventBusUserName; // configuration["EventBusUserName"];
+        }
+
+        if (!string.IsNullOrEmpty(appSettings.EventBusPassword))
+        {
+          factory.Password = appSettings.EventBusPassword; // configuration["EventBusPassword"];
+        }
+
+        var retryCount = 5;
+        // if (!string.IsNullOrEmpty(configuration["EventBusRetryCount"]))
+        if (appSettings.EventBusRetryCount.HasValue)
+        {
+          retryCount = appSettings.EventBusRetryCount.Value; // int.Parse(configuration["EventBusRetryCount"]);
+        }
+
+        return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
+      });
+
+      var subscriptionClientName = appSettings.SubscriptionClientName; // configuration["SubscriptionClientName"];
+
+      // RabbitMQ Event Bus
+      services.AddSingleton<IEventBus, RabbitMqEventBus>(sp =>
+      {
+        var rabbitMQPersistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
+        var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
+        var logger = sp.GetRequiredService<ILogger<RabbitMqEventBus>>();
+        var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
+
+        var retryCount = 5;
+        // if (!string.IsNullOrEmpty(configuration["EventBusRetryCount"]))
+        if(appSettings.EventBusRetryCount.HasValue)
+        {
+          retryCount = appSettings.EventBusRetryCount.Value; // int.Parse(configuration["EventBusRetryCount"]);
+        }
+
+        return new RabbitMqEventBus(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
+      });
+
+      services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+
+      return services;
     }
   }
 }
