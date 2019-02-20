@@ -22,20 +22,20 @@ namespace Biz.BrightOnion.Identity.API.Controllers
     private readonly IUserRepository userRepository;
     private readonly IPasswordHasher passwordHasher;
     private readonly IAuthenticationService authenticationService;
-    // private readonly IEventBus eventBus;
+    private readonly IEventBus eventBus;
 
     public AccountController(
       ApplicationContext dbContext,
       IUserRepository userRepository,
       IPasswordHasher passwordHasher,
-      IAuthenticationService authenticationService/*,
-      IEventBus eventBus*/)
+      IAuthenticationService authenticationService,
+      IEventBus eventBus)
     {
       this.dbContext = dbContext;
       this.userRepository = userRepository;
       this.passwordHasher = passwordHasher;
       this.authenticationService = authenticationService;
-      // this.eventBus = eventBus;
+      this.eventBus = eventBus;
     }
 
     [AllowAnonymous]
@@ -147,8 +147,8 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         await userRepository.UpdateAsync(user.Id, user);
         await dbContext.SaveChangesAsync();
 
-        // TODO: Raise integration event: UserNotificationChangedEvent
-        // eventBus.Publish(new UserNotificationChangedEvent(user.Id, user.NotificationEnabled));
+        // Raise integration event: UserNotificationChangedEvent
+        eventBus.Publish(new UserNotificationChangedEvent(user.Id, user.NotificationEnabled));
       }
 
       return Ok();

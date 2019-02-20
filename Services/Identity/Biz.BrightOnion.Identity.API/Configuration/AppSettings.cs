@@ -8,5 +8,11 @@ namespace Biz.BrightOnion.Identity.API.Configuration
   public class AppSettings
   {
     public virtual string Secret { get; set; }
+
+    public virtual string EventBusConnection { get; set; }
+    public virtual string EventBusUserName { get; set; }
+    public virtual string EventBusPassword { get; set; }
+    public virtual int? EventBusRetryCount { get; set; }
+    public virtual string SubscriptionClientName { get; set; }
   }
 }
