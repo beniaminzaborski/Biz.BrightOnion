@@ -21,6 +21,17 @@
         }
       ],
       "UpstreamPathTemplate": "/catalog-api/{catchAll}"
+    },
+    {
+      "DownstreamPathTemplate": "/api/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
+      ],
+      "UpstreamPathTemplate": "/ordering-api/{catchAll}"
     }
   ],
   "GlobalConfiguration": {
