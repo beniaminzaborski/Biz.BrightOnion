@@ -41,14 +41,7 @@ namespace Biz.BrightOnion.Catalog.API
     {
       string connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-      // Database migrations
-      services
-        .AddFluentMigratorCore()
-        .ConfigureRunner(rb => rb
-          .AddSqlServer()
-          .WithGlobalConnectionString(connectionString)
-          .ScanIn(typeof(Migrations._20190206213801_CreateTable_Room).Assembly).For.Migrations()
-      );
+      services.AddDatabaseMigration(connectionString);
 
       services.AddHealthChecks()
         .AddSqlServer(connectionString);
@@ -63,30 +56,7 @@ namespace Biz.BrightOnion.Catalog.API
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-      // configure strongly typed settings objects
-      var appSettingsSection = Configuration.GetSection("AppSettings");
-      services.Configure<AppSettings>(appSettingsSection);
-
-      // configure jwt authentication
-      var appSettings = appSettingsSection.Get<AppSettings>();
-      var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-      services.AddAuthentication(x =>
-      {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-      })
-      .AddJwtBearer(x =>
-      {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
-        {
-          ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(key),
-          ValidateIssuer = false,
-          ValidateAudience = false
-        };
-      });
+      services.AddJwtAuthentication(Configuration);
 
       var container = new ContainerBuilder();
       container.Populate(services);
@@ -123,6 +93,20 @@ namespace Biz.BrightOnion.Catalog.API
 
   public static class CustomExtensionMethods
   {
+    public static IServiceCollection AddDatabaseMigration(this IServiceCollection services, string connectionString)
+    {
+      // SQL Server database migration
+      services
+        .AddFluentMigratorCore()
+        .ConfigureRunner(rb => rb
+          .AddSqlServer()
+          .WithGlobalConnectionString(connectionString)
+          .ScanIn(typeof(Migrations._20190206213801_CreateTable_Room).Assembly).For.Migrations()
+      );
+
+      return services;
+    }
+
     public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
     {
       var appSettingsSection = configuration.GetSection("AppSettings");
@@ -135,30 +119,29 @@ namespace Biz.BrightOnion.Catalog.API
 
         var factory = new ConnectionFactory()
         {
-          HostName = appSettings.EventBusConnection // configuration["EventBusConnection"]
+          HostName = appSettings.EventBusConnection
         };
 
         if (!string.IsNullOrEmpty(appSettings.EventBusUserName))
         {
-          factory.UserName = appSettings.EventBusUserName; // configuration["EventBusUserName"];
+          factory.UserName = appSettings.EventBusUserName;
         }
 
         if (!string.IsNullOrEmpty(appSettings.EventBusPassword))
         {
-          factory.Password = appSettings.EventBusPassword; // configuration["EventBusPassword"];
+          factory.Password = appSettings.EventBusPassword;
         }
 
         var retryCount = 5;
-        // if (!string.IsNullOrEmpty(configuration["EventBusRetryCount"]))
         if (appSettings.EventBusRetryCount.HasValue)
         {
-          retryCount = appSettings.EventBusRetryCount.Value; // int.Parse(configuration["EventBusRetryCount"]);
+          retryCount = appSettings.EventBusRetryCount.Value;
         }
 
         return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
       });
 
-      var subscriptionClientName = appSettings.SubscriptionClientName; // configuration["SubscriptionClientName"];
+      var subscriptionClientName = appSettings.SubscriptionClientName;
 
       // RabbitMQ Event Bus
       services.AddSingleton<IEventBus, RabbitMqEventBus>(sp =>
@@ -169,16 +152,45 @@ namespace Biz.BrightOnion.Catalog.API
         var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
 
         var retryCount = 5;
-        // if (!string.IsNullOrEmpty(configuration["EventBusRetryCount"]))
         if(appSettings.EventBusRetryCount.HasValue)
         {
-          retryCount = appSettings.EventBusRetryCount.Value; // int.Parse(configuration["EventBusRetryCount"]);
+          retryCount = appSettings.EventBusRetryCount.Value;
         }
 
         return new RabbitMqEventBus(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
       });
 
       services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+
+      return services;
+    }
+
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+      // configure strongly typed settings objects
+      var appSettingsSection = configuration.GetSection("AppSettings");
+      services.Configure<AppSettings>(appSettingsSection);
+
+      // configure jwt authentication
+      var appSettings = appSettingsSection.Get<AppSettings>();
+      var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+      services.AddAuthentication(x =>
+      {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      })
+      .AddJwtBearer(x =>
+      {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = new SymmetricSecurityKey(key),
+          ValidateIssuer = false,
+          ValidateAudience = false
+        };
+      });
 
       return services;
     }
