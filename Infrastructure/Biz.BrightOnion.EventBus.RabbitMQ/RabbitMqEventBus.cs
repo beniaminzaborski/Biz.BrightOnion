@@ -19,7 +19,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
 {
   public class RabbitMqEventBus : IEventBus, IDisposable
   {
-    const string BROKER_NAME = "brightonion_event_bus";
+    const string EXCHANGE_NAME = "brightonion_event_bus";
 
     private readonly IRabbitMQPersistentConnection persistentConnection;
     private readonly ILogger<RabbitMqEventBus> logger;
@@ -54,7 +54,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
       using (var channel = persistentConnection.CreateModel())
       {
         channel.QueueUnbind(queue: queueName,
-            exchange: BROKER_NAME,
+            exchange: EXCHANGE_NAME,
             routingKey: eventName);
 
         if (subsManager.IsEmpty)
@@ -84,7 +84,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
         var eventName = @event.GetType()
             .Name;
 
-        channel.ExchangeDeclare(exchange: BROKER_NAME,
+        channel.ExchangeDeclare(exchange: EXCHANGE_NAME,
                             type: "direct");
 
         var message = JsonConvert.SerializeObject(@event);
@@ -95,7 +95,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
           var properties = channel.CreateBasicProperties();
           properties.DeliveryMode = 2; // persistent
 
-          channel.BasicPublish(exchange: BROKER_NAME,
+          channel.BasicPublish(exchange: EXCHANGE_NAME,
                            routingKey: eventName,
                            mandatory: true,
                            basicProperties: properties,
@@ -133,7 +133,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
         using (var channel = persistentConnection.CreateModel())
         {
           channel.QueueBind(queue: queueName,
-                            exchange: BROKER_NAME,
+                            exchange: EXCHANGE_NAME,
                             routingKey: eventName);
         }
       }
@@ -171,7 +171,7 @@ namespace Biz.BrightOnion.EventBus.RabbitMQ
 
       var channel = persistentConnection.CreateModel();
 
-      channel.ExchangeDeclare(exchange: BROKER_NAME,
+      channel.ExchangeDeclare(exchange: EXCHANGE_NAME,
                            type: "direct");
 
       channel.QueueDeclare(queue: queueName,
