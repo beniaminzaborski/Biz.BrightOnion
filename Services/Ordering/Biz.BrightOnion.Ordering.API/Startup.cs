@@ -141,6 +141,9 @@ namespace Biz.BrightOnion.Ordering.API
       });
 
       services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+      services.AddTransient<UserNotificationChangedEventHandler>();
+      services.AddTransient<RoomNameChangedEventHandler>();
+      services.AddTransient<RoomDeletedEventHandler>();
 
       return services;
     }
