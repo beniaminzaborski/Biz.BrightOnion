@@ -13,6 +13,7 @@ using System.Linq;
 using Biz.BrightOnion.Identity.API.Entities;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Identity.API.Data;
+using Biz.BrightOnion.EventBus.Abstractions;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
@@ -22,6 +23,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
+    private readonly Mock<IEventBus> eventBusMock;
 
     public AccountController_LoginAsync_Tests()
     {
@@ -29,13 +31,14 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       userRepositoryMock = new Mock<IUserRepository>();
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
+      eventBusMock = new Mock<IEventBus>();
     }
 
     [Fact]
     public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(null);
@@ -51,7 +54,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "", Password = "Secret123" };
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(loginDTO);
@@ -67,7 +70,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     {
       // Arrange
       var loginDTO = new LoginDTO { Email = "johny.smith@exmaple-email-123.com", Password = "" };
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(loginDTO);
@@ -86,7 +89,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(loginDTO);
@@ -107,7 +110,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       passwordHasherMock.Setup(x => x.Hash(It.IsAny<string>(), It.IsAny<string>())).Returns("HashXYZ");
 
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(loginDTO);
@@ -130,7 +133,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       authenticationService.Setup(x => x.CreateToken(It.IsAny<User>())).Returns("JWTTOKEN");
 
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.LoginAsync(loginDTO);

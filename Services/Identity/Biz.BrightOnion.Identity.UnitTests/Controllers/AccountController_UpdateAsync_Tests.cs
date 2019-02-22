@@ -13,6 +13,7 @@ using System.Linq;
 using Biz.BrightOnion.Identity.API.Entities;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Identity.API.Data;
+using Biz.BrightOnion.EventBus.Abstractions;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
@@ -22,6 +23,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
+    private readonly Mock<IEventBus> eventBusMock;
 
     public AccountController_UpdateAsync_Tests()
     {
@@ -29,13 +31,14 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       userRepositoryMock = new Mock<IUserRepository>();
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
+      eventBusMock = new Mock<IEventBus>();
     }
 
     [Fact]
     public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.UpdateAsync(null);
@@ -52,7 +55,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(null));
 
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });
@@ -69,7 +72,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       // Arrange
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
 
-      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object);
+      var accountController = new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });

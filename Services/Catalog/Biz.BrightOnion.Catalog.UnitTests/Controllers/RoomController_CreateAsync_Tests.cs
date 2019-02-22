@@ -2,6 +2,7 @@
 using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Entities;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHibernate;
@@ -17,18 +18,20 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
   {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IRoomRepository> roomRepositoryMock;
+    private readonly Mock<IEventBus> eventBusMock;
 
     public RoomController_CreateAsync_Tests()
     {
       sessionMock = new Mock<ISession>();
       roomRepositoryMock = new Mock<IRoomRepository>();
+      eventBusMock = new Mock<IEventBus>();
     }
 
     [Fact]
     public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.CreateAsync(null);
@@ -43,7 +46,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     public async void EmptyName_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "" });
@@ -59,7 +62,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "test" });
@@ -75,7 +78,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       var roomDTO = new RoomDTO { Name = "test" };
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.CreateAsync(roomDTO);
