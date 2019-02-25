@@ -22,13 +22,18 @@ namespace Biz.BrightOnion.Identity.UnitTests.Services
       optionsMock = new Mock<IOptions<AppSettings>>();
     }
 
+    private JwtAuthenticationService CreateJwtAuthenticationService()
+    {
+      return new JwtAuthenticationService(optionsMock.Object);
+    }
+
     [Fact]
     public void CreateToken_NullUser_ShouldThrowArgumentException()
     {
       // Arrange
       appSettingsMock.SetupGet(x => x.Secret).Returns("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
       optionsMock.SetupGet(x => x.Value).Returns(appSettingsMock.Object);
-      var jwtAuthenticationService = new JwtAuthenticationService(optionsMock.Object);
+      var jwtAuthenticationService = CreateJwtAuthenticationService();
 
       // Act
       // Assert
@@ -41,7 +46,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Services
       // Arrange
       appSettingsMock.SetupGet(x => x.Secret).Returns("012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789");
       optionsMock.SetupGet(x => x.Value).Returns(appSettingsMock.Object);
-      var jwtAuthenticationService = new JwtAuthenticationService(optionsMock.Object);
+      var jwtAuthenticationService = CreateJwtAuthenticationService();
 
       // Act
       var result = jwtAuthenticationService.CreateToken(new User { Id = 1 });
