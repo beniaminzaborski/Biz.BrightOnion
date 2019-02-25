@@ -8,6 +8,7 @@ using Autofac.Extensions.DependencyInjection;
 using Biz.BrightOnion.Catalog.API.Configuration;
 using Biz.BrightOnion.Catalog.API.Data;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.Catalog.API.Services;
 using Biz.BrightOnion.EventBus;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.RabbitMQ;
@@ -50,7 +51,9 @@ namespace Biz.BrightOnion.Catalog.API
       services.AddScoped<ISession>(c => c.GetService<ISessionFactory>().OpenSession());
 
       services.AddScoped<IRoomRepository, RoomRepository>();
+      services.AddScoped<IIntegrationEventLogRepository, IntegrationEventLogRepository>();
 
+      services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
       services.AddEventBus(Configuration);
 
       services.AddCors();

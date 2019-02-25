@@ -2,6 +2,7 @@
 using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Entities;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.Catalog.API.Services;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -19,12 +20,14 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
   {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IRoomRepository> roomRepositoryMock;
+    private readonly Mock<IIntegrationEventLogService> integrationEventLogServiceMock;
     private readonly Mock<IEventBus> eventBusMock;
 
     public RoomController_UpdateAsync_Tests()
     {
       sessionMock = new Mock<ISession>();
       roomRepositoryMock = new Mock<IRoomRepository>();
+      integrationEventLogServiceMock = new Mock<IIntegrationEventLogService>();
       eventBusMock = new Mock<IEventBus>();
     }
 
@@ -32,7 +35,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.UpdateAsync(null);
@@ -47,7 +50,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     public async void EmptyName_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.UpdateAsync(new RoomDTO { Id = 1, Name = "" });
@@ -63,7 +66,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult((Room)null));
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.UpdateAsync(new RoomDTO { Id = 1, Name = "test" });
@@ -81,7 +84,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
       IQueryable<Room> rooms = (new List<Room> { new Room() { Id = 2, Name = "test" } }).AsQueryable();
       roomRepositoryMock.Setup(x => x.GetAll()).Returns(rooms);
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.UpdateAsync(new RoomDTO { Id = 1, Name = "test" });
@@ -99,7 +102,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
       //IQueryable<Room> rooms = (new List<Room> { new Room() { Id = 2, Name = "test" } }).AsQueryable();
       //roomRepositoryMock.Setup(x => x.GetAll()).Returns(rooms);
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, eventBusMock.Object);
+      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
 
       // Act
       var actionResult = await roomController.UpdateAsync(new RoomDTO { Id = 1, Name = "test" });

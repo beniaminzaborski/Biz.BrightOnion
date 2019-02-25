@@ -7,6 +7,7 @@ using Biz.BrightOnion.Catalog.API.Dto;
 using Biz.BrightOnion.Catalog.API.Entities;
 using Biz.BrightOnion.Catalog.API.Events;
 using Biz.BrightOnion.Catalog.API.Repositories;
+using Biz.BrightOnion.Catalog.API.Services;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +22,18 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
   {
     private readonly ISession session;
     private readonly IRoomRepository roomRepository;
+    private readonly IIntegrationEventLogService integrationEventLogService;
     private readonly IEventBus eventBus;
 
     public RoomController(
       ISession session,
       IRoomRepository roomRepository,
+      IIntegrationEventLogService integrationEventLogService,
       IEventBus eventBus)
     {
       this.session = session;
       this.roomRepository = roomRepository;
+      this.integrationEventLogService = integrationEventLogService;
       this.eventBus = eventBus;
     }
 
@@ -108,14 +112,23 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       {
         room.Name = roomDTO.Name;
 
+        var roomNameChangedEvent = new RoomNameChangedEvent(room.Id, room.Name);
+
         using (var transaction = session.BeginTransaction())
         {
           await roomRepository.UpdateAsync(room.Id, room);
+          await integrationEventLogService.SaveEventAsync(roomNameChangedEvent);
           transaction?.Commit();
         }
 
-        // Raise integration event: RoomNameChangedEvent
-        eventBus.Publish(new RoomNameChangedEvent(room.Id, room.Name));
+        // Publish integration event: RoomNameChangedEvent
+        // TODO: Move to Event Publisher Worker !!!
+        using (var transaction = session.BeginTransaction())
+        {
+          eventBus.Publish(roomNameChangedEvent);
+          await integrationEventLogService.MarkEventAsPublishedAsync(roomNameChangedEvent.EventId);
+          transaction?.Commit();
+        }
       }
 
       return NoContent();
@@ -130,14 +143,23 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (room == null)
         return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
 
+      var roomDeletedEvent = new RoomDeletedEvent(room.Id);
+
       using (var transaction = session.BeginTransaction())
       {
         await roomRepository.DeleteAsync(id);
+        await integrationEventLogService.SaveEventAsync(roomDeletedEvent);
         transaction?.Commit();
       }
 
-      // Raise integration event: RoomDeletedEvent
-      eventBus.Publish(new RoomDeletedEvent(room.Id));
+      // Publish integration event: RoomDeletedEvent
+      // TODO: Move to Event Publisher Worker !!!
+      using (var transaction = session.BeginTransaction())
+      {
+        eventBus.Publish(roomDeletedEvent);
+        await integrationEventLogService.MarkEventAsPublishedAsync(roomDeletedEvent.EventId);
+        transaction?.Commit();
+      }
 
       return NoContent();
     }
