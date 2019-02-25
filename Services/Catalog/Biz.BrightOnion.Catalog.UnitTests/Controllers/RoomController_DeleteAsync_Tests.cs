@@ -31,12 +31,17 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       eventBusMock = new Mock<IEventBus>();
     }
 
+    private RoomController CreateRoomController()
+    {
+      return new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+    }
+
     [Fact]
     public async void RoomDoesNotExist_ShouldReturnBadRequest()
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult((Room)null));
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.DeleteAsync(1);
@@ -52,7 +57,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.DeleteAsync(1);

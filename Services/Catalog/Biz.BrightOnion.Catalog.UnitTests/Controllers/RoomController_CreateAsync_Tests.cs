@@ -30,11 +30,16 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       eventBusMock = new Mock<IEventBus>();
     }
 
+    private RoomController CreateRoomController()
+    {
+      return new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+    }
+
     [Fact]
     public async void NullData_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.CreateAsync(null);
@@ -49,7 +54,7 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     public async void EmptyName_ShouldReturnBadRequest()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "" });
@@ -65,7 +70,8 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       roomRepositoryMock.Setup(x => x.GetByNameAsync(It.IsAny<string>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.CreateAsync(new RoomDTO { Name = "test" });
@@ -81,7 +87,8 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
     {
       // Arrange
       var roomDTO = new RoomDTO { Name = "test" };
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.CreateAsync(roomDTO);

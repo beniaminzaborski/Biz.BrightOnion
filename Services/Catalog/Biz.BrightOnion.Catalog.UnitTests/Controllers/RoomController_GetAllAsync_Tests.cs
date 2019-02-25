@@ -30,11 +30,16 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
       eventBusMock = new Mock<IEventBus>();
     }
 
+    private RoomController CreateRoomController()
+    {
+      return new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+    }
+
     [Fact]
     public async void ShouldReturnActionResultWithRoomDtoList()
     {
       // Arrange
-      var roomController = new RoomController(sessionMock.Object, roomRepositoryMock.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var roomController = CreateRoomController();
 
       // Act
       var actionResult = await roomController.GetAllAsync();
