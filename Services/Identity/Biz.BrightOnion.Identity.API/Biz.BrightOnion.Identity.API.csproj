@@ -23,4 +23,10 @@
     <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus\Biz.BrightOnion.EventBus.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="run_database_migration.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
