@@ -46,10 +46,12 @@ namespace Biz.BrightOnion.Identity.API
         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddScoped<IUserRepository, UserRepository>();
+      services.AddScoped<IIntegrationEventLogRepository, IntegrationEventLogRepository>();
 
       services.AddScoped<IPasswordHasher, Md5PasswordHasher>();
       services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
 
+      services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
       services.AddEventBus(Configuration);
 
       services.AddCors();

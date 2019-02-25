@@ -13,6 +13,7 @@ namespace Biz.BrightOnion.Identity.API.Data
     public ApplicationContext(DbContextOptions options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<IntegrationEventLog> IntegrationEventLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

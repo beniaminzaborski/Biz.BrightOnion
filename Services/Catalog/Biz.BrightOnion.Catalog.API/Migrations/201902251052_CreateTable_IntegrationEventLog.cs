@@ -17,7 +17,7 @@ namespace Biz.BrightOnion.Catalog.API.Migrations
        .WithColumn(nameof(IntegrationEventLog.EventId)).AsGuid().NotNullable().Unique()
        .WithColumn(nameof(IntegrationEventLog.EventCreationDate)).AsDateTime().NotNullable()
        .WithColumn(nameof(IntegrationEventLog.EventType)).AsAnsiString().NotNullable()
-       .WithColumn(nameof(IntegrationEventLog.EventBody)).AsAnsiString().NotNullable()
+       .WithColumn(nameof(IntegrationEventLog.EventBody)).AsAnsiString().NotNullable() // TODO: Max lenght to unlimited
        .WithColumn(nameof(IntegrationEventLog.State)).AsAnsiString(14).NotNullable();
     }
 

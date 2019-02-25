@@ -22,6 +22,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
     private readonly IUserRepository userRepository;
     private readonly IPasswordHasher passwordHasher;
     private readonly IAuthenticationService authenticationService;
+    private readonly IIntegrationEventLogService integrationEventLogService;
     private readonly IEventBus eventBus;
 
     public AccountController(
@@ -29,12 +30,14 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       IUserRepository userRepository,
       IPasswordHasher passwordHasher,
       IAuthenticationService authenticationService,
+      IIntegrationEventLogService integrationEventLogService,
       IEventBus eventBus)
     {
       this.dbContext = dbContext;
       this.userRepository = userRepository;
       this.passwordHasher = passwordHasher;
       this.authenticationService = authenticationService;
+      this.integrationEventLogService = integrationEventLogService;
       this.eventBus = eventBus;
     }
 
@@ -143,12 +146,27 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       if (user.NotificationEnabled != userDTO.NotificationEnabled)
       {
-        user.NotificationEnabled = userDTO.NotificationEnabled;
-        await userRepository.UpdateAsync(user.Id, user);
-        await dbContext.SaveChangesAsync();
+        var userNotificationChangedEvent = new UserNotificationChangedEvent(user.Id, user.NotificationEnabled);
 
-        // Raise integration event: UserNotificationChangedEvent
-        eventBus.Publish(new UserNotificationChangedEvent(user.Id, user.NotificationEnabled));
+        user.NotificationEnabled = userDTO.NotificationEnabled;
+
+        using (var transaction = dbContext.Database.BeginTransaction())
+        {
+          await userRepository.UpdateAsync(user.Id, user);
+          await integrationEventLogService.SaveEventAsync(userNotificationChangedEvent);
+          await dbContext.SaveChangesAsync();
+          transaction.Commit();
+        }
+
+        using (var transaction = dbContext.Database.BeginTransaction())
+        {
+          // Raise integration event: UserNotificationChangedEvent
+          // TODO: Move to Event Publisher Worker !!!
+          eventBus.Publish(userNotificationChangedEvent);
+          await integrationEventLogService.MarkEventAsPublishedAsync(userNotificationChangedEvent.EventId);
+          await dbContext.SaveChangesAsync();
+          transaction.Commit();
+        }
       }
 
       return Ok();
