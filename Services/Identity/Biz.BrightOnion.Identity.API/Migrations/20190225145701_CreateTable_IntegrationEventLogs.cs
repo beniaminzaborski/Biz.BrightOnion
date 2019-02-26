@@ -23,7 +23,7 @@ namespace Biz.BrightOnion.Identity.API.Migrations
           EventCreationDate = table.Column<DateTime>(nullable: false),
           EventType = table.Column<string>(nullable: false, maxLength: 255),
           EventBody = table.Column<string>(nullable: false),
-          State = table.Column<string>(nullable: false, maxLength: 14)
+          State = table.Column<int>(nullable: false)
         },
         constraints: table =>
         {
