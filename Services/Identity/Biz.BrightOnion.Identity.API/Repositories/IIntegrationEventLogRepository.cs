@@ -9,6 +9,6 @@ namespace Biz.BrightOnion.Identity.API.Repositories
 {
   public interface IIntegrationEventLogRepository : IRepository<IntegrationEventLog>
   {
-
+    Task<IntegrationEventLog> GetByEventIdAsync(Guid eventId);
   }
 }

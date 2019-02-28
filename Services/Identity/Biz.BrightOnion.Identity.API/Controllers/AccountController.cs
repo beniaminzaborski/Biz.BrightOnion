@@ -146,9 +146,9 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       if (user.NotificationEnabled != userDTO.NotificationEnabled)
       {
-        var userNotificationChangedEvent = new UserNotificationChangedEvent(user.Id, user.NotificationEnabled);
-
         user.NotificationEnabled = userDTO.NotificationEnabled;
+
+        var userNotificationChangedEvent = new UserNotificationChangedEvent(user.Id, user.NotificationEnabled);
 
         using (var transaction = dbContext.Database.BeginTransaction())
         {
@@ -160,10 +160,10 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
         using (var transaction = dbContext.Database.BeginTransaction())
         {
-          // Raise integration event: UserNotificationChangedEvent
+          // Publish integration event: UserNotificationChangedEvent
           // TODO: Move to Event Publisher Worker !!!
           eventBus.Publish(userNotificationChangedEvent);
-          await integrationEventLogService.MarkEventAsPublishedAsync(userNotificationChangedEvent.EventId);
+          await integrationEventLogService.MarkEventAsPublishedAsync(userNotificationChangedEvent);
           await dbContext.SaveChangesAsync();
           transaction.Commit();
         }

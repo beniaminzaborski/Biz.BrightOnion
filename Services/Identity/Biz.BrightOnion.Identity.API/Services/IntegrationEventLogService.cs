@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Biz.BrightOnion.EventBus.Events;
+using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Entities;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Newtonsoft.Json;
@@ -12,10 +13,14 @@ namespace Biz.BrightOnion.Identity.API.Services
 {
   public class IntegrationEventLogService : IIntegrationEventLogService
   {
+    private readonly ApplicationContext dbContext;
     private readonly IIntegrationEventLogRepository repository;
 
-    public IntegrationEventLogService(IIntegrationEventLogRepository repository)
+    public IntegrationEventLogService(
+      ApplicationContext dbContext,
+      IIntegrationEventLogRepository repository)
     {
+      this.dbContext = dbContext;
       this.repository = repository;
     }
 
@@ -38,17 +43,18 @@ namespace Biz.BrightOnion.Identity.API.Services
       );
     }
 
-    public async Task MarkEventAsPublishedAsync(Guid eventId)
+    public async Task MarkEventAsPublishedAsync(IntegrationEvent integrationEvent)
     {
-      Guard.Requires(eventId, nameof(eventId)).IsNotEqualTo(Guid.Empty);
+      Guard.Requires(integrationEvent, nameof(integrationEvent)).IsNotNull();
 
-      var integrationEvent = repository.GetAll().First(e => e.EventId == eventId);
+      var integrationEventLog = await repository.GetByEventIdAsync(integrationEvent.EventId);
+      if(integrationEventLog == null)
+        throw new Exception($"Internal error - event id: {integrationEvent.EventId} does not exist in event log");
 
-      if (integrationEvent.State == IntegrationEventState.ReadyToPublish)
+      if (integrationEventLog.State == IntegrationEventState.ReadyToPublish)
       {
-        integrationEvent.State = IntegrationEventState.Published;
-
-        await repository.UpdateAsync(integrationEvent.Id, integrationEvent);
+        integrationEventLog.State = IntegrationEventState.Published;
+        await repository.UpdateAsync(integrationEventLog.Id, integrationEventLog);
       }
     }
   }

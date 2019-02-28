@@ -10,6 +10,6 @@ namespace Biz.BrightOnion.Identity.API.Services
   {
     Task SaveEventAsync(IntegrationEvent integrationEvent);
 
-    Task MarkEventAsPublishedAsync(Guid eventId);
+    Task MarkEventAsPublishedAsync(IntegrationEvent integrationEvent);
   }
 }
