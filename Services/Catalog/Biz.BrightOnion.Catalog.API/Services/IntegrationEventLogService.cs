@@ -32,7 +32,7 @@ namespace Biz.BrightOnion.Catalog.API.Services
           State = IntegrationEventState.ReadyToPublish,
           EventId = integrationEvent.EventId,
           EventCreationDate = integrationEvent.EventCreationDate,
-          EventType = integrationEvent.GetType().Name,
+          EventType = integrationEvent.GetType().FullName,
           EventBody = JsonConvert.SerializeObject(integrationEvent)
         }
       );

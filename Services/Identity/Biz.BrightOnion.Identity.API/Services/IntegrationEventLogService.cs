@@ -6,6 +6,7 @@ using Biz.BrightOnion.EventBus.Events;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Entities;
 using Biz.BrightOnion.Identity.API.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NGuard;
 
@@ -37,7 +38,7 @@ namespace Biz.BrightOnion.Identity.API.Services
           State = IntegrationEventState.ReadyToPublish,
           EventId = integrationEvent.EventId,
           EventCreationDate = integrationEvent.EventCreationDate,
-          EventType = integrationEvent.GetType().Name,
+          EventType = integrationEvent.GetType().FullName,
           EventBody = JsonConvert.SerializeObject(integrationEvent)
         }
       );
@@ -57,5 +58,22 @@ namespace Biz.BrightOnion.Identity.API.Services
         await repository.UpdateAsync(integrationEventLog.Id, integrationEventLog);
       }
     }
+
+    public async Task<IEnumerable<IntegrationEventLog>> GetUnpublishedEventsAsync(int count)
+    {
+      return await dbContext.Set<IntegrationEventLog>()
+        .Where(e => e.State == IntegrationEventState.ReadyToPublish)
+        .OrderBy(e => e.EventCreationDate)
+        .Take(10)
+        .ToListAsync();
+    }
+
+    //public async Task<bool> CheckIsEventPublished(IntegrationEvent integrationEvent)
+    //{
+    //  return await dbContext.Set<IntegrationEventLog>()
+    //    .Where(e => e.EventId == integrationEvent.EventId)
+    //    .Select(e => e.State == IntegrationEventState.Published)
+    //    .FirstOrDefaultAsync();
+    //}
   }
 }

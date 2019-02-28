@@ -8,6 +8,7 @@ using Autofac.Extensions.DependencyInjection;
 using Biz.BrightOnion.EventBus;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.RabbitMQ;
+using Biz.BrightOnion.Identity.API.BackgroundTasks;
 using Biz.BrightOnion.Identity.API.Configuration;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Repositories;
@@ -53,6 +54,9 @@ namespace Biz.BrightOnion.Identity.API
 
       services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
       services.AddEventBus(Configuration);
+
+      // TODO: Add in configuration enabling Background Worker Service !!!
+      services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, PublishIntegrationEventsService>();
 
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

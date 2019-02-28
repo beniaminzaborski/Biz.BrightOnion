@@ -123,6 +123,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
         // Publish integration event: RoomNameChangedEvent
         // TODO: Move to Event Publisher Worker !!!
+        // TODO: Check in event log store is message not published before !!!
         using (var transaction = session.BeginTransaction())
         {
           eventBus.Publish(roomNameChangedEvent);
@@ -154,6 +155,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
       // Publish integration event: RoomDeletedEvent
       // TODO: Move to Event Publisher Worker !!!
+      // TODO: Check in event log store is message not published before !!!
       using (var transaction = session.BeginTransaction())
       {
         eventBus.Publish(roomDeletedEvent);
