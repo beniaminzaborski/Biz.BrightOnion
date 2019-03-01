@@ -14,5 +14,6 @@ namespace Biz.BrightOnion.Identity.BackgroundTasks.Configuration
     public virtual string EventBusPassword { get; set; }
     public virtual int? EventBusRetryCount { get; set; }
     public virtual string SubscriptionClientName { get; set; }
+    public virtual int? PublishEventBatchSize { get; set; }
   }
 }

@@ -17,21 +17,23 @@ namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
 {
   public class PublishIntegrationEventsService : BackgroundService
   {
-    private readonly IConfiguration configuration;
     private readonly ILogger<PublishIntegrationEventsService> logger;
     private readonly IEventBus eventBus;
     private readonly string connectionString;
+    private readonly int publishEventBatchSize;
 
     public PublishIntegrationEventsService(
       IConfiguration configuration,
       ILogger<PublishIntegrationEventsService> logger,
       IEventBus eventBus)
     {
-      this.configuration = configuration;
       this.logger = logger;
       this.eventBus = eventBus;
 
       this.connectionString = configuration.GetConnectionString("DefaultConnection");
+      var appSettingsSection = configuration.GetSection("AppSettings");
+      var appSettings = appSettingsSection.Get<AppSettings>();
+      publishEventBatchSize = appSettings.PublishEventBatchSize ?? 10;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -65,12 +67,14 @@ namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
 
           // TODO: Max Count (default 10) move to settings
           var sqlQuery = @"
-            SELECT TOP 10 Id, EventType, EventBody FROM dbo.IntegrationEventLogs
+            SELECT TOP (@count) Id, EventType, EventBody FROM dbo.IntegrationEventLogs
             WHERE State = 0
             ORDER BY EventCreationDate DESC";
 
           using (var command = new SqlCommand(sqlQuery, connection))
           {
+            command.Parameters.AddWithValue("@count", publishEventBatchSize);
+
             var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
