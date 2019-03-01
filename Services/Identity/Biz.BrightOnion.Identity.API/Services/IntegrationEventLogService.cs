@@ -43,37 +43,5 @@ namespace Biz.BrightOnion.Identity.API.Services
         }
       );
     }
-
-    public async Task MarkEventAsPublishedAsync(IntegrationEvent integrationEvent)
-    {
-      Guard.Requires(integrationEvent, nameof(integrationEvent)).IsNotNull();
-
-      var integrationEventLog = await repository.GetByEventIdAsync(integrationEvent.EventId);
-      if(integrationEventLog == null)
-        throw new Exception($"Internal error - event id: {integrationEvent.EventId} does not exist in event log");
-
-      if (integrationEventLog.State == IntegrationEventState.ReadyToPublish)
-      {
-        integrationEventLog.State = IntegrationEventState.Published;
-        await repository.UpdateAsync(integrationEventLog.Id, integrationEventLog);
-      }
-    }
-
-    public async Task<IEnumerable<IntegrationEventLog>> GetUnpublishedEventsAsync(int count)
-    {
-      return await dbContext.Set<IntegrationEventLog>()
-        .Where(e => e.State == IntegrationEventState.ReadyToPublish)
-        .OrderBy(e => e.EventCreationDate)
-        .Take(10)
-        .ToListAsync();
-    }
-
-    //public async Task<bool> CheckIsEventPublished(IntegrationEvent integrationEvent)
-    //{
-    //  return await dbContext.Set<IntegrationEventLog>()
-    //    .Where(e => e.EventId == integrationEvent.EventId)
-    //    .Select(e => e.State == IntegrationEventState.Published)
-    //    .FirstOrDefaultAsync();
-    //}
   }
 }

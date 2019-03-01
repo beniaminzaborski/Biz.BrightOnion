@@ -11,11 +11,5 @@ namespace Biz.BrightOnion.Identity.API.Services
   public interface IIntegrationEventLogService
   {
     Task SaveEventAsync(IntegrationEvent integrationEvent);
-
-    Task MarkEventAsPublishedAsync(IntegrationEvent integrationEvent);
-
-    Task<IEnumerable<IntegrationEventLog>> GetUnpublishedEventsAsync(int count);
-
-    // Task<bool> CheckIsEventPublished(IntegrationEvent integrationEvent);
   }
 }
