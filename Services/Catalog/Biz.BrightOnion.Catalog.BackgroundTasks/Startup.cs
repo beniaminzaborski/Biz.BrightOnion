@@ -1,19 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Biz.BrightOnion.Catalog.BackgroundTasks.Configuration;
+using Biz.BrightOnion.Catalog.BackgroundTasks.Tasks;
 using Biz.BrightOnion.EventBus;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.RabbitMQ;
-using Biz.BrightOnion.Identity.BackgroundTasks.Configuration;
-using Biz.BrightOnion.Identity.BackgroundTasks.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace Biz.BrightOnion.Identity.BackgroundTasks
+namespace Biz.BrightOnion.Catalog.BackgroundTasks
 {
   public class Startup
   {

@@ -1,6 +1,6 @@
-﻿using Biz.BrightOnion.EventBus.Abstractions;
+﻿using Biz.BrightOnion.Catalog.BackgroundTasks.Configuration;
+using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.Events;
-using Biz.BrightOnion.Identity.BackgroundTasks.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
+namespace Biz.BrightOnion.Catalog.BackgroundTasks.Tasks
 {
   public class PublishIntegrationEventsService : BackgroundService
   {
@@ -66,8 +66,8 @@ namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
           await connection.OpenAsync();
 
           var sqlQuery = @"
-            SELECT TOP (@count) Id, EventType, EventBody FROM dbo.IntegrationEventLogs
-            WHERE State = 0
+            SELECT TOP (@count) Id, EventType, EventBody FROM dbo.IntegrationEventLog
+            WHERE State = 'ReadyToPublish'
             ORDER BY EventCreationDate DESC";
 
           using (var command = new SqlCommand(sqlQuery, connection))
@@ -125,7 +125,7 @@ namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
 
     private async Task MarkEventAsPublishedAsync(SqlConnection connection, long eventLogId)
     {
-      string sqlQuery = @"UPDATE dbo.IntegrationEventLogs SET State = 1 WHERE Id = @id";
+      string sqlQuery = @"UPDATE dbo.IntegrationEventLog SET State = 'Published' WHERE Id = @id";
       using (var command = new SqlCommand(sqlQuery, connection))
       {
         command.Parameters.AddWithValue("@id", eventLogId);
