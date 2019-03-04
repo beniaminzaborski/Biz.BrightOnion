@@ -157,19 +157,6 @@ namespace Biz.BrightOnion.Identity.API.Controllers
           await dbContext.SaveChangesAsync();
           transaction.Commit();
         }
-
-        // Moved to Background Worker Service !!!
-        //using (var transaction = dbContext.Database.BeginTransaction())
-        //{
-        //  // Publish integration event: UserNotificationChangedEvent
-        //  if (! await integrationEventLogService.CheckIsEventPublished(userNotificationChangedEvent))
-        //  {
-        //    eventBus.Publish(userNotificationChangedEvent);
-        //    await integrationEventLogService.MarkEventAsPublishedAsync(userNotificationChangedEvent);
-        //    await dbContext.SaveChangesAsync();
-        //  }
-        //  transaction.Commit();
-        //}
       }
 
       return Ok();

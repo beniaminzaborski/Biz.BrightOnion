@@ -14,11 +14,14 @@ using Biz.BrightOnion.Identity.API.Entities;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.EventBus.Abstractions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
   public class AccountController_UpdateAsync_Tests
   {
+    private readonly Mock<DatabaseFacade> databaseFacadeMock;
     private readonly Mock<ApplicationContext> dbContextMock;
     private readonly Mock<IUserRepository> userRepositoryMock;
     private readonly Mock<IPasswordHasher> passwordHasherMock;
@@ -29,6 +32,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public AccountController_UpdateAsync_Tests()
     {
       dbContextMock = new Mock<ApplicationContext>();
+      databaseFacadeMock = new Mock<DatabaseFacade>(dbContextMock.Object);
       userRepositoryMock = new Mock<IUserRepository>();
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
@@ -77,6 +81,8 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     public async void ShouldReturnOk()
     {
       // Arrange
+      dbContextMock.SetupGet(x => x.Database).Returns(databaseFacadeMock.Object);
+      databaseFacadeMock.Setup(x => x.BeginTransaction()).Returns((new Mock<IDbContextTransaction>()).Object);
       userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
 
       var accountController = CreateAccountController();
