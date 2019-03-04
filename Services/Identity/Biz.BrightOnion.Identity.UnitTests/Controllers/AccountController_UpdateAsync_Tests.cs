@@ -16,6 +16,7 @@ using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Biz.BrightOnion.EventBus.Events;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
@@ -92,6 +93,23 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 
       // Assert
       Assert.IsType<OkResult>(actionResult);
+    }
+
+    [Fact]
+    public async void ShouldSaveUserNotificationChangedEventToPublish()
+    {
+      // Arrange
+      dbContextMock.SetupGet(x => x.Database).Returns(databaseFacadeMock.Object);
+      databaseFacadeMock.Setup(x => x.BeginTransaction()).Returns((new Mock<IDbContextTransaction>()).Object);
+      userRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@123.pl", NotificationEnabled = false }));
+
+      var accountController = CreateAccountController();
+
+      // Act
+      var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });
+
+      // Assert
+      integrationEventLogServiceMock.Verify(x => x.SaveEventAsync(It.IsAny<IntegrationEvent>()));
     }
   }
 }

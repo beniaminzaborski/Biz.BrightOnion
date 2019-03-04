@@ -4,6 +4,7 @@ using Biz.BrightOnion.Catalog.API.Entities;
 using Biz.BrightOnion.Catalog.API.Repositories;
 using Biz.BrightOnion.Catalog.API.Services;
 using Biz.BrightOnion.EventBus.Abstractions;
+using Biz.BrightOnion.EventBus.Events;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHibernate;
@@ -64,6 +65,20 @@ namespace Biz.BrightOnion.Catalog.UnitTests.Controller
 
       // Assert
       Assert.IsType<NoContentResult>(actionResult);
+    }
+
+    [Fact]
+    public async void ShouldSaveRoomDeletedEventToPublish()
+    {
+      // Arrange
+      roomRepositoryMock.Setup(x => x.GetByIdAsync(It.IsAny<long>())).Returns(Task.FromResult(new Room() { Id = 1, Name = "test" }));
+      var roomController = CreateRoomController();
+
+      // Act
+      var actionResult = await roomController.DeleteAsync(1);
+
+      // Assert
+      integrationEventLogServiceMock.Verify(x => x.SaveEventAsync(It.IsAny<IntegrationEvent>()), Times.Exactly(1));
     }
   }
 }
