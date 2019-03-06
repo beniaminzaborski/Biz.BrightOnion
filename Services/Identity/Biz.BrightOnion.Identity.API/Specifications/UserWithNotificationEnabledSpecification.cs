@@ -9,7 +9,7 @@ namespace Biz.BrightOnion.Identity.API.Specifications
 {
   public class UserWithNotificationEnabledSpecification : BaseSpecification<User>
   {
-    public UserWithNotificationEnabledSpecification(int basketId)
+    public UserWithNotificationEnabledSpecification()
     : base(u => u.NotificationEnabled == true) { }
   }
 }
