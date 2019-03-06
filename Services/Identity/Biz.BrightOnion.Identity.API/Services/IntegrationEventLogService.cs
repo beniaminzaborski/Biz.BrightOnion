@@ -29,7 +29,7 @@ namespace Biz.BrightOnion.Identity.API.Services
     {
       Guard.Requires(integrationEvent, nameof(integrationEvent)).IsNotNull();
 
-      if (repository.GetAll().Any(e => e.EventId == integrationEvent.EventId))
+      if (await repository.CheckIfExistsByEventIdAsync(integrationEvent.EventId))
         throw new Exception($"Internal error - event id: {integrationEvent.EventId} exists in event log");
 
       await repository.CreateAsync(

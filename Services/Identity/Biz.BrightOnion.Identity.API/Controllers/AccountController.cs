@@ -126,7 +126,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       passwordHash = passwordHasher.Hash(changePasswordDTO.Email, changePasswordDTO.Password);
       user.PasswordHash = passwordHash;
-      await userRepository.UpdateAsync(user.Id, user);
+      userRepository.Update(user.Id, user);
       await dbContext.SaveChangesAsync();
 
       return Ok();
@@ -152,7 +152,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
         using (var transaction = dbContext.Database.BeginTransaction())
         {
-          await userRepository.UpdateAsync(user.Id, user);
+          userRepository.Update(user.Id, user);
           await integrationEventLogService.SaveEventAsync(userNotificationChangedEvent);
           await dbContext.SaveChangesAsync();
           transaction.Commit();

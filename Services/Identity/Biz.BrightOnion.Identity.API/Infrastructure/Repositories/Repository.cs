@@ -1,5 +1,6 @@
 ﻿using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Infrastructure.Entities;
+using Biz.BrightOnion.Identity.API.Infrastructure.Specifications;
 using Microsoft.EntityFrameworkCore;
 using NGuard;
 using System;
@@ -18,9 +19,27 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       this.dbContext = dbContext;
     }
 
-    public IQueryable<TEntity> GetAll()
+    //public IQueryable<TEntity> GetAll()
+    //{
+    //  return dbContext.Set<TEntity>().AsNoTracking();
+    //}
+
+    public IEnumerable<TEntity> Find(ISpecification<TEntity> spec = null)
     {
-      return dbContext.Set<TEntity>().AsNoTracking();
+      if (spec == null)
+        return dbContext.Set<TEntity>().AsEnumerable();
+
+      var queryableResultWithIncludes = spec.Includes
+        .Aggregate(dbContext.Set<TEntity>().AsQueryable(),
+          (current, include) => current.Include(include));
+
+      var secondaryResult = spec.IncludeStrings
+        .Aggregate(queryableResultWithIncludes,
+          (current, include) => current.Include(include));
+
+      return secondaryResult
+        .Where(spec.Criteria)
+        .AsEnumerable();
     }
 
     public async Task<TEntity> GetByIdAsync(long id)
@@ -37,7 +56,7 @@ namespace Biz.BrightOnion.Identity.API.Infrastructure.Repositories
       await dbContext.Set<TEntity>().AddAsync(entity);
     }
 
-    public async Task UpdateAsync(long id, TEntity entity)
+    public void Update(long id, TEntity entity)
     {
       Guard.Requires(entity, nameof(entity)).IsNotNull();
 

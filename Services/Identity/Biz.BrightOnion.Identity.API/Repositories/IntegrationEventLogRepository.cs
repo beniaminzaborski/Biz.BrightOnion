@@ -13,9 +13,8 @@ namespace Biz.BrightOnion.Identity.API.Repositories
   {
     public IntegrationEventLogRepository(ApplicationContext dbContext) : base(dbContext) { }
 
-    public async Task<IntegrationEventLog> GetByEventIdAsync(Guid eventId)
-    {
-      return await dbContext.Set<IntegrationEventLog>()/*IntegrationEventLogs*/.Where(e => e.EventId == eventId).FirstOrDefaultAsync();
-    }
+    public async Task<IntegrationEventLog> GetByEventIdAsync(Guid eventId) => await dbContext.Set<IntegrationEventLog>().Where(e => e.EventId == eventId).FirstOrDefaultAsync();
+
+    public async Task<bool> CheckIfExistsByEventIdAsync(Guid eventId) => await dbContext.Set<IntegrationEventLog>().AnyAsync(e => e.EventId == eventId);
   }
 }
