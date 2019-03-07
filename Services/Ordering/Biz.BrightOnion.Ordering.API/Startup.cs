@@ -11,6 +11,7 @@ using Biz.BrightOnion.EventBus.RabbitMQ;
 using Biz.BrightOnion.Ordering.API.Configuration;
 using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
+using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,6 +47,8 @@ namespace Biz.BrightOnion.Ordering.API
 
       var container = new ContainerBuilder();
       container.Populate(services);
+      container.RegisterModule(new MediatorModule());
+      container.RegisterModule(new ApplicationModule(Configuration.GetConnectionString("DefaultConnection")));
       return new AutofacServiceProvider(container.Build());
     }
 
