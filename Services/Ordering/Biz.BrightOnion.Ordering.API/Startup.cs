@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
@@ -12,11 +13,13 @@ using Biz.BrightOnion.Ordering.API.Configuration;
 using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
+using Biz.BrightOnion.Ordering.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -38,7 +41,9 @@ namespace Biz.BrightOnion.Ordering.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public IServiceProvider ConfigureServices(IServiceCollection services)
     {
-      services.AddEventBus(Configuration);
+      services
+        .AddCustomDbContext(Configuration)
+        .AddEventBus(Configuration);
 
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -90,6 +95,24 @@ namespace Biz.BrightOnion.Ordering.API
 
   public static class CustomExtensionMethods
   {
+    public static IServiceCollection AddCustomDbContext(this IServiceCollection services, IConfiguration configuration)
+    {
+      services.AddEntityFrameworkSqlServer()
+        .AddDbContext<OrderingContext>(options =>
+        {
+          options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                sqlServerOptionsAction: sqlOptions =>
+            {
+              sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
+              sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+            });
+        },
+            ServiceLifetime.Scoped  //Showing explicitly that the DbContext is shared across the HTTP request scope (graph of objects started in the HTTP request)
+        );
+
+      return services;
+    }
+
     public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
     {
       var appSettingsSection = configuration.GetSection("AppSettings");

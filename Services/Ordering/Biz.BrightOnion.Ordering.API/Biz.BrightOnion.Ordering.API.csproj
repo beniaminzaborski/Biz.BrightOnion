@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus.RabbitMQ\Biz.BrightOnion.EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.EventBus\Biz.BrightOnion.EventBus.csproj" />
+    <ProjectReference Include="..\Biz.BrightOnion.Ordering.Domain\Biz.BrightOnion.Ordering.Domain.csproj" />
   </ItemGroup>
 
 </Project>
