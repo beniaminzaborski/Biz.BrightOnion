@@ -13,7 +13,8 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
   {
     public DbSet<Order> Orders { get; set; }
 
-    private OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
+    public OrderingContext() : base() { }
+    public OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
     {
