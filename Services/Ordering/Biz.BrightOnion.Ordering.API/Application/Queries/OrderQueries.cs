@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,9 +16,18 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
       this.connectionString = !string.IsNullOrWhiteSpace(connectionString) ? connectionString : throw new ArgumentNullException(nameof(connectionString));
     }
 
-    public Task<IEnumerable<Order>> GetOrdersInRoomAsync(long roomId)
+    public async Task<IEnumerable<Order>> GetOrdersInRoomAsync(long roomId)
     {
-      throw new NotImplementedException();
+      using (var connection = new SqlConnection(connectionString))
+      {
+        connection.Open();
+
+        return await connection.QueryAsync<Order>(@"
+          SELECT 
+            o.Id as OrderId, o.Day, o.RoomId, o.PurchaserId, o.Quantity 
+          FROM Orders o
+          WHERE o.RoomId = @roomId", new { roomId });
+      }
     }
   }
 }
