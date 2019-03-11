@@ -51,9 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Identity.Ba
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Catalog.BackgroundTasks", "Services\Catalog\Biz.BrightOnion.Catalog.BackgroundTasks\Biz.BrightOnion.Catalog.BackgroundTasks.csproj", "{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Ordering.Domain", "Services\Ordering\Biz.BrightOnion.Ordering.Domain\Biz.BrightOnion.Ordering.Domain.csproj", "{C99FB0FA-05EC-423A-9D03-9DC9E63DC746}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Domain", "Services\Ordering\Biz.BrightOnion.Ordering.Domain\Biz.BrightOnion.Ordering.Domain.csproj", "{205AF255-77BC-45FC-B2AA-8A61BB38EB36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Ordering.Infrastructure", "Services\Ordering\Biz.BrightOnion.Ordering.Infrastructure\Biz.BrightOnion.Ordering.Infrastructure.csproj", "{B855D9D1-D055-4918-9009-92DFD35B4305}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Infrastructure", "Services\Ordering\Biz.BrightOnion.Ordering.Infrastructure\Biz.BrightOnion.Ordering.Infrastructure.csproj", "{8868238B-C347-4119-8622-D1E3E40F4C3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,14 +125,14 @@ Global
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C99FB0FA-05EC-423A-9D03-9DC9E63DC746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C99FB0FA-05EC-423A-9D03-9DC9E63DC746}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C99FB0FA-05EC-423A-9D03-9DC9E63DC746}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C99FB0FA-05EC-423A-9D03-9DC9E63DC746}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B855D9D1-D055-4918-9009-92DFD35B4305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B855D9D1-D055-4918-9009-92DFD35B4305}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B855D9D1-D055-4918-9009-92DFD35B4305}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B855D9D1-D055-4918-9009-92DFD35B4305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{205AF255-77BC-45FC-B2AA-8A61BB38EB36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{205AF255-77BC-45FC-B2AA-8A61BB38EB36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{205AF255-77BC-45FC-B2AA-8A61BB38EB36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{205AF255-77BC-45FC-B2AA-8A61BB38EB36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,8 +157,8 @@ Global
 		{82B105E8-AF07-481A-8F49-A51F0F57CBE7} = {4F11322A-C7B1-4A0F-B9E3-FB5544CCCC68}
 		{7C853282-E95F-437E-93E3-2B0C6A3C6E38} = {E753FA0B-C3C2-4EC8-8772-D671DE12E4C6}
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B} = {B466F5C9-5F34-4ED6-AAE0-717676D6EE04}
-		{C99FB0FA-05EC-423A-9D03-9DC9E63DC746} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
-		{B855D9D1-D055-4918-9009-92DFD35B4305} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
+		{205AF255-77BC-45FC-B2AA-8A61BB38EB36} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
+		{8868238B-C347-4119-8622-D1E3E40F4C3F} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}
