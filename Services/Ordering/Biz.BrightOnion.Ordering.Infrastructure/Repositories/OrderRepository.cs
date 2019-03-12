@@ -35,6 +35,11 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
       return await context.Orders.FindAsync(orderId);
     }
 
+    public async Task<Order> GetByDayEagerAsync(DateTime day)
+    {
+      return await context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Day == day.Date);
+    }
+
     public void Update(Order order)
     {
       context.Entry(order).State = EntityState.Modified;

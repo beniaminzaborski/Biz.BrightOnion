@@ -24,8 +24,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
 
         return await connection.QueryAsync<Order>(@"
           SELECT 
-            o.Id as OrderId, o.Day, o.RoomId, o.PurchaserId, o.Quantity 
+            o.Id as OrderId, o.Day, o.RoomId, i.PurchaserId, i.Quantity 
           FROM Orders o
+          INNER JOIN OrderItems i ON i.OrderId = o.Id
           WHERE o.RoomId = @roomId", new { roomId });
       }
     }

@@ -21,9 +21,19 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
     public async Task<OrderDTO> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
       DateTime day = DateTime.Now.Date;
-      var order = new Order(request.RoomId, request.PurchaserId, day, request.Quantity);
 
-      order = orderRepository.Add(order);
+      Order order = await orderRepository.GetByDayEagerAsync(day);
+      bool orderExists = order != null;
+
+      if (!orderExists)
+        order = new Order(request.RoomId, day);
+
+      order.AddOrderItem(request.PurchaserId, request.Quantity);
+
+      if (!orderExists)
+        order = orderRepository.Add(order);
+      else
+        orderRepository.Update(order);
 
       await orderRepository.UnitOfWork
         .SaveEntitiesAsync();
@@ -35,9 +45,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
   public class OrderDTO
   {
     public long OrderId { get; set; }
-    public long RoomId { get; private set; }
-    public long PurchaserId { get; private set; }
-    public int Quantity { get; private set; }
+    public long RoomId { get; set; }
+    public DateTime Day { get; set; }
 
     public static OrderDTO FromOrder(Order order)
     {
@@ -45,8 +54,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       {
         OrderId = order.Id,
         RoomId = order.RoomId,
-        PurchaserId = order.PurchaserId,
-        Quantity = order.Quantity
+        Day = order.Day
       };
     }
   }

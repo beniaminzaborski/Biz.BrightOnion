@@ -1,5 +1,6 @@
 ﻿using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.Seedwork;
+using Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,12 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
       var result = await base.SaveChangesAsync();
 
       return true;
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
+      modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
     }
   }
 }
