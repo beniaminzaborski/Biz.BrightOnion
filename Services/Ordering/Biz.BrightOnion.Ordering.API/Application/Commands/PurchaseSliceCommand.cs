@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Commands
 {
-  public class CreateOrderCommand : IRequest<OrderDTO>
+  public class PurchaseSliceCommand : IRequest<OrderDTO>
   {
     public long RoomId { get; private set; }
 
@@ -14,7 +14,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
     public int Quantity { get; private set; }
 
-    public CreateOrderCommand(
+    public PurchaseSliceCommand(
       long roomId,
       long purchaserId,
       int quantity)

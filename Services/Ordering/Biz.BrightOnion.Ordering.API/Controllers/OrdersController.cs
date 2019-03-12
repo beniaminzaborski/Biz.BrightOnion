@@ -40,11 +40,11 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
       return Ok(orders);
     }
 
-    [Route("create")]
+    [Route("make")]
     [HttpPost]
-    public async Task<ActionResult<OrderDTO>> CreateOrderAsync([FromBody] CreateOrderCommand createOrderCommand)
+    public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceCommand purchaseSliceCommand)
     {
-      return await mediator.Send(createOrderCommand);
+      return await mediator.Send(purchaseSliceCommand);
     }
   }
 }

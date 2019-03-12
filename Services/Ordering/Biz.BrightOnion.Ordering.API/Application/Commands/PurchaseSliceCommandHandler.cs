@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Commands
 {
-  public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, OrderDTO>
+  public class PurchaseSliceCommandHandler : IRequestHandler<PurchaseSliceCommand, OrderDTO>
   {
     private readonly IOrderRepository orderRepository;
 
-    public CreateOrderCommandHandler(
+    public PurchaseSliceCommandHandler(
       IOrderRepository orderRepository)
     {
       this.orderRepository = orderRepository;
     }
 
-    public async Task<OrderDTO> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<OrderDTO> Handle(PurchaseSliceCommand request, CancellationToken cancellationToken)
     {
       DateTime day = DateTime.Now.Date;
 
@@ -47,6 +47,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
     public long OrderId { get; set; }
     public long RoomId { get; set; }
     public DateTime Day { get; set; }
+    public IList<OrderItemDTO> OrderItems { get; set; } = new List<OrderItemDTO>();
+    public int TotalPizzas { get; set; }
+    public int FreeSlicesToGrab { get; set; }
 
     public static OrderDTO FromOrder(Order order)
     {
@@ -54,8 +57,18 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       {
         OrderId = order.Id,
         RoomId = order.RoomId,
-        Day = order.Day
+        Day = order.Day,
+        TotalPizzas = order.GetTotalPizzas(),
+        FreeSlicesToGrab = order.GetFreeSlicesToGrab(),
+        OrderItems = order.OrderItems.Select(i => new OrderItemDTO { OrderItemId = i.Id, PurchaserId = i.PurchaserId, Quantity = i.Quantity }).ToList()
       };
     }
+  }
+
+  public class OrderItemDTO
+  {
+    public long OrderItemId { get; set; }
+    public long PurchaserId { get; set; }
+    public int Quantity { get; set; }
   }
 }

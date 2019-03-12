@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Validations
 {
-  public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
+  public class CreateOrderCommandValidator : AbstractValidator<PurchaseSliceCommand>
   {
     public CreateOrderCommandValidator()
     {
