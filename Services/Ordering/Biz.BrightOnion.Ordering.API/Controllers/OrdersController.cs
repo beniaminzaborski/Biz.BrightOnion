@@ -42,7 +42,7 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
 
     [Route("make")]
     [HttpPost]
-    [ProducesResponseType(typeof(IEnumerable<OrderDTO>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(OrderDTO), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceCommand purchaseSliceCommand)
     {
       return await mediator.Send(purchaseSliceCommand);
