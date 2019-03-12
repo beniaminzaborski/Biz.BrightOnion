@@ -7,6 +7,6 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
 {
   public interface IOrderQueries
   {
-    Task<IEnumerable<Order>> GetOrdersInRoomAsync(long roomId);
+    Task<IEnumerable<Order>> GetOrderItemsInRoomForDayAsync(long roomId, DateTime day);
   }
 }

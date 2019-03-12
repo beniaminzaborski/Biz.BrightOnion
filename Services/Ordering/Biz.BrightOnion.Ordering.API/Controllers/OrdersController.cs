@@ -35,7 +35,8 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<IEnumerable<Order>>> GetOrdersInRoomAsync(long roomId)
     {
-      var orders = await orderQueries.GetOrdersInRoomAsync(roomId);
+      var day = DateTime.Now.Date;
+      var orders = await orderQueries.GetOrderItemsInRoomForDayAsync(roomId, day);
       return Ok(orders);
     }
 
