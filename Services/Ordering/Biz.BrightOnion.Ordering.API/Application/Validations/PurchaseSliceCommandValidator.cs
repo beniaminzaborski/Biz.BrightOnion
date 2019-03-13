@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Validations
 {
-  public class CreateOrderCommandValidator : AbstractValidator<PurchaseSliceCommand>
+  public class PurchaseSliceCommandValidator : AbstractValidator<PurchaseSliceCommand>
   {
-    public CreateOrderCommandValidator()
+    public PurchaseSliceCommandValidator()
     {
       RuleFor(command => command.RoomId).GreaterThan(0);
       RuleFor(command => command.PurchaserId).GreaterThan(0);

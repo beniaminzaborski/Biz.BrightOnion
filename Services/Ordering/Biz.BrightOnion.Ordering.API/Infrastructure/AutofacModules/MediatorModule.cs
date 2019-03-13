@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Biz.BrightOnion.Ordering.API.Application.Behaviors;
 using Biz.BrightOnion.Ordering.API.Application.Commands;
 using Biz.BrightOnion.Ordering.API.Application.Validations;
 using FluentValidation;
@@ -28,7 +29,7 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
 
       // Register the Command's Validators (Validators based on FluentValidation library)
       builder
-          .RegisterAssemblyTypes(typeof(CreateOrderCommandValidator).GetTypeInfo().Assembly)
+          .RegisterAssemblyTypes(typeof(PurchaseSliceCommandValidator).GetTypeInfo().Assembly)
           .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
           .AsImplementedInterfaces();
 
@@ -39,7 +40,7 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
       });
 
       //builder.RegisterGeneric(typeof(LoggingBehavior<,>)).As(typeof(IPipelineBehavior<,>));
-      //builder.RegisterGeneric(typeof(ValidatorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
+      builder.RegisterGeneric(typeof(ValidatorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
       //builder.RegisterGeneric(typeof(TransactionBehaviour<,>)).As(typeof(IPipelineBehavior<,>));
     }
   }
