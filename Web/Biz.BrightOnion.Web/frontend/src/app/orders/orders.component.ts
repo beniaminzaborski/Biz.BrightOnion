@@ -9,7 +9,7 @@ import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { OrdersApproval } from './orders-approval.model';
 import { ErrorHelper } from '../shared/error-helper';
-import { HubConnection } from '@aspnet/signalr-client';
+// import { HubConnection } from '@aspnet/signalr-client';
 import { Message, OperationType } from '../shared/message.model';
 import { Config } from '../shared/config';
 
@@ -56,6 +56,7 @@ export class OrdersComponent implements OnInit {
   }
 
   private registerSignalR() {
+    /*
     let connection = new HubConnection(`${Config.baseUrl}message`);
     connection.on('send', data => {
       //console.log(data);
@@ -80,7 +81,7 @@ export class OrdersComponent implements OnInit {
       .then(() => {
          //console.log('MessageHub Connected');
       });
-
+    */
   }
 
   private loadRooms(): void {
