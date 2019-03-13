@@ -11,9 +11,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Validations
   {
     public PurchaseSliceCommandValidator()
     {
-      RuleFor(command => command.RoomId).GreaterThan(0);
-      RuleFor(command => command.PurchaserId).GreaterThan(0);
-      RuleFor(command => command.Quantity).GreaterThan(0);
+      RuleFor(command => command.RoomId).NotNull();
+      RuleFor(command => command.PurchaserId).NotNull();
+      RuleFor(command => command.Quantity).NotNull();
     }
   }
 }

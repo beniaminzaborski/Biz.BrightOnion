@@ -8,16 +8,16 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 {
   public class PurchaseSliceCommand : IRequest<OrderDTO>
   {
-    public long RoomId { get; private set; }
+    public long? RoomId { get; private set; }
 
-    public long PurchaserId { get; private set; }
+    public long? PurchaserId { get; private set; }
 
-    public int Quantity { get; private set; }
+    public int? Quantity { get; private set; }
 
     public PurchaseSliceCommand(
-      long roomId,
-      long purchaserId,
-      int quantity)
+      long? roomId,
+      long? purchaserId,
+      int? quantity)
     {
       this.RoomId = roomId;
       this.PurchaserId = purchaserId;

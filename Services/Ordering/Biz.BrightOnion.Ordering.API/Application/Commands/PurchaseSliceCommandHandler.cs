@@ -26,9 +26,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       bool orderExists = order != null;
 
       if (!orderExists)
-        order = new Order(request.RoomId, day);
+        order = new Order(request.RoomId.Value, day);
 
-      order.AddOrderItem(request.PurchaserId, request.Quantity);
+      order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);
 
       if (!orderExists)
         order = orderRepository.Add(order);
