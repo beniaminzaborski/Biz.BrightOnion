@@ -359,7 +359,10 @@ var LoginComponent = (function () {
             .subscribe(function () {
             alert("Your account was successfully created.");
             _this.toggleDisplay();
-        }, function () { alert("Unfortunately we were unable to create your account."); });
+        }, function (error) {
+            console.log("Register error: ", error);
+            alert("Unfortunately we were unable to create your account.");
+        });
     };
     LoginComponent.prototype.toggleDisplay = function () {
         this.isLoggingIn = !this.isLoggingIn;
@@ -999,11 +1002,12 @@ var AuthenticationService = (function () {
             .catch(this.handleErrors);
     };
     AuthenticationService.prototype.register = function (user) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "user/register", JSON.stringify({
+        return this.http.post(
+        /*Config.apiUrl + */ "https://localhost:7100/identity-api/account/register", JSON.stringify({
             email: user.email,
-            passwd: user.password
-        }), { observe: 'response' })
-            .catch(this.handleErrors);
+            password: user.password,
+            password2: user.password
+        }), { observe: 'response' });
     };
     AuthenticationService.prototype.getUserProfile = function (email) {
         return this.http.get(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "user/" + email);

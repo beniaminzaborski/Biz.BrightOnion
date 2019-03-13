@@ -62,7 +62,7 @@ namespace Biz.BrightOnion.Web
         config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
       );
 
-      // app.UseHttpsRedirection();
+      app.UseHttpsRedirection();
 
       app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } })
         .UseStaticFiles()

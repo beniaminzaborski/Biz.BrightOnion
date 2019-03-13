@@ -60,14 +60,15 @@ export class AuthenticationService {
     
   public register(user: User) {
     return this.http.post(
-      Config.apiUrl + "user/register",
+      /*Config.apiUrl + */"https://localhost:7100/identity-api/account/register",
       JSON.stringify({
         email: user.email,
-        passwd: user.password
+        password: user.password,
+        password2: user.password
       }),
       { observe: 'response' }
     )
-      .catch(this.handleErrors);
+      /*.catch(this.handleErrors)*/;
   }
 
   public getUserProfile(email: string): Observable<UserProfile> {
