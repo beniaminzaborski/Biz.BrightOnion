@@ -4,10 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
-import { Config } from "../shared/config";
-import { OrderItem } from "./order-item.model";
-import { Order } from "./order.model";
-import { OrdersApproval } from "./orders-approval.model";
+import { MakeOrder, Order, OrderItem } from "./order.model";
 import { environment } from "../../environments/environment";
 
 @Injectable()
@@ -15,16 +12,16 @@ export class OrdersService {
 
   constructor(private http: HttpClient) { }
 
-  public getOrders(roomId: number): Observable<OrderItem[]> {
-    return this.http.get<OrderItem[]>(
+  public getOrder(roomId: number): Observable<Order> {
+    return this.http.get<Order>(
       `${environment.orderServiceUrl}/${roomId}`);
   }
 
-  public makeOrder(order: Order): Observable<boolean> {
-    let body = JSON.stringify(order);
-    return this.http.post(
+  public makeOrder(makeOrder: MakeOrder): Observable<Order> {
+    let body = JSON.stringify(makeOrder);
+    return this.http.post<Order>(
       `${environment.orderServiceUrl}/make`, body, { observe: 'response' }
-    ).map(response => response.status == 201);
+    ).map(response => { console.log('body', response.body); return response.body; });
   }
 
   public removeOrder(room: string, id: string):  Observable<boolean> {

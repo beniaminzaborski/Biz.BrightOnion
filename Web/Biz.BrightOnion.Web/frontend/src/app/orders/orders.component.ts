@@ -2,12 +2,10 @@ import { Component, OnInit, ViewChild, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../rooms/rooms.service';
 import { Room } from '../rooms/room.model';
-import { Order } from './order.model';
+import { MakeOrder, Order, OrderItem } from './order.model';
 import { AuthenticationService } from '../shared/auth/authentication.service';
-import { OrderItem } from './order-item.model';
 import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { OrdersApproval } from './orders-approval.model';
 import { ErrorHelper } from '../shared/error-helper';
 // import { HubConnection } from '@aspnet/signalr-client';
 import { Message, OperationType } from '../shared/message.model';
@@ -25,12 +23,9 @@ import { Config } from '../shared/config';
 export class OrdersComponent implements OnInit {
 
   public rooms: Room[] = [];
-  public order: Order;
-  public orderItems: OrderItem[] = [];
   public selectedRoom: Room;
-  public slices: number = 0;
-  public pizzas: number = 0;
-  public slicesToGet: number = 0;
+  public quantity: number;
+  public order: Order = new Order();
   public isApproved: boolean = false;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
@@ -46,8 +41,6 @@ export class OrdersComponent implements OnInit {
     private roomService: RoomService,
     private ordersService: OrdersService,
     private authenticationService: AuthenticationService) {
-    this.order = new Order();
-    this.order.purchaserId = this.authenticationService.getLoggedUserId();
   }
 
   public ngOnInit(): void {
@@ -105,7 +98,6 @@ export class OrdersComponent implements OnInit {
     });
 
     this.selectedRoom = room;
-    this.order.roomId = room.id;
 
     this.loadOrdersInRoom(this.selectedRoom.id);
 
@@ -113,55 +105,55 @@ export class OrdersComponent implements OnInit {
   }
 
   private loadOrdersInRoom(roomId: number) {
-    this.ordersService.getOrders(roomId)
+    this.ordersService.getOrder(roomId)
       .subscribe(
-      orderItems => this.onLoadOrderItems(orderItems),
-      error => alert(ErrorHelper.getErrorMessage(error))
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
       );
   }
 
-  private onLoadOrderItems(orderItems: OrderItem[]): void {
-    this.orderItems = orderItems;
-    this.slices = 0;
-    this.pizzas = 0;
-    this.setNumberOfSlices();
-    this.checkIsApproved();
-    this.preparePizzaChart();
+  private onLoadOrder(order: Order): void {
+    // this.orderItems = order;
+    //this.order = order;
+    //this.slices = order.freeSlicesToGrab;
+    //this.pizzas = order.totalPizzas;
+
+    //console.log('result:', order, this.slices, this.pizzas);
+    //this.setNumberOfSlices();
+    //this.checkIsApproved();
+    //this.preparePizzaChart();
   }
 
   private checkIsApproved(): void {
-    this.isApproved = this.orderItems.some(item => item.isApproved);
+    // this.isApproved = this.orderItems.some(item => item.isApproved);
   }
 
   private setNumberOfSlices(): void {
     let currentUserEmail = this.authenticationService.getLoggedUsername();
 
-    this.orderItems.forEach((o) => {
-      if (o.who == currentUserEmail) {
-        this.order.quantity = o.quantity;
-      }
-    });
+    //this.orderItems.forEach((o) => {
+    //  if (o.who == currentUserEmail) {
+    //    this.makeOrder.quantity = o.quantity;
+    //  }
+    //});
   }
 
   private preparePizzaChart(): void {
     let pieChartLabels: string[] = [];
     let pieChartData: number[] = [];
 
-    this.orderItems.forEach((o) => {
-      this.slices += o.quantity;
-      pieChartLabels.push(o.who);
-      pieChartData.push(o.quantity);
-    });
+    //this.orderItems.forEach((o) => {
+    //  this.slices += o.quantity;
+    //  pieChartLabels.push(o.who);
+    //  pieChartData.push(o.quantity);
+    //});
 
-    this.pizzas = Math.ceil(this.slices / 8);
-
-    if (this.pizzas == 0)
+    if (this.order.totalPizzas == 0)
       return;
 
-    this.slicesToGet = (this.pizzas * 8) - this.slices;
-    if (this.slicesToGet > 0) {
+    if (this.order.freeSlicesToGrab > 0) {
       pieChartLabels.push('FREE');
-      pieChartData.push(this.slicesToGet);
+      pieChartData.push(this.order.freeSlicesToGrab);
     }
 
     this.pieChartLabels = pieChartLabels;
@@ -178,10 +170,15 @@ export class OrdersComponent implements OnInit {
   }
 
   public makeOrder(): boolean {
-    this.ordersService.makeOrder(this.order)
+    let makeOrderCommand = new MakeOrder();
+    makeOrderCommand.roomId = this.selectedRoom.id;
+    makeOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
+    makeOrderCommand.quantity = this.quantity;
+    this.ordersService.makeOrder(makeOrderCommand)
       .subscribe(result => {
         if (result)
-          this.loadOrdersInRoom(this.selectedRoom.id);
+          this.order = result;
+          // this.loadOrdersInRoom(this.selectedRoom.id);
       },
       error => alert(ErrorHelper.getErrorMessage(error))
       );
@@ -203,11 +200,11 @@ export class OrdersComponent implements OnInit {
 
   private getOrderId(): string {
     let orderId: string;
-    this.orderItems.forEach((o) => {
-      if (o.who == this.authenticationService.getLoggedUsername()) {
-        orderId = o.id;
-      }
-    });
+    //this.orderItems.forEach((o) => {
+    //  if (o.who == this.authenticationService.getLoggedUsername()) {
+    //    orderId = o.id;
+    //  }
+    //});
     return orderId;
   }
 
