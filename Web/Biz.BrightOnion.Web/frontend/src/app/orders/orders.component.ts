@@ -100,9 +100,9 @@ export class OrdersComponent implements OnInit {
   }
 
   public selectRoom(room: Room): boolean {
-    //this.rooms.forEach((r) => {
-    //  r.isActive = r.name == roomName;
-    //});
+    this.rooms.forEach((r) => {
+      r.isActive = r.id == room.id;
+    });
 
     this.selectedRoom = room;
     this.order.roomId = room.id;

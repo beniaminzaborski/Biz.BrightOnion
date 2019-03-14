@@ -509,9 +509,9 @@ var OrdersComponent = (function () {
         }
     };
     OrdersComponent.prototype.selectRoom = function (room) {
-        //this.rooms.forEach((r) => {
-        //  r.isActive = r.name == roomName;
-        //});
+        this.rooms.forEach(function (r) {
+            r.isActive = r.id == room.id;
+        });
         this.selectedRoom = room;
         this.order.roomId = room.id;
         this.loadOrdersInRoom(this.selectedRoom.id);
