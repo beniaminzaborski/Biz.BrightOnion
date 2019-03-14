@@ -59,7 +59,7 @@ export class AuthenticationService {
   }
     
   public register(user: User) {
-    return this.http.post(
+    return this.http.post<void>(
       /*Config.apiUrl + */"https://localhost:7100/identity-api/account/register",
       JSON.stringify({
         email: user.email,
