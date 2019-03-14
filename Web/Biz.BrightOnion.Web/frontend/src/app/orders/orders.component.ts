@@ -27,7 +27,7 @@ export class OrdersComponent implements OnInit {
   public rooms: Room[] = [];
   public order: Order;
   public orderItems: OrderItem[] = [];
-  public selectedRoomName: string;
+  public selectedRoom: Room;
   public slices: number = 0;
   public pizzas: number = 0;
   public slicesToGet: number = 0;
@@ -92,28 +92,28 @@ export class OrdersComponent implements OnInit {
   private onLoadRooms(rooms: Room[]): void {
     this.rooms = rooms;
     if (rooms.length > 0) {
-      if (this.selectedRoomName && this.rooms.some(r => r.name == this.selectedRoomName))
-        this.selectRoom(this.selectedRoomName);
+      if (this.selectedRoom && this.rooms.some(r => r.name == this.selectedRoom.name))
+        this.selectRoom(this.selectedRoom);
       else
-        this.selectRoom(rooms[0].name);
+        this.selectRoom(rooms[0]);
     }
   }
 
-  public selectRoom(roomName: string): boolean {
+  public selectRoom(room: Room): boolean {
     //this.rooms.forEach((r) => {
     //  r.isActive = r.name == roomName;
     //});
 
-    this.selectedRoomName = roomName;
-    this.order.room = roomName;
+    this.selectedRoom = room;
+    this.order.room = room.name;
 
-    this.loadOrdersInRoom(this.selectedRoomName);
+    this.loadOrdersInRoom(this.selectedRoom.id);
 
     return false;
   }
 
-  private loadOrdersInRoom(roomName: string) {
-    this.ordersService.getOrders(roomName)
+  private loadOrdersInRoom(roomId: number) {
+    this.ordersService.getOrders(roomId)
       .subscribe(
       orderItems => this.onLoadOrderItems(orderItems),
       error => alert(ErrorHelper.getErrorMessage(error))
@@ -181,7 +181,7 @@ export class OrdersComponent implements OnInit {
     this.ordersService.makeOrder(this.order)
       .subscribe(result => {
         if (result)
-          this.loadOrdersInRoom(this.selectedRoomName);
+          this.loadOrdersInRoom(this.selectedRoom.id);
       },
       error => alert(ErrorHelper.getErrorMessage(error))
       );
@@ -191,10 +191,10 @@ export class OrdersComponent implements OnInit {
   public cancel(): boolean {
     let orderId: string = this.getOrderId();
 
-    this.ordersService.removeOrder(this.selectedRoomName, orderId)
+    this.ordersService.removeOrder(this.selectedRoom.name, orderId)
       .subscribe(result => {
         if (result)
-          this.loadOrdersInRoom(this.selectedRoomName);
+          this.loadOrdersInRoom(this.selectedRoom.id);
       },
       error => alert(ErrorHelper.getErrorMessage(error))
       );
@@ -212,12 +212,12 @@ export class OrdersComponent implements OnInit {
   }
 
   public refresh(): boolean {
-    this.loadOrdersInRoom(this.selectedRoomName);
+    this.loadOrdersInRoom(this.selectedRoom.id);
     return false;
   }
 
   public approveOrders(): void {
-    this.ordersService.approveOrders(this.selectedRoomName)
+    this.ordersService.approveOrders(this.selectedRoom.name)
       .subscribe(
       result => this.refresh(),
       error => alert(ErrorHelper.getErrorMessage(error))

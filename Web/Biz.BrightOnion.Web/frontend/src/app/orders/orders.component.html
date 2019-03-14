@@ -1,10 +1,10 @@
 <ul class="nav nav-tabs">
   <li role="presentation" *ngFor="let room of rooms" [ngClass]="{ 'active' : room.isActive }">
-    <a href="" (click)="selectRoom(room.name)">{{room.name}}</a>
+    <a href="" (click)="selectRoom(room)">{{room.name}}</a>
   </li>
 </ul>
 
-<div *ngIf="selectedRoomName">
+<div *ngIf="selectedRoom">
   <div>
     <div *ngIf="pizzas > 0">
       <h4>
@@ -45,6 +45,6 @@
   </div>
 </div>
 
-<div *ngIf="!selectedRoomName">
+<div *ngIf="!selectedRoom">
   <h3>Choose your room</h3>
 </div>

@@ -406,7 +406,7 @@ var Order = (function () {
 /***/ "../../../../../src/app/orders/orders.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li role=\"presentation\" *ngFor=\"let room of rooms\" [ngClass]=\"{ 'active' : room.isActive }\">\r\n    <a href=\"\" (click)=\"selectRoom(room.name)\">{{room.name}}</a>\r\n  </li>\r\n</ul>\r\n\r\n<div *ngIf=\"selectedRoomName\">\r\n  <div>\r\n    <div *ngIf=\"pizzas > 0\">\r\n      <h4>\r\n        <span *ngIf=\"!isApproved\">\r\n          <strong>{{slicesToGet}}</strong> {{ slicesToGet == 1 ? 'slice' : 'slices' }} of\r\n          <strong>{{pizzas}}</strong> {{ pizzas == 1 ? 'pizza' : 'pizzas' }} to get\r\n        </span>\r\n        <span *ngIf=\"isApproved\">\r\n          <strong>{{pizzas}}</strong> {{ pizzas == 1 ? 'pizza' : 'pizzas' }} approved\r\n        </span>\r\n      </h4>\r\n    </div>\r\n    <div *ngIf=\"pizzas == 0\">\r\n      <h4>No orders</h4>\r\n    </div>\r\n\r\n    <form #orderForm=\"ngForm\" (submit)=\"makeOrder()\" class=\"form-inline\">\r\n      <div class=\"form-group\">\r\n        <input type=\"number\" class=\"form-control\" id=\"quantity\" name=\"quantity\" [(ngModel)]=\"order.quantity\" placeholder=\"Number of slices\"\r\n          [disabled]=\"isApproved\" required>\r\n        <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!orderForm.form.valid || isApproved\">Grab</button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"cancel()\" [disabled]=\"isApproved\">Cancel</button>\r\n        \r\n        <button class=\"btn btn-warning\" type=\"button\" (click)=\"approveOrders()\" [disabled]=\"isApproved || pizzas == 0\">Approve orders</button>\r\n        <!-- <button class=\"btn btn-success\" type=\"button\" (click)=\"refresh()\">Refresh</button> -->\r\n      </div>\r\n    </form>\r\n    <br>\r\n  </div>\r\n\r\n  <br>\r\n\r\n  <div class=\"col-md-10\" *ngIf=\"pizzas > 0\">\r\n    <canvas baseChart [data]=\"pieChartData\" [labels]=\"pieChartLabels\" [chartType]=\"pieChartType\" [colors]=\"pieChartColours\" \r\n      (chartHover)=\"chartHovered($event)\"\r\n      (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  </div>\r\n</div>\r\n\r\n<div *ngIf=\"!selectedRoomName\">\r\n  <h3>Choose your room</h3>\r\n</div>"
+module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li role=\"presentation\" *ngFor=\"let room of rooms\" [ngClass]=\"{ 'active' : room.isActive }\">\r\n    <a href=\"\" (click)=\"selectRoom(room)\">{{room.name}}</a>\r\n  </li>\r\n</ul>\r\n\r\n<div *ngIf=\"selectedRoom\">\r\n  <div>\r\n    <div *ngIf=\"pizzas > 0\">\r\n      <h4>\r\n        <span *ngIf=\"!isApproved\">\r\n          <strong>{{slicesToGet}}</strong> {{ slicesToGet == 1 ? 'slice' : 'slices' }} of\r\n          <strong>{{pizzas}}</strong> {{ pizzas == 1 ? 'pizza' : 'pizzas' }} to get\r\n        </span>\r\n        <span *ngIf=\"isApproved\">\r\n          <strong>{{pizzas}}</strong> {{ pizzas == 1 ? 'pizza' : 'pizzas' }} approved\r\n        </span>\r\n      </h4>\r\n    </div>\r\n    <div *ngIf=\"pizzas == 0\">\r\n      <h4>No orders</h4>\r\n    </div>\r\n\r\n    <form #orderForm=\"ngForm\" (submit)=\"makeOrder()\" class=\"form-inline\">\r\n      <div class=\"form-group\">\r\n        <input type=\"number\" class=\"form-control\" id=\"quantity\" name=\"quantity\" [(ngModel)]=\"order.quantity\" placeholder=\"Number of slices\"\r\n          [disabled]=\"isApproved\" required>\r\n        <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!orderForm.form.valid || isApproved\">Grab</button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"cancel()\" [disabled]=\"isApproved\">Cancel</button>\r\n        \r\n        <button class=\"btn btn-warning\" type=\"button\" (click)=\"approveOrders()\" [disabled]=\"isApproved || pizzas == 0\">Approve orders</button>\r\n        <!-- <button class=\"btn btn-success\" type=\"button\" (click)=\"refresh()\">Refresh</button> -->\r\n      </div>\r\n    </form>\r\n    <br>\r\n  </div>\r\n\r\n  <br>\r\n\r\n  <div class=\"col-md-10\" *ngIf=\"pizzas > 0\">\r\n    <canvas baseChart [data]=\"pieChartData\" [labels]=\"pieChartLabels\" [chartType]=\"pieChartType\" [colors]=\"pieChartColours\" \r\n      (chartHover)=\"chartHovered($event)\"\r\n      (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  </div>\r\n</div>\r\n\r\n<div *ngIf=\"!selectedRoom\">\r\n  <h3>Choose your room</h3>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -502,24 +502,24 @@ var OrdersComponent = (function () {
         var _this = this;
         this.rooms = rooms;
         if (rooms.length > 0) {
-            if (this.selectedRoomName && this.rooms.some(function (r) { return r.name == _this.selectedRoomName; }))
-                this.selectRoom(this.selectedRoomName);
+            if (this.selectedRoom && this.rooms.some(function (r) { return r.name == _this.selectedRoom.name; }))
+                this.selectRoom(this.selectedRoom);
             else
-                this.selectRoom(rooms[0].name);
+                this.selectRoom(rooms[0]);
         }
     };
-    OrdersComponent.prototype.selectRoom = function (roomName) {
+    OrdersComponent.prototype.selectRoom = function (room) {
         //this.rooms.forEach((r) => {
         //  r.isActive = r.name == roomName;
         //});
-        this.selectedRoomName = roomName;
-        this.order.room = roomName;
-        this.loadOrdersInRoom(this.selectedRoomName);
+        this.selectedRoom = room;
+        this.order.room = room.name;
+        this.loadOrdersInRoom(this.selectedRoom.id);
         return false;
     };
-    OrdersComponent.prototype.loadOrdersInRoom = function (roomName) {
+    OrdersComponent.prototype.loadOrdersInRoom = function (roomId) {
         var _this = this;
-        this.ordersService.getOrders(roomName)
+        this.ordersService.getOrders(roomId)
             .subscribe(function (orderItems) { return _this.onLoadOrderItems(orderItems); }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
     };
     OrdersComponent.prototype.onLoadOrderItems = function (orderItems) {
@@ -575,17 +575,17 @@ var OrdersComponent = (function () {
         this.ordersService.makeOrder(this.order)
             .subscribe(function (result) {
             if (result)
-                _this.loadOrdersInRoom(_this.selectedRoomName);
+                _this.loadOrdersInRoom(_this.selectedRoom.id);
         }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
         return false;
     };
     OrdersComponent.prototype.cancel = function () {
         var _this = this;
         var orderId = this.getOrderId();
-        this.ordersService.removeOrder(this.selectedRoomName, orderId)
+        this.ordersService.removeOrder(this.selectedRoom.name, orderId)
             .subscribe(function (result) {
             if (result)
-                _this.loadOrdersInRoom(_this.selectedRoomName);
+                _this.loadOrdersInRoom(_this.selectedRoom.id);
         }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
         return false;
     };
@@ -600,12 +600,12 @@ var OrdersComponent = (function () {
         return orderId;
     };
     OrdersComponent.prototype.refresh = function () {
-        this.loadOrdersInRoom(this.selectedRoomName);
+        this.loadOrdersInRoom(this.selectedRoom.id);
         return false;
     };
     OrdersComponent.prototype.approveOrders = function () {
         var _this = this;
-        this.ordersService.approveOrders(this.selectedRoomName)
+        this.ordersService.approveOrders(this.selectedRoom.name)
             .subscribe(function (result) { return _this.refresh(); }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
     };
     // events
@@ -648,7 +648,7 @@ var OrdersComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm5/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/do.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_config__ = __webpack_require__("../../../../../src/app/shared/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -667,19 +667,19 @@ var OrdersService = (function () {
     function OrdersService(http) {
         this.http = http;
     }
-    OrdersService.prototype.getOrders = function (room) {
-        return this.http.get(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "orders/" + room);
+    OrdersService.prototype.getOrders = function (roomId) {
+        return this.http.get(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + roomId);
     };
     OrdersService.prototype.makeOrder = function (order) {
         var body = JSON.stringify(order);
         var room = order.room;
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "orders/" + room, body, { observe: 'response' }).map(function (response) { return response.status == 201; });
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room, body, { observe: 'response' }).map(function (response) { return response.status == 201; });
     };
     OrdersService.prototype.removeOrder = function (room, id) {
-        return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "orders/" + room + "/" + id, { observe: 'response' }).map(function (response) { return response.status == 204; });
+        return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/" + id, { observe: 'response' }).map(function (response) { return response.status == 204; });
     };
     OrdersService.prototype.approveOrders = function (room) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "orders/" + room + "/approve", null, { observe: 'response' }).map(function (response) { return response.status == 201; });
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/approve", null, { observe: 'response' }).map(function (response) { return response.status == 201; });
     };
     OrdersService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
@@ -1273,26 +1273,6 @@ var User = (function () {
 
 /***/ }),
 
-/***/ "../../../../../src/app/shared/config.ts":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Config; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
-
-var Config = (function () {
-    function Config() {
-    }
-    Config.baseUrl = __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].restBaseUrl;
-    Config.apiUrl = Config.baseUrl + "api/";
-    Config.title = "Hot Onion";
-    return Config;
-}());
-
-//# sourceMappingURL=config.js.map
-
-/***/ }),
-
 /***/ "../../../../../src/app/shared/error-helper.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1442,9 +1422,9 @@ var UserProfileComponent = (function () {
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    restBaseUrl: "http://localhost:8666/",
     accountServiceUrl: "https://localhost:7100/identity-api/account",
-    roomServiceUrl: "https://localhost:7100/catalog-api/room"
+    roomServiceUrl: "https://localhost:7100/catalog-api/room",
+    orderServiceUrl: "https://localhost:7100/ordering-api/v1/orders"
 };
 //# sourceMappingURL=environment.js.map
 
