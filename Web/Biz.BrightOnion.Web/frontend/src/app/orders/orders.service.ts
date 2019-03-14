@@ -22,11 +22,8 @@ export class OrdersService {
 
   public makeOrder(order: Order): Observable<boolean> {
     let body = JSON.stringify(order);
-
-    let room = order.room;
-
     return this.http.post(
-      `${environment.orderServiceUrl}/${room}`, body, { observe: 'response' }
+      `${environment.orderServiceUrl}/make`, body, { observe: 'response' }
     ).map(response => response.status == 201);
   }
 

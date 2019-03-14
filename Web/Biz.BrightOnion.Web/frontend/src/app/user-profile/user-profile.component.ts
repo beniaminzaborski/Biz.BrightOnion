@@ -49,6 +49,6 @@ export class UserProfileComponent implements OnInit {
   }
 
   private getUsername(): string {
-    return this.authenticationService.getLoggedUser();
+    return this.authenticationService.getLoggedUsername();
   }
 }

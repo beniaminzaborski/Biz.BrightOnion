@@ -95,7 +95,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
       string jwtToken = authenticationService.CreateToken(user);
 
-      return new ObjectResult(new AuthTokenDTO { Token = jwtToken });
+      return new ObjectResult(new AuthTokenDTO { UserId = user.Id, Token = jwtToken });
     }
 
     [HttpPost("changepassword")]

@@ -47,7 +47,7 @@ export class OrdersComponent implements OnInit {
     private ordersService: OrdersService,
     private authenticationService: AuthenticationService) {
     this.order = new Order();
-    this.order.who = this.authenticationService.getLoggedUser();
+    this.order.purchaserId = this.authenticationService.getLoggedUserId();
   }
 
   public ngOnInit(): void {
@@ -105,7 +105,7 @@ export class OrdersComponent implements OnInit {
     //});
 
     this.selectedRoom = room;
-    this.order.room = room.name;
+    this.order.roomId = room.id;
 
     this.loadOrdersInRoom(this.selectedRoom.id);
 
@@ -134,7 +134,7 @@ export class OrdersComponent implements OnInit {
   }
 
   private setNumberOfSlices(): void {
-    let currentUserEmail = this.authenticationService.getLoggedUser();
+    let currentUserEmail = this.authenticationService.getLoggedUsername();
 
     this.orderItems.forEach((o) => {
       if (o.who == currentUserEmail) {
@@ -204,7 +204,7 @@ export class OrdersComponent implements OnInit {
   private getOrderId(): string {
     let orderId: string;
     this.orderItems.forEach((o) => {
-      if (o.who == this.authenticationService.getLoggedUser()) {
+      if (o.who == this.authenticationService.getLoggedUsername()) {
         orderId = o.id;
       }
     });

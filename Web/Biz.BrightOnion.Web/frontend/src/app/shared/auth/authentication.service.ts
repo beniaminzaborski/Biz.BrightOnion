@@ -26,21 +26,32 @@ export class AuthenticationService {
     )
       .map(response => {
         let data = response.body;
-        return { token: data['token'], email: user.email };
+        return { userId: data['userId'], token: data['token'], email: user.email };
       })
       .do(authData => {
         localStorage.setItem('token', authData.token);
+        localStorage.setItem('userId', authData.userId);
         localStorage.setItem('username', authData.email);
       }).catch(this.handleErrors);
   }
 
   logout() {
+    localStorage.removeItem('userId');
     localStorage.removeItem('username');
     localStorage.removeItem('token');
   }
 
-  public getLoggedUser(): string {
+  public getLoggedUsername(): string {
     return localStorage.getItem('username');
+  }
+
+  public getLoggedUserId(): number {
+    let userId: number = 0;
+    let strUserId = localStorage.getItem('userId');
+    if (strUserId) {
+      userId = parseInt(strUserId);
+    }
+    return userId;
   }
 
   public changePassword(changePassword: ChangePassword) {

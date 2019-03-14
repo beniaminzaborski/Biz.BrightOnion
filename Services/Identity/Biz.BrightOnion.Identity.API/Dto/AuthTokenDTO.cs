@@ -7,6 +7,7 @@ namespace Biz.BrightOnion.Identity.API.Dto
 {
   public class AuthTokenDTO
   {
+    public long UserId { get; set; }
     public string Token { get; set; }
   }
 }

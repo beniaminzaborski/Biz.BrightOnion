@@ -459,7 +459,7 @@ var OrdersComponent = (function () {
         this.pieChartColours = [{ backgroundColor: ["#FFA1B5", "#7B68EE", "#87CEFA", "#B22222", "#FFE29A", "#D2B48C", "#90EE90", "#FF69B4", "#EE82EE", "#6A5ACD", "#b8436d", "#9ACD32", "#00d9f9", "#800080", "#FF6347", "#DDA0DD", "#a4c73c", "#a4add3", "#008000", "#DAA520", "#00BFFF", "#2F4F4F", "#FF8C00", "#A9A9A9", "#FFB6C1", "#00FFFF", "#6495ED", "#7FFFD4", "#F0F8FF", "#7FFF00", "#008B8B", "#9932CC", "#E9967A", "#8FBC8F", "#483D8B", "#D3D3D3", "#ADD8E6"] }];
         this.pieChartType = 'pie';
         this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["a" /* Order */]();
-        this.order.who = this.authenticationService.getLoggedUser();
+        this.order.purchaserId = this.authenticationService.getLoggedUserId();
     }
     OrdersComponent.prototype.ngOnInit = function () {
         this.registerSignalR();
@@ -513,7 +513,7 @@ var OrdersComponent = (function () {
         //  r.isActive = r.name == roomName;
         //});
         this.selectedRoom = room;
-        this.order.room = room.name;
+        this.order.roomId = room.id;
         this.loadOrdersInRoom(this.selectedRoom.id);
         return false;
     };
@@ -535,7 +535,7 @@ var OrdersComponent = (function () {
     };
     OrdersComponent.prototype.setNumberOfSlices = function () {
         var _this = this;
-        var currentUserEmail = this.authenticationService.getLoggedUser();
+        var currentUserEmail = this.authenticationService.getLoggedUsername();
         this.orderItems.forEach(function (o) {
             if (o.who == currentUserEmail) {
                 _this.order.quantity = o.quantity;
@@ -593,7 +593,7 @@ var OrdersComponent = (function () {
         var _this = this;
         var orderId;
         this.orderItems.forEach(function (o) {
-            if (o.who == _this.authenticationService.getLoggedUser()) {
+            if (o.who == _this.authenticationService.getLoggedUsername()) {
                 orderId = o.id;
             }
         });
@@ -672,8 +672,7 @@ var OrdersService = (function () {
     };
     OrdersService.prototype.makeOrder = function (order) {
         var body = JSON.stringify(order);
-        var room = order.room;
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room, body, { observe: 'response' }).map(function (response) { return response.status == 201; });
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/make", body, { observe: 'response' }).map(function (response) { return response.status == 201; });
     };
     OrdersService.prototype.removeOrder = function (room, id) {
         return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/" + id, { observe: 'response' }).map(function (response) { return response.status == 204; });
@@ -976,19 +975,29 @@ var AuthenticationService = (function () {
         }), { observe: 'response' })
             .map(function (response) {
             var data = response.body;
-            return { token: data['token'], email: user.email };
+            return { userId: data['userId'], token: data['token'], email: user.email };
         })
             .do(function (authData) {
             localStorage.setItem('token', authData.token);
+            localStorage.setItem('userId', authData.userId);
             localStorage.setItem('username', authData.email);
         }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.logout = function () {
+        localStorage.removeItem('userId');
         localStorage.removeItem('username');
         localStorage.removeItem('token');
     };
-    AuthenticationService.prototype.getLoggedUser = function () {
+    AuthenticationService.prototype.getLoggedUsername = function () {
         return localStorage.getItem('username');
+    };
+    AuthenticationService.prototype.getLoggedUserId = function () {
+        var userId = 0;
+        var strUserId = localStorage.getItem('userId');
+        if (strUserId) {
+            userId = parseInt(strUserId);
+        }
+        return userId;
     };
     AuthenticationService.prototype.changePassword = function (changePassword) {
         return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl + "/changepassword", JSON.stringify({
@@ -1391,7 +1400,7 @@ var UserProfileComponent = (function () {
             .subscribe();
     };
     UserProfileComponent.prototype.getUsername = function () {
-        return this.authenticationService.getLoggedUser();
+        return this.authenticationService.getLoggedUsername();
     };
     UserProfileComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
