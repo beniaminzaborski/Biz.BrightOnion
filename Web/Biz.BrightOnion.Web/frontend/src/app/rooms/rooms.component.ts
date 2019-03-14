@@ -60,7 +60,7 @@ export class RoomsComponent implements OnInit {
     if(!this.selectedRoom)
       return false;
 
-    this.roomService.removeRoom(this.selectedRoom.name)
+    this.roomService.removeRoom(this.selectedRoom.id)
     .subscribe(result => {
       if(result) {
         this.selectedRoom = null;

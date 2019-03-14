@@ -7,5 +7,6 @@ export const environment = {
   production: false,
 
   restBaseUrl: "http://localhost:8666/",
-  identityServiceUrl: "https://localhost:7100/identity-api/account"
+  accountServiceUrl: "https://localhost:7100/identity-api/account",
+  roomServiceUrl: "https://localhost:7100/catalog-api/room"
 };

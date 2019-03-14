@@ -16,7 +16,7 @@ export class AuthenticationService {
 
   public login(user: User): Observable<AuthData> {
     return this.http.post(
-      `${environment.identityServiceUrl}/login`,
+      `${environment.accountServiceUrl}/login`,
       JSON.stringify({
         email: user.email,
         password: user.password
@@ -45,7 +45,7 @@ export class AuthenticationService {
 
   public changePassword(changePassword: ChangePassword) {
     return this.http.post(
-      `${environment.identityServiceUrl}/changepassword`,
+      `${environment.accountServiceUrl}/changepassword`,
       JSON.stringify({
         email: changePassword.email,
         oldPassword: changePassword.currentPassword,
@@ -58,7 +58,7 @@ export class AuthenticationService {
     
   public register(user: User) {
     return this.http.post<void>(
-      `${environment.identityServiceUrl}/register`,
+      `${environment.accountServiceUrl}/register`,
       JSON.stringify({
         email: user.email,
         password: user.password,
@@ -69,14 +69,14 @@ export class AuthenticationService {
   }
 
   public getUserProfile(email: string): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${environment.identityServiceUrl}/${email}`);
+    return this.http.get<UserProfile>(`${environment.accountServiceUrl}/${email}`);
   }
 
   public editUserProfile(userProfile: UserProfile): Observable<boolean> {
     let body = JSON.stringify(userProfile);
 
     return this.http.put(
-      environment.identityServiceUrl, body, { observe: 'response' }
+      environment.accountServiceUrl, body, { observe: 'response' }
     ).map(response => response.status == 204);
   }
 

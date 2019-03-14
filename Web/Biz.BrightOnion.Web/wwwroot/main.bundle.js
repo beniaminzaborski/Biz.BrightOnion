@@ -509,9 +509,9 @@ var OrdersComponent = (function () {
         }
     };
     OrdersComponent.prototype.selectRoom = function (roomName) {
-        this.rooms.forEach(function (r) {
-            r.isActive = r.name == roomName;
-        });
+        //this.rooms.forEach((r) => {
+        //  r.isActive = r.name == roomName;
+        //});
         this.selectedRoomName = roomName;
         this.order.room = roomName;
         this.loadOrdersInRoom(this.selectedRoomName);
@@ -777,7 +777,7 @@ var RoomsComponent = (function () {
         var _this = this;
         if (!this.selectedRoom)
             return false;
-        this.roomService.removeRoom(this.selectedRoom.name)
+        this.roomService.removeRoom(this.selectedRoom.id)
             .subscribe(function (result) {
             if (result) {
                 _this.selectedRoom = null;
@@ -813,7 +813,7 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/@angular/common/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/do.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_config__ = __webpack_require__("../../../../../src/app/shared/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -833,14 +833,14 @@ var RoomService = (function () {
         this.http = http;
     }
     RoomService.prototype.getRooms = function () {
-        return this.http.get(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "rooms");
+        return this.http.get(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].roomServiceUrl);
     };
     RoomService.prototype.addRoom = function (room) {
         var body = JSON.stringify(room);
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "rooms", body, { observe: 'response' }).map(function (response) { return response.status == 201; });
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].roomServiceUrl, body, { observe: 'response' }).map(function (response) { return response.status == 201; });
     };
-    RoomService.prototype.removeRoom = function (room) {
-        return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__shared_config__["a" /* Config */].apiUrl + "rooms/" + room, { observe: 'response' }).map(function (response) { return response.status == 204; });
+    RoomService.prototype.removeRoom = function (roomId) {
+        return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].roomServiceUrl + "/" + roomId, { observe: 'response' }).map(function (response) { return response.status == 204; });
     };
     return RoomService;
 }());
@@ -969,7 +969,7 @@ var AuthenticationService = (function () {
         this.http = http;
     }
     AuthenticationService.prototype.login = function (user) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/login", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl + "/login", JSON.stringify({
             email: user.email,
             password: user.password
             /*grant_type: "password"*/
@@ -991,7 +991,7 @@ var AuthenticationService = (function () {
         return localStorage.getItem('username');
     };
     AuthenticationService.prototype.changePassword = function (changePassword) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/changepassword", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl + "/changepassword", JSON.stringify({
             email: changePassword.email,
             oldPassword: changePassword.currentPassword,
             password: changePassword.newPassword,
@@ -999,18 +999,18 @@ var AuthenticationService = (function () {
         }), { observe: 'response' }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.register = function (user) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/register", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl + "/register", JSON.stringify({
             email: user.email,
             password: user.password,
             password2: user.password
         }), { observe: 'response' }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.getUserProfile = function (email) {
-        return this.http.get(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/" + email);
+        return this.http.get(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl + "/" + email);
     };
     AuthenticationService.prototype.editUserProfile = function (userProfile) {
         var body = JSON.stringify(userProfile);
-        return this.http.put(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl, body, { observe: 'response' }).map(function (response) { return response.status == 204; });
+        return this.http.put(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].accountServiceUrl, body, { observe: 'response' }).map(function (response) { return response.status == 204; });
     };
     AuthenticationService.prototype.getToken = function () {
         return localStorage.getItem('token');
@@ -1444,7 +1444,8 @@ var _a, _b;
 var environment = {
     production: false,
     restBaseUrl: "http://localhost:8666/",
-    identityServiceUrl: "https://localhost:7100/identity-api/account"
+    accountServiceUrl: "https://localhost:7100/identity-api/account",
+    roomServiceUrl: "https://localhost:7100/catalog-api/room"
 };
 //# sourceMappingURL=environment.js.map
 
