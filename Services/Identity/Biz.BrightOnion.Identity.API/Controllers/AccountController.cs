@@ -44,7 +44,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> RegisterAsync([FromBody]RegisterUserDTO registerUserDTO)
     {
       if (registerUserDTO == null)
@@ -71,7 +71,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       await userRepository.CreateAsync(user);
       await dbContext.SaveChangesAsync();
 
-      return Ok();
+      return NoContent();
     }
 
     [AllowAnonymous]
@@ -100,7 +100,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
 
     [HttpPost("changepassword")]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangePasswordDTO changePasswordDTO)
     {
       if (changePasswordDTO == null)
@@ -129,12 +129,12 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       userRepository.Update(user.Id, user);
       await dbContext.SaveChangesAsync();
 
-      return Ok();
+      return NoContent();
     }
 
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> UpdateAsync([FromBody]UserDTO userDTO)
     {
       if (userDTO == null)
@@ -159,7 +159,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         }
       }
 
-      return Ok();
+      return NoContent();
     }
   }
 }

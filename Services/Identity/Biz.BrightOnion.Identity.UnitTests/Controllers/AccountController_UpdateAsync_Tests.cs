@@ -79,7 +79,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     }
 
     [Fact]
-    public async void ShouldReturnOk()
+    public async void ShouldReturnNoContent()
     {
       // Arrange
       dbContextMock.SetupGet(x => x.Database).Returns(databaseFacadeMock.Object);
@@ -92,7 +92,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var actionResult = await accountController.UpdateAsync(new UserDTO { Id = 1, NotificationEnabled = true });
 
       // Assert
-      Assert.IsType<OkResult>(actionResult);
+      Assert.IsType<NoContentResult>(actionResult);
     }
 
     [Fact]

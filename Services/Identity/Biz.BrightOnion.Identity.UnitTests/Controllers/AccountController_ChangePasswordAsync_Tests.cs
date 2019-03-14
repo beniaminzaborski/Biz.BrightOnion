@@ -172,7 +172,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     }
 
     [Fact]
-    public async void ShouldReturnOk()
+    public async void ShouldReturnNoContent()
     {
       // Arrange
       userRepositoryMock.Setup(x => x.GetByEmailAsync(It.IsAny<string>())).Returns(Task.FromResult<User>(new User { Id = 1, Email = "jan.test@tyu.pl", PasswordHash = "HashXYZ" }));
@@ -186,7 +186,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var actionResult = await accountController.ChangePasswordAsync(new ChangePasswordDTO { Email = "jan.test@tyu.pl", Password = "123321", Password2 = "123321", OldPassword = "asddsa" });
 
       // Assert
-      Assert.IsType<OkResult>(actionResult);
+      Assert.IsType<NoContentResult>(actionResult);
     }
   }
 }

@@ -156,7 +156,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     }
 
     [Fact]
-    public async void ShouldReturnOk()
+    public async void ShouldReturnNoContent()
     {
       // Arrange
       var registerUserDTO = new RegisterUserDTO { Email = "jan.test@asf.pl", Password = "secret123", Password2 = "secret123" };
@@ -169,7 +169,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       var actionResult = await accountController.RegisterAsync(registerUserDTO);
 
       // Assert
-      var objectResult = Assert.IsType<OkResult>(actionResult);
+      var objectResult = Assert.IsType<NoContentResult>(actionResult);
     }
   }
 }
