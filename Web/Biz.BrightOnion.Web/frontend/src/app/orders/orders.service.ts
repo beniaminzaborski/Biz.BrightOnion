@@ -4,10 +4,10 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
-import { Config } from "../shared/config";
 import { OrderItem } from "./order-item.model";
 import { Order } from "./order.model";
 import { OrdersApproval } from "./orders-approval.model";
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class OrdersService {
@@ -16,7 +16,7 @@ export class OrdersService {
 
   public getOrders(room: string): Observable<OrderItem[]> {
     return this.http.get<OrderItem[]>(
-      `${Config.apiUrl}orders/${room}`);
+      `${environment.orderServiceUrl}/${room}`);
   }
 
   public makeOrder(order: Order): Observable<boolean> {
@@ -25,19 +25,19 @@ export class OrdersService {
     let room = order.room;
 
     return this.http.post(
-      `${Config.apiUrl}orders/${room}`, body, { observe: 'response' }
+      `${environment.orderServiceUrl}/${room}`, body, { observe: 'response' }
     ).map(response => response.status == 201);
   }
 
   public removeOrder(room: string, id: string):  Observable<boolean> {
     return this.http.delete(
-      `${Config.apiUrl}orders/${room}/${id}`, { observe: 'response' }
+      `${environment.orderServiceUrl}/${room}/${id}`, { observe: 'response' }
     ).map(response => response.status == 204);
   }
 
   public approveOrders(room: string): Observable<boolean> {
     return this.http.post(
-      `${Config.apiUrl}orders/${room}/approve`, null, { observe: 'response' }
+      `${environment.orderServiceUrl}/${room}/approve`, null, { observe: 'response' }
     ).map(response => response.status == 201);
   }
 }

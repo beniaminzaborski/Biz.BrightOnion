@@ -8,7 +8,7 @@ import { AuthenticationService } from './shared/auth/authentication.service';
     AuthenticationService
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   

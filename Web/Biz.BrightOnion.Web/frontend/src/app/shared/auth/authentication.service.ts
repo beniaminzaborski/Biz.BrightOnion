@@ -26,11 +26,11 @@ export class AuthenticationService {
     )
       .map(response => {
         let data = response.body;
-        return { token: data['token'], email: user.email };
+        return new AuthData(data['token'], user.email);
       })
       .do(authData => {
         localStorage.setItem('token', authData.token);
-        localStorage.setItem('username', authData.email);
+        localStorage.setItem('username', authData.login);
       }).catch(this.handleErrors);
   }
 

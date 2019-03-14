@@ -7,7 +7,7 @@ import { AuthenticationService } from '../shared/auth/authentication.service';
   selector: 'app-root',
   providers: [AuthenticationService],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   user: User;

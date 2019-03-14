@@ -170,8 +170,8 @@ export class OrdersComponent implements OnInit {
     setTimeout(() => {
       if (this.chart && this.chart.chart && this.chart.chart.config) {
         this.chart.chart.config.data.labels = this.pieChartLabels;
-        //this.chart.chart.config.data.datasets = this.pieChartData;
-        this.chart.chart.config.data.colors = this.pieChartColours;
+        //// this.chart.chart.config.data.datasets = this.pieChartData;
+        // this.chart.chart.config.data.colors = this.pieChartColours;
         this.chart.chart.update();
       }
     });

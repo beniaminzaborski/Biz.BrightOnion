@@ -1,0 +1,65 @@
+<nav role="navigation" class="navbar navbar-inverse navbar-fixed-top" *ngIf="router.url != '/login'">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+        aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand">Hot Onion</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+          <a routerLink="/orders" [routerLinkActive]="['active']">Orders</a>
+        </li>
+        <li>
+          <a routerLink="/rooms" [routerLinkActive]="['active']">Rooms</a>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a routerLink="/about" [routerLinkActive]="['active']">About</a>
+        </li>
+        <!--<li class="navbar-text pull-left">{{username}}</li>-->
+        <li class="dropdown pull-right">
+          <a href="#" data-toggle="dropdown" style="color:#777;" class="dropdown-toggle">
+            <span class="glyphicon glyphicon-user"></span>
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a routerLink="/profile" [routerLinkActive]="['active']" title="User profile">
+                <span class="fa fa-user" aria-hidden="true"></span> Profile
+              </a>
+            </li>
+            <li>
+              <a href="#" title="Sign Out" (click)="logout(); $event.preventDefault()">
+                <span class="fa fa-sign-out" aria-hidden="true"></span> Sign Out
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+<footer class="footer navbar-inverse navbar-fixed-bottom">
+  <div class="container-fluid">
+    <span class="text-muted pull-right">
+      <small>&copy; 2017 Biz | ver. 0.7.6-alpha</small>
+    </span>
+  </div>
+</footer>
