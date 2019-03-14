@@ -360,7 +360,6 @@ var LoginComponent = (function () {
             alert("Your account was successfully created.");
             _this.toggleDisplay();
         }, function (error) {
-            console.log("Register error: ", error);
             alert("Unfortunately we were unable to create your account.");
         });
     };
@@ -970,18 +969,19 @@ var AuthenticationService = (function () {
         this.http = http;
     }
     AuthenticationService.prototype.login = function (user) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "token", JSON.stringify({
-            username: user.email,
-            password: user.password,
-            grant_type: "password"
+        return this.http.post(
+        /*Config.apiUrl + */ "https://localhost:7100/identity-api/account/login", JSON.stringify({
+            email: user.email,
+            password: user.password
+            /*grant_type: "password"*/
         }), { observe: 'response' })
             .map(function (response) {
             var data = response.body;
-            return { token: data['Result']['access_token'], login: user.email };
+            return { token: data['token'], email: user.email };
         })
             .do(function (authData) {
             localStorage.setItem('token', authData.token);
-            localStorage.setItem('username', authData.login);
+            localStorage.setItem('username', authData.email);
         })
             .catch(this.handleErrors);
     };

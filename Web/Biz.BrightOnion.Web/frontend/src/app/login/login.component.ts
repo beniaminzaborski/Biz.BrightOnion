@@ -47,7 +47,6 @@ export class LoginComponent {
         this.toggleDisplay();
       },
       (error) => {
-        console.log("Register error: ", error);
         alert("Unfortunately we were unable to create your account.");
       }
       );

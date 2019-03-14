@@ -4,7 +4,7 @@ import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
 
-import { Config } from 'app/shared/config';
+import { Config } from "app/shared/config";
 import { User } from "./user.model";
 import { ChangePassword } from "./change-password.model";
 import { AuthData } from './auth-data.model';
@@ -16,21 +16,21 @@ export class AuthenticationService {
 
   public login(user: User): Observable<AuthData> {
     return this.http.post(
-      Config.apiUrl + "token",
+      /*Config.apiUrl + */"https://localhost:7100/identity-api/account/login",
       JSON.stringify({
-        username: user.email,
-        password: user.password,
-        grant_type: "password"
+        email: user.email,
+        password: user.password
+        /*grant_type: "password"*/
       }),
       { observe: 'response' }
     )
       .map(response => {
         let data = response.body;
-        return { token: data['Result']['access_token'], login: user.email };
+        return { token: data['token'], email: user.email };
       })
       .do(authData => {
         localStorage.setItem('token', authData.token);
-        localStorage.setItem('username', authData.login);
+        localStorage.setItem('username', authData.email);
       })
       .catch(this.handleErrors);
   }
