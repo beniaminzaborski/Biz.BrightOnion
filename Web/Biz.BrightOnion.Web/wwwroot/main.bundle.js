@@ -948,7 +948,7 @@ AuthInterceptor = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_Rx__ = __webpack_require__("../../../../rxjs/_esm5/Rx.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_do__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/do.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_shared_config__ = __webpack_require__("../../../../../src/app/shared/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -969,8 +969,7 @@ var AuthenticationService = (function () {
         this.http = http;
     }
     AuthenticationService.prototype.login = function (user) {
-        return this.http.post(
-        /*Config.apiUrl + */ "https://localhost:7100/identity-api/account/login", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/login", JSON.stringify({
             email: user.email,
             password: user.password
             /*grant_type: "password"*/
@@ -982,8 +981,7 @@ var AuthenticationService = (function () {
             .do(function (authData) {
             localStorage.setItem('token', authData.token);
             localStorage.setItem('username', authData.email);
-        })
-            .catch(this.handleErrors);
+        }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.logout = function () {
         localStorage.removeItem('username');
@@ -993,28 +991,26 @@ var AuthenticationService = (function () {
         return localStorage.getItem('username');
     };
     AuthenticationService.prototype.changePassword = function (changePassword) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "user/changepassword", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/changepassword", JSON.stringify({
             email: changePassword.email,
-            currentPasswd: changePassword.currentPassword,
-            Passwd: changePassword.newPassword,
-            Passwd2: changePassword.newPassword2,
-        }), { observe: 'response' })
-            .catch(this.handleErrors);
+            oldPassword: changePassword.currentPassword,
+            password: changePassword.newPassword,
+            password2: changePassword.newPassword2,
+        }), { observe: 'response' }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.register = function (user) {
-        return this.http.post(
-        /*Config.apiUrl + */ "https://localhost:7100/identity-api/account/register", JSON.stringify({
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/register", JSON.stringify({
             email: user.email,
             password: user.password,
             password2: user.password
-        }), { observe: 'response' });
+        }), { observe: 'response' }).catch(this.handleErrors);
     };
     AuthenticationService.prototype.getUserProfile = function (email) {
-        return this.http.get(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "user/" + email);
+        return this.http.get(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl + "/" + email);
     };
     AuthenticationService.prototype.editUserProfile = function (userProfile) {
         var body = JSON.stringify(userProfile);
-        return this.http.put(__WEBPACK_IMPORTED_MODULE_5_app_shared_config__["a" /* Config */].apiUrl + "user/profile/" + userProfile.email, body, { observe: 'response' }).map(function (response) { return response.status == 204; });
+        return this.http.put(__WEBPACK_IMPORTED_MODULE_5__environments_environment__["a" /* environment */].identityServiceUrl, body, { observe: 'response' }).map(function (response) { return response.status == 204; });
     };
     AuthenticationService.prototype.getToken = function () {
         return localStorage.getItem('token');
@@ -1250,10 +1246,10 @@ var _a;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UserProfile; });
 var UserProfile = (function () {
-    function UserProfile(email, emailNotification) {
-        if (emailNotification === void 0) { emailNotification = false; }
+    function UserProfile(email, notificationEnabled) {
+        if (notificationEnabled === void 0) { notificationEnabled = false; }
         this.email = email;
-        this.emailNotification = emailNotification;
+        this.notificationEnabled = notificationEnabled;
     }
     return UserProfile;
 }());
@@ -1360,7 +1356,7 @@ JsonContentInterceptor = __decorate([
 /***/ "../../../../../src/app/user-profile/user-profile.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!-- <div class=\"card\">\r\n    <div class=\"card-block\"> -->\r\n<div class=\"col-xs-12 col-sm-6 offset-sm-3\">\r\n\r\n  <ul class=\"nav nav-tabs\" role=\"tablist\">\r\n    <li class=\"nav-item active\">\r\n      <a class=\"nav-link\" href=\"#profile\" role=\"tab\" data-toggle=\"tab\">User profile</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"#password\" role=\"tab\" data-toggle=\"tab\">Change password</a>\r\n    </li>\r\n  </ul>\r\n\r\n  <!-- Tab panes -->\r\n  <div class=\"tab-content\">\r\n    <div role=\"tabpanel\" class=\"tab-pane fade in active\" id=\"profile\">\r\n\r\n      <br/>\r\n      <form #profileForm=\"ngForm\" (submit)=\"saveProfile()\">\r\n        <fieldset>\r\n          <legend>User profile of {{model.email}}</legend>\r\n          <div class=\"form-check\">\r\n            <label class=\"form-check-label\">\r\n              <input type=\"checkbox\" class=\"form-check-input\" id=\"emailNotification\" name=\"emailNotification\" [(ngModel)]=\"userProfileModel.emailNotification\"> E-mail notification\r\n            </label>\r\n          </div>\r\n        </fieldset>\r\n\r\n        <br />\r\n        <div class=\"text-right\">\r\n          <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!profileForm.form.valid\">Save profile</button>\r\n        </div>\r\n\r\n      </form>\r\n\r\n\r\n    </div>\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" id=\"password\">\r\n\r\n      <br/>\r\n      <form #changePasswdForm=\"ngForm\" (submit)=\"changePassword()\">\r\n        <fieldset>\r\n          <legend>Change password of {{model.email}}</legend>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">Current password</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"currentPassword\" name=\"currentPassword\" [(ngModel)]=\"model.currentPassword\"\r\n              required>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">New password</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"newPassword\" name=\"newPassword\" [(ngModel)]=\"model.newPassword\" required>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">New password (again)</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"newPassword2\" name=\"newPassword2\" [(ngModel)]=\"model.newPassword2\" required>\r\n          </div>\r\n        </fieldset>\r\n\r\n        <br />\r\n        <div class=\"text-right\">\r\n          <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!changePasswdForm.form.valid\">Change password</button>\r\n        </div>\r\n\r\n      </form>\r\n\r\n    </div>\r\n  </div>\r\n\r\n</div>\r\n<!-- </div>\r\n  </div> -->"
+module.exports = "<!-- <div class=\"card\">\r\n    <div class=\"card-block\"> -->\r\n<div class=\"col-xs-12 col-sm-6 offset-sm-3\">\r\n\r\n  <ul class=\"nav nav-tabs\" role=\"tablist\">\r\n    <li class=\"nav-item active\">\r\n      <a class=\"nav-link\" href=\"#profile\" role=\"tab\" data-toggle=\"tab\">User profile</a>\r\n    </li>\r\n    <li class=\"nav-item\">\r\n      <a class=\"nav-link\" href=\"#password\" role=\"tab\" data-toggle=\"tab\">Change password</a>\r\n    </li>\r\n  </ul>\r\n\r\n  <!-- Tab panes -->\r\n  <div class=\"tab-content\">\r\n    <div role=\"tabpanel\" class=\"tab-pane fade in active\" id=\"profile\">\r\n\r\n      <br/>\r\n      <form #profileForm=\"ngForm\" (submit)=\"saveProfile()\">\r\n        <fieldset>\r\n          <legend>User profile of {{model.email}}</legend>\r\n          <div class=\"form-check\">\r\n            <label class=\"form-check-label\">\r\n              <input type=\"checkbox\" class=\"form-check-input\" id=\"emailNotification\" name=\"emailNotification\" [(ngModel)]=\"userProfileModel.notificationEnabled\"> E-mail notification\r\n            </label>\r\n          </div>\r\n        </fieldset>\r\n\r\n        <br />\r\n        <div class=\"text-right\">\r\n          <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!profileForm.form.valid\">Save profile</button>\r\n        </div>\r\n\r\n      </form>\r\n\r\n\r\n    </div>\r\n    <div role=\"tabpanel\" class=\"tab-pane fade\" id=\"password\">\r\n\r\n      <br/>\r\n      <form #changePasswdForm=\"ngForm\" (submit)=\"changePassword()\">\r\n        <fieldset>\r\n          <legend>Change password of {{model.email}}</legend>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">Current password</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"currentPassword\" name=\"currentPassword\" [(ngModel)]=\"model.currentPassword\"\r\n              required>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">New password</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"newPassword\" name=\"newPassword\" [(ngModel)]=\"model.newPassword\" required>\r\n          </div>\r\n          <div class=\"form-group\">\r\n            <label for=\"exampleInputEmail1\">New password (again)</label>\r\n            <input type=\"password\" class=\"form-control\" id=\"newPassword2\" name=\"newPassword2\" [(ngModel)]=\"model.newPassword2\" required>\r\n          </div>\r\n        </fieldset>\r\n\r\n        <br />\r\n        <div class=\"text-right\">\r\n          <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!changePasswdForm.form.valid\">Change password</button>\r\n        </div>\r\n\r\n      </form>\r\n\r\n    </div>\r\n  </div>\r\n\r\n</div>\r\n<!-- </div>\r\n  </div> -->\r\n"
 
 /***/ }),
 
@@ -1447,7 +1443,8 @@ var _a, _b;
 // The file contents for the current environment will overwrite these during build.
 var environment = {
     production: false,
-    restBaseUrl: "http://localhost:8666/"
+    restBaseUrl: "http://localhost:8666/",
+    identityServiceUrl: "https://localhost:7100/identity-api/account"
 };
 //# sourceMappingURL=environment.js.map
 

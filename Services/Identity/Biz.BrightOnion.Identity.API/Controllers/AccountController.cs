@@ -132,7 +132,24 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       return NoContent();
     }
 
-    [HttpPost]
+    [HttpGet("{email}")]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(UserDTO), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult> GetAsync(string email)
+    {
+      if (string.IsNullOrWhiteSpace(email))
+        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Email is null" });
+
+      var user = await userRepository.GetByEmailAsync(email);
+
+      if (user == null)
+        return new NotFoundObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
+
+      return Ok(new UserDTO { Email = user.Email, NotificationEnabled = user.NotificationEnabled });
+    }
+
+    [HttpPut]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     public async Task<IActionResult> UpdateAsync([FromBody]UserDTO userDTO)
@@ -140,9 +157,9 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       if (userDTO == null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User data is null" });
 
-      var user = await userRepository.GetByIdAsync(userDTO.Id);
+      var user = await userRepository.GetByEmailAsync(userDTO.Email);
       if(user == null)
-        return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
+        return new NotFoundObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
 
       if (user.NotificationEnabled != userDTO.NotificationEnabled)
       {

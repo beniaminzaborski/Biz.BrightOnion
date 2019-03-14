@@ -7,7 +7,7 @@ namespace Biz.BrightOnion.Identity.API.Dto
 {
   public class UserDTO
   {
-    public long Id { get; set; }
+    public string Email { get; set; }
 
     public bool NotificationEnabled { get; set; }
   }

@@ -4,11 +4,11 @@ import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
 
-import { Config } from "app/shared/config";
 import { User } from "./user.model";
 import { ChangePassword } from "./change-password.model";
 import { AuthData } from './auth-data.model';
 import { UserProfile } from "./user-profile.model";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class AuthenticationService {
@@ -16,7 +16,7 @@ export class AuthenticationService {
 
   public login(user: User): Observable<AuthData> {
     return this.http.post(
-      /*Config.apiUrl + */"https://localhost:7100/identity-api/account/login",
+      `${environment.identityServiceUrl}/login`,
       JSON.stringify({
         email: user.email,
         password: user.password
@@ -31,8 +31,7 @@ export class AuthenticationService {
       .do(authData => {
         localStorage.setItem('token', authData.token);
         localStorage.setItem('username', authData.email);
-      })
-      .catch(this.handleErrors);
+      }).catch(this.handleErrors);
   }
 
   logout() {
@@ -46,40 +45,38 @@ export class AuthenticationService {
 
   public changePassword(changePassword: ChangePassword) {
     return this.http.post(
-      Config.apiUrl + "user/changepassword",
+      `${environment.identityServiceUrl}/changepassword`,
       JSON.stringify({
         email: changePassword.email,
-        currentPasswd: changePassword.currentPassword,
-        Passwd: changePassword.newPassword,
-        Passwd2: changePassword.newPassword2,
+        oldPassword: changePassword.currentPassword,
+        password: changePassword.newPassword,
+        password2: changePassword.newPassword2,
       }),
       { observe: 'response' }
-    )
-      .catch(this.handleErrors);
+    ).catch(this.handleErrors);
   }
     
   public register(user: User) {
     return this.http.post<void>(
-      /*Config.apiUrl + */"https://localhost:7100/identity-api/account/register",
+      `${environment.identityServiceUrl}/register`,
       JSON.stringify({
         email: user.email,
         password: user.password,
         password2: user.password
       }),
       { observe: 'response' }
-    )
-      /*.catch(this.handleErrors)*/;
+    ).catch(this.handleErrors);
   }
 
   public getUserProfile(email: string): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${Config.apiUrl}user/${email}`);
+    return this.http.get<UserProfile>(`${environment.identityServiceUrl}/${email}`);
   }
 
   public editUserProfile(userProfile: UserProfile): Observable<boolean> {
     let body = JSON.stringify(userProfile);
 
     return this.http.put(
-      `${Config.apiUrl}user/profile/${userProfile.email}`, body, { observe: 'response' }
+      environment.identityServiceUrl, body, { observe: 'response' }
     ).map(response => response.status == 204);
   }
 
