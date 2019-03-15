@@ -19,6 +19,8 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations
 
       orderConfiguration.Property<long>("RoomId").IsRequired();
       orderConfiguration.Property<DateTime>("Day").IsRequired();
+      orderConfiguration.Property<int>("TotalPizzas").IsRequired().HasDefaultValue(0);
+      orderConfiguration.Property<int>("FreeSlicesToGrab").IsRequired().HasDefaultValue(0);
 
       var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
 

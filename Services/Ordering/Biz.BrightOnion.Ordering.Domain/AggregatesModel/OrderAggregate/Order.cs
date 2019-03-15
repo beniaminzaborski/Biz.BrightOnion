@@ -11,7 +11,8 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
 
     public long RoomId { get; private set; }
     public DateTime Day { get; private set; }
-
+    public int TotalPizzas { get; private set; }
+    public int FreeSlicesToGrab { get; private set; }
     private readonly List<OrderItem> orderItems;
     public IReadOnlyCollection<OrderItem> OrderItems => orderItems;
 
@@ -48,6 +49,9 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
         var orderItem = new OrderItem(purchaserId, quantity);
         orderItems.Add(orderItem);
       }
+
+      CalculateTotalPizzas();
+      CalculateFreeSlicesToGrab();
     }
 
     public void RemoveOrderItem(long purchaserId)
@@ -56,25 +60,28 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
         .SingleOrDefault();
 
       orderItems.Remove(existingOrderForPurchaser);
+
+      CalculateTotalPizzas();
+      CalculateFreeSlicesToGrab();
     }
 
-    public int GetTotalSlices()
+    private int GetTotalSlices()
     {
       return orderItems.Sum(s => s.Quantity);
     }
 
-    public int GetTotalPizzas()
+    private void CalculateTotalPizzas()
     {
       int pizzas = GetTotalSlices() / slicesPerPizza;
       if (GetTotalSlices() % slicesPerPizza > 0)
         pizzas = pizzas + 1;
-      return pizzas;
+      this.TotalPizzas = pizzas;
     }
 
-    public int GetFreeSlicesToGrab()
+    private void CalculateFreeSlicesToGrab()
     {
-      int totalPizzasSlices = GetTotalPizzas() * slicesPerPizza;
-      return totalPizzasSlices - GetTotalSlices();
+      int totalPizzasSlices = TotalPizzas * slicesPerPizza;
+      this.FreeSlicesToGrab = totalPizzasSlices - GetTotalSlices();
     }
   }
 }

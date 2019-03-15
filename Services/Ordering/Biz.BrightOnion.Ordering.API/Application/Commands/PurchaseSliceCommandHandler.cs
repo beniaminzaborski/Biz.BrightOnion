@@ -58,8 +58,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
         OrderId = order.Id,
         RoomId = order.RoomId,
         Day = order.Day,
-        TotalPizzas = order.GetTotalPizzas(),
-        FreeSlicesToGrab = order.GetFreeSlicesToGrab(),
+        TotalPizzas = order.TotalPizzas,
+        FreeSlicesToGrab = order.FreeSlicesToGrab,
         OrderItems = order.OrderItems.Select(i => new OrderItemDTO { OrderItemId = i.Id, PurchaserId = i.PurchaserId, Quantity = i.Quantity }).ToList()
       };
     }
