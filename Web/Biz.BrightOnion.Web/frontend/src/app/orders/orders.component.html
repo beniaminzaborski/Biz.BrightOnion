@@ -37,7 +37,7 @@
 
   <br>
 
-  <div class="col-md-10" *ngIf="pizzas > 0">
+  <div class="col-md-10" *ngIf="order.totalPizzas > 0">
     <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [colors]="pieChartColours" 
       (chartHover)="chartHovered($event)"
       (chartClick)="chartClicked($event)">

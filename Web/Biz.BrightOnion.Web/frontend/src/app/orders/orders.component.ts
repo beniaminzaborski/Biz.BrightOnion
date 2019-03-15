@@ -113,60 +113,47 @@ export class OrdersComponent implements OnInit {
   }
 
   private onLoadOrder(order: Order): void {
-    // this.orderItems = order;
-    //this.order = order;
-    //this.slices = order.freeSlicesToGrab;
-    //this.pizzas = order.totalPizzas;
-
-    //console.log('result:', order, this.slices, this.pizzas);
-    //this.setNumberOfSlices();
-    //this.checkIsApproved();
-    //this.preparePizzaChart();
+    this.order = order;
+    if (!this.order)
+      this.order = new Order();
+    this.checkIsApproved();
+    this.preparePizzaChart();
   }
 
   private checkIsApproved(): void {
     // this.isApproved = this.orderItems.some(item => item.isApproved);
   }
 
-  private setNumberOfSlices(): void {
-    let currentUserEmail = this.authenticationService.getLoggedUsername();
-
-    //this.orderItems.forEach((o) => {
-    //  if (o.who == currentUserEmail) {
-    //    this.makeOrder.quantity = o.quantity;
-    //  }
-    //});
-  }
-
   private preparePizzaChart(): void {
     let pieChartLabels: string[] = [];
     let pieChartData: number[] = [];
 
-    //this.orderItems.forEach((o) => {
-    //  this.slices += o.quantity;
-    //  pieChartLabels.push(o.who);
-    //  pieChartData.push(o.quantity);
-    //});
+    if (this.order && this.order.orderItems) {
+      this.order.orderItems.forEach((o) => {
+        pieChartLabels.push(o.purchaserId.toString()); // TODO: Get user name by user id
+        pieChartData.push(o.quantity);
+      });
 
-    if (this.order.totalPizzas == 0)
-      return;
+      if (this.order.totalPizzas == 0)
+        return;
 
-    if (this.order.freeSlicesToGrab > 0) {
-      pieChartLabels.push('FREE');
-      pieChartData.push(this.order.freeSlicesToGrab);
-    }
-
-    this.pieChartLabels = pieChartLabels;
-    this.pieChartData = pieChartData;
-
-    setTimeout(() => {
-      if (this.chart && this.chart.chart && this.chart.chart.config) {
-        this.chart.chart.config.data.labels = this.pieChartLabels;
-        //this.chart.chart.config.data.datasets = this.pieChartData;
-        this.chart.chart.config.data.colors = this.pieChartColours;
-        this.chart.chart.update();
+      if (this.order.freeSlicesToGrab > 0) {
+        pieChartLabels.push('FREE');
+        pieChartData.push(this.order.freeSlicesToGrab);
       }
-    });
+
+      this.pieChartLabels = pieChartLabels;
+      this.pieChartData = pieChartData;
+
+      setTimeout(() => {
+        if (this.chart && this.chart.chart && this.chart.chart.config) {
+          this.chart.chart.config.data.labels = this.pieChartLabels;
+          //this.chart.chart.config.data.datasets = this.pieChartData;
+          this.chart.chart.config.data.colors = this.pieChartColours;
+          this.chart.chart.update();
+        }
+      });
+    }
   }
 
   public makeOrder(): boolean {
@@ -175,12 +162,9 @@ export class OrdersComponent implements OnInit {
     makeOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
     makeOrderCommand.quantity = this.quantity;
     this.ordersService.makeOrder(makeOrderCommand)
-      .subscribe(result => {
-        if (result)
-          this.order = result;
-          // this.loadOrdersInRoom(this.selectedRoom.id);
-      },
-      error => alert(ErrorHelper.getErrorMessage(error))
+      .subscribe(
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
       );
     return false;
   }
