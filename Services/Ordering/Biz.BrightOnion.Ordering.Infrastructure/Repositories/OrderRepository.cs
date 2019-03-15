@@ -35,9 +35,9 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
       return await context.Orders.FindAsync(orderId);
     }
 
-    public async Task<Order> GetByDayEagerAsync(DateTime day)
+    public async Task<Order> GetByDayAndRoomEagerAsync(DateTime day, long roomId)
     {
-      return await context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Day == day.Date);
+      return await context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Day == day.Date && o.RoomId == roomId);
     }
 
     public void Update(Order order)

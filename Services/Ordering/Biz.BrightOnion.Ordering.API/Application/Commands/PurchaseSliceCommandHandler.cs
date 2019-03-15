@@ -22,7 +22,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
     {
       DateTime day = DateTime.Now.Date;
 
-      Order order = await orderRepository.GetByDayEagerAsync(day);
+      Order order = await orderRepository.GetByDayAndRoomEagerAsync(day, request.RoomId.Value);
       bool orderExists = order != null;
 
       if (!orderExists)
