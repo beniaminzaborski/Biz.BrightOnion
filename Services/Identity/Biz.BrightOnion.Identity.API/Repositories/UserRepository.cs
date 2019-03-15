@@ -20,5 +20,10 @@ namespace Biz.BrightOnion.Identity.API.Repositories
 
       return await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<IEnumerable<User>> GetAll()
+    {
+      return await dbContext.Users.ToListAsync();
+    }
   }
 }
