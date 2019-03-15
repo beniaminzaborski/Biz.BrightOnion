@@ -32,12 +32,12 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     }
 
     [HttpGet("{roomId}")]
-    [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<IEnumerable<Order>>> GetOrdersInRoomAsync(long roomId)
+    [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<Order>> GetOrdersInRoomAsync(long roomId)
     {
       var day = DateTime.Now.Date;
-      var orders = await orderQueries.GetOrderItemsInRoomForDayAsync(roomId, day);
-      return Ok(orders);
+      var order = await orderQueries.GetOrderInRoomForDayAsync(roomId, day);
+      return Ok(order);
     }
 
     [Route("make")]
