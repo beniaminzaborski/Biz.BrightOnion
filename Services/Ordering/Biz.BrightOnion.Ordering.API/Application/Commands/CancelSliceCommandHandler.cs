@@ -9,32 +9,31 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Commands
 {
-  public class PurchaseSliceCommandHandler : IRequestHandler<PurchaseSliceCommand, OrderDTO>
+  public class CancelSliceCommandHandler : IRequestHandler<CancelSliceCommand, OrderDTO>
   {
     private readonly IOrderRepository orderRepository;
 
-    public PurchaseSliceCommandHandler(
+    public CancelSliceCommandHandler(
       IOrderRepository orderRepository)
     {
       this.orderRepository = orderRepository;
     }
 
-    public async Task<OrderDTO> Handle(PurchaseSliceCommand request, CancellationToken cancellationToken)
+    public async Task<OrderDTO> Handle(CancelSliceCommand request, CancellationToken cancellationToken)
     {
       DateTime day = DateTime.Now.Date;
 
-      Order order = await orderRepository.GetByDayAndRoomEagerAsync(day, request.RoomId.Value);
+      Order order = await orderRepository.GetAsync(request.OrderId.Value);
       bool orderExists = order != null;
 
       if (!orderExists)
-        order = new Order(request.RoomId.Value, day);
+        return null;
 
-      order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);
-
-      if (!orderExists)
-        order = orderRepository.Add(order);
-      else
+      order.RemoveOrderItem(request.PurchaserId.Value);
+      //if (order.OrderItems.Any())
         orderRepository.Update(order);
+      //else
+      //  orderRepository.Remove(order);
 
       await orderRepository.UnitOfWork
         .SaveEntitiesAsync();

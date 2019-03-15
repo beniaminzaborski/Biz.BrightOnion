@@ -22,6 +22,8 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
       // Register all the Command classes (they implement IRequestHandler) in assembly holding the Commands
       builder.RegisterAssemblyTypes(typeof(PurchaseSliceCommand).GetTypeInfo().Assembly)
           .AsClosedTypesOf(typeof(IRequestHandler<,>));
+      builder.RegisterAssemblyTypes(typeof(CancelSliceCommand).GetTypeInfo().Assembly)
+          .AsClosedTypesOf(typeof(IRequestHandler<,>));
 
       // Register the DomainEventHandler classes (they implement INotificationHandler<>) in assembly holding the Domain Events
       //builder.RegisterAssemblyTypes(typeof(ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler).GetTypeInfo().Assembly)
@@ -30,6 +32,10 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
       // Register the Command's Validators (Validators based on FluentValidation library)
       builder
           .RegisterAssemblyTypes(typeof(PurchaseSliceCommandValidator).GetTypeInfo().Assembly)
+          .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
+          .AsImplementedInterfaces();
+      builder
+          .RegisterAssemblyTypes(typeof(CancelSliceCommandValidator).GetTypeInfo().Assembly)
           .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
           .AsImplementedInterfaces();
 

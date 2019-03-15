@@ -1,4 +1,5 @@
 ﻿using Biz.BrightOnion.Ordering.API.Application.Commands;
+using Biz.BrightOnion.Ordering.API.Application.Dto;
 using Biz.BrightOnion.Ordering.API.Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +47,14 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceCommand purchaseSliceCommand)
     {
       return await mediator.Send(purchaseSliceCommand);
+    }
+
+    [Route("cancel")]
+    [HttpPost]
+    [ProducesResponseType(typeof(OrderDTO), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<OrderDTO>> CancelSliceAsync([FromBody] CancelSliceCommand cancelSliceCommand)
+    {
+      return await mediator.Send(cancelSliceCommand);
     }
   }
 }

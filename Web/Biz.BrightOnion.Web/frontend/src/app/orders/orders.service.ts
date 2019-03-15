@@ -24,9 +24,9 @@ export class OrdersService {
     ).map(response => { console.log('body', response.body); return response.body; });
   }
 
-  public removeOrder(room: string, id: string):  Observable<boolean> {
+  public removeOrder(orderId: string):  Observable<boolean> {
     return this.http.delete(
-      `${environment.orderServiceUrl}/${room}/${id}`, { observe: 'response' }
+      `${environment.orderServiceUrl}/${orderId}`, { observe: 'response' }
     ).map(response => response.status == 204);
   }
 

@@ -7,22 +7,18 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.Commands
 {
-  public class PurchaseSliceCommand : IRequest<OrderDTO>
+  public class CancelSliceCommand : IRequest<OrderDTO>
   {
-    public long? RoomId { get; private set; }
+    public long? OrderId { get; private set; }
 
     public long? PurchaserId { get; private set; }
 
-    public int? Quantity { get; private set; }
-
-    public PurchaseSliceCommand(
-      long? roomId,
-      long? purchaserId,
-      int? quantity)
+    public CancelSliceCommand(
+      long? orderId,
+      long? purchaserId)
     {
-      this.RoomId = roomId;
+      this.OrderId = orderId;
       this.PurchaserId = purchaserId;
-      this.Quantity = quantity;
     }
   }
 }

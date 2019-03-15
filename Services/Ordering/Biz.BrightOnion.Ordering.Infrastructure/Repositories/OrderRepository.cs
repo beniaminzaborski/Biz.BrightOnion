@@ -30,7 +30,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
       return context.Orders.Add(order).Entity;
     }
 
-    public async Task<Order> GetAsync(int orderId)
+    public async Task<Order> GetAsync(long orderId)
     {
       return await context.Orders.FindAsync(orderId);
     }
