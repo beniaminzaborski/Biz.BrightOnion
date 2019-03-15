@@ -8,8 +8,8 @@ export class Order {
   public orderId: number;
   public roomId: number;
   public day: Date;
-  public totalPizzas: number;
-  public freeSlicesToGrab: number;
+  public totalPizzas: number = 0;
+  public freeSlicesToGrab: number = 0;
   public orderItems: OrderItem[];
 }
 

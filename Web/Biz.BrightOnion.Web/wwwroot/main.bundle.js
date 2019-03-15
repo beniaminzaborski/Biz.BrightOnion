@@ -404,6 +404,8 @@ var MakeOrder = (function () {
 
 var Order = (function () {
     function Order() {
+        this.totalPizzas = 0;
+        this.freeSlicesToGrab = 0;
     }
     return Order;
 }());
