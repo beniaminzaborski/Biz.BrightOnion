@@ -13,5 +13,7 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
     Task<Order> GetAsync(long orderId);
 
     Task<Order> GetByDayAndRoomEagerAsync(DateTime day, long roomId);
+
+    void Remove(Order order);
   }
 }

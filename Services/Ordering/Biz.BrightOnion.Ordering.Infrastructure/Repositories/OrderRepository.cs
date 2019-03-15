@@ -32,7 +32,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
 
     public async Task<Order> GetAsync(long orderId)
     {
-      return await context.Orders.FindAsync(orderId);
+      return await context.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.Id == orderId);
     }
 
     public async Task<Order> GetByDayAndRoomEagerAsync(DateTime day, long roomId)
@@ -43,6 +43,11 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
     public void Update(Order order)
     {
       context.Entry(order).State = EntityState.Modified;
+    }
+
+    public void Remove(Order order)
+    {
+      context.Entry(order).State = EntityState.Deleted;
     }
   }
 }

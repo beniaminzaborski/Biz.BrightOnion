@@ -30,10 +30,13 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
         return null;
 
       order.RemoveOrderItem(request.PurchaserId.Value);
-      //if (order.OrderItems.Any())
+      if (order.OrderItems.Count() > 0)
         orderRepository.Update(order);
-      //else
-      //  orderRepository.Remove(order);
+      else
+      {
+        orderRepository.Remove(order);
+        order = null;
+      }
 
       await orderRepository.UnitOfWork
         .SaveEntitiesAsync();

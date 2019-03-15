@@ -4,6 +4,11 @@ export class MakeOrder {
   public quantity: number;
 }
 
+export class CancelOrder {
+  public orderId: number;
+  public purchaserId: number;
+}
+
 export class Order {
   public orderId: number;
   public roomId: number;

@@ -17,6 +17,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Dto
 
     public static OrderDTO FromOrder(Order order)
     {
+      if (order == null)
+        return null;
+
       return new OrderDTO()
       {
         OrderId = order.Id,

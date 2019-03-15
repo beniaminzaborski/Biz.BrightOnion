@@ -392,14 +392,21 @@ var LoginComponent = (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MakeOrder; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Order; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MakeOrder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CancelOrder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return Order; });
 /* unused harmony export OrderItem */
 /* unused harmony export OrdersApproval */
 var MakeOrder = (function () {
     function MakeOrder() {
     }
     return MakeOrder;
+}());
+
+var CancelOrder = (function () {
+    function CancelOrder() {
+    }
+    return CancelOrder;
 }());
 
 var Order = (function () {
@@ -471,7 +478,7 @@ var OrdersComponent = (function () {
         this.ordersService = ordersService;
         this.authenticationService = authenticationService;
         this.rooms = [];
-        this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["b" /* Order */]();
+        this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["c" /* Order */]();
         this.isApproved = false;
         // Pie
         this.pieChartLabels = [];
@@ -542,7 +549,7 @@ var OrdersComponent = (function () {
     OrdersComponent.prototype.onLoadOrder = function (order) {
         this.order = order;
         if (!this.order)
-            this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["b" /* Order */]();
+            this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["c" /* Order */]();
         this.checkIsApproved();
         this.preparePizzaChart();
     };
@@ -578,7 +585,7 @@ var OrdersComponent = (function () {
     };
     OrdersComponent.prototype.makeOrder = function () {
         var _this = this;
-        var makeOrderCommand = new __WEBPACK_IMPORTED_MODULE_3__order_model__["a" /* MakeOrder */]();
+        var makeOrderCommand = new __WEBPACK_IMPORTED_MODULE_3__order_model__["b" /* MakeOrder */]();
         makeOrderCommand.roomId = this.selectedRoom.id;
         makeOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
         makeOrderCommand.quantity = this.quantity;
@@ -588,12 +595,11 @@ var OrdersComponent = (function () {
     };
     OrdersComponent.prototype.cancel = function () {
         var _this = this;
-        var orderId = this.getOrderId();
-        this.ordersService.removeOrder(this.selectedRoom.name, orderId)
-            .subscribe(function (result) {
-            if (result)
-                _this.loadOrdersInRoom(_this.selectedRoom.id);
-        }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
+        var cancelOrderCommand = new __WEBPACK_IMPORTED_MODULE_3__order_model__["a" /* CancelOrder */]();
+        cancelOrderCommand.orderId = this.order.orderId;
+        cancelOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
+        this.ordersService.removeOrder(cancelOrderCommand)
+            .subscribe(function (order) { return _this.onLoadOrder(order); }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
         return false;
     };
     OrdersComponent.prototype.getOrderId = function () {
@@ -680,8 +686,9 @@ var OrdersService = (function () {
         var body = JSON.stringify(makeOrder);
         return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/make", body, { observe: 'response' }).map(function (response) { console.log('body', response.body); return response.body; });
     };
-    OrdersService.prototype.removeOrder = function (room, id) {
-        return this.http.delete(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/" + id, { observe: 'response' }).map(function (response) { return response.status == 204; });
+    OrdersService.prototype.removeOrder = function (cancelOrder) {
+        var body = JSON.stringify(cancelOrder);
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/cancel", body, { observe: 'response' }).map(function (response) { console.log('body', response.body); return response.body; });
     };
     OrdersService.prototype.approveOrders = function (room) {
         return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/approve", null, { observe: 'response' }).map(function (response) { return response.status == 201; });

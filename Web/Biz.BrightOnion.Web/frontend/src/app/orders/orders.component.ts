@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../rooms/rooms.service';
 import { Room } from '../rooms/room.model';
-import { MakeOrder, Order, OrderItem } from './order.model';
+import { MakeOrder, Order, OrderItem, CancelOrder } from './order.model';
 import { AuthenticationService } from '../shared/auth/authentication.service';
 import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -170,15 +170,16 @@ export class OrdersComponent implements OnInit {
   }
 
   public cancel(): boolean {
-    let orderId: string = this.getOrderId();
+    let cancelOrderCommand = new CancelOrder();
+    cancelOrderCommand.orderId = this.order.orderId;
+    cancelOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
 
-    this.ordersService.removeOrder(this.selectedRoom.name, orderId)
-      .subscribe(result => {
-        if (result)
-          this.loadOrdersInRoom(this.selectedRoom.id);
-      },
-      error => alert(ErrorHelper.getErrorMessage(error))
-      );
+    this.ordersService.removeOrder(cancelOrderCommand)
+      .subscribe(
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
+    );
+
     return false;
   }
 

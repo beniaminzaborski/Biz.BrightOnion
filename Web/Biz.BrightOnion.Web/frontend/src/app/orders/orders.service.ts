@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
-import { MakeOrder, Order, OrderItem } from "./order.model";
+import { MakeOrder, Order, OrderItem, CancelOrder } from "./order.model";
 import { environment } from "../../environments/environment";
 
 @Injectable()
@@ -24,10 +24,11 @@ export class OrdersService {
     ).map(response => { console.log('body', response.body); return response.body; });
   }
 
-  public removeOrder(orderId: string):  Observable<boolean> {
-    return this.http.delete(
-      `${environment.orderServiceUrl}/${orderId}`, { observe: 'response' }
-    ).map(response => response.status == 204);
+  public removeOrder(cancelOrder: CancelOrder): Observable<Order> {
+    let body = JSON.stringify(cancelOrder);
+    return this.http.post<Order>(
+      `${environment.orderServiceUrl}/cancel`, body, { observe: 'response' }
+    ).map(response => { console.log('body', response.body); return response.body; });
   }
 
   public approveOrders(room: string): Observable<boolean> {
