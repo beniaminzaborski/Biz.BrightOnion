@@ -1,29 +1,53 @@
 version: '3.4'
 
 services:
+  biz.brightonion.web:
+    image: ${DOCKER_REGISTRY-}bizbrightonionweb
+    build:
+      context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
+      dockerfile: Web/Biz.BrightOnion.Web/Dockerfile
+
+  biz.brightonion.apigateway:
+    image: ${DOCKER_REGISTRY-}bizbrightonionapigateway
+    build:
+      context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
+      dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
+
   biz.brightonion.identityservice:
     image: ${DOCKER_REGISTRY-}bizbrightonionidentityservice
     build:
       context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
       dockerfile: Services/Identity/Biz.BrightOnion.Identity.API/Dockerfile
-
-  biz.brightonion.orderingservice:
-    image: ${DOCKER_REGISTRY-}bizbrightonionorderingservice
-    build:
-      context: .
-      dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
-
-
-  biz.brightonion.analytics.api:
-    image: ${DOCKER_REGISTRY-}bizbrightonionanalyticsapi
-    build:
-      context: .
-      dockerfile: Services/Analytics/Biz.BrightOnion.Analytics.API/Dockerfile
-
 
   biz.brightonion.catalog.api:
     image: ${DOCKER_REGISTRY-}bizbrightonioncatalogapi
     build:
       context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
       dockerfile: Services/Catalog/Biz.BrightOnion.Catalog.API/Dockerfile
 
+  biz.brightonion.orderingservice:
+    image: ${DOCKER_REGISTRY-}bizbrightonionorderingservice
+    build:
+      context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
+      dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
+
+#  biz.brightonion.analytics.api:
+#    image: ${DOCKER_REGISTRY-}bizbrightonionanalyticsapi
+#    build:
+#      context: .
+#      dockerfile: Services/Analytics/Biz.BrightOnion.Analytics.API/Dockerfile
