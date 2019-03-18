@@ -17,7 +17,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
       order.AddOrderItem(2, 1);
 
       // Act
-      int pizzas = order.GetTotalPizzas();
+      int pizzas = order.TotalPizzas;
 
       // Assert
       Assert.Equal(1, pizzas);
@@ -32,7 +32,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
       order.AddOrderItem(2, 3);
 
       // Act
-      int pizzas = order.GetTotalPizzas();
+      int pizzas = order.TotalPizzas;
 
       // Assert
       Assert.Equal(1, pizzas);
@@ -48,7 +48,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
       order.AddOrderItem(3, 2);
 
       // Act
-      int pizzas = order.GetTotalPizzas();
+      int pizzas = order.TotalPizzas;
 
       // Assert
       Assert.Equal(2, pizzas);
@@ -64,7 +64,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
       order.AddOrderItem(3, 8);
 
       // Act
-      int pizzas = order.GetTotalPizzas();
+      int pizzas = order.TotalPizzas;
 
       // Assert
       Assert.Equal(2, pizzas);
