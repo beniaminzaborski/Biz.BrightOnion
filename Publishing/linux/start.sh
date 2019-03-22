@@ -21,6 +21,8 @@ cd ../..
 
 cd Services/Identity.BackgroundTasks
 export ASPNETCORE_ENVIRONMENT=Presentation
+export ASPNETCORE_URLS=http://+:7011 
+export ASPNETCORE_HTTP_PORT=7011 
 dotnet Biz.BrightOnion.Identity.BackgroundTasks.dll & 
 cd ../..
 
@@ -33,6 +35,8 @@ cd ../..
 
 cd Services/Catalog.BackgroundTasks
 export ASPNETCORE_ENVIRONMENT=Presentation
+export ASPNETCORE_URLS=http://+:7012
+export ASPNETCORE_HTTP_PORT=7012
 dotnet Biz.BrightOnion.Catalog.BackgroundTasks.dll &
 cd ../..
 
