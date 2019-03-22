@@ -55,6 +55,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Infrastructure", "Services\Ordering\Biz.BrightOnion.Ordering.Infrastructure\Biz.BrightOnion.Ordering.Infrastructure.csproj", "{8868238B-C347-4119-8622-D1E3E40F4C3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publishing", "Publishing", "{E2D79378-3C16-4054-9AC6-158E33400055}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{9DE0F7D4-9455-41FC-B9A9-657B00A87465}"
+	ProjectSection(SolutionItems) = preProject
+		Publishing\linux\publish.sh = Publishing\linux\publish.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +166,7 @@ Global
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B} = {B466F5C9-5F34-4ED6-AAE0-717676D6EE04}
 		{205AF255-77BC-45FC-B2AA-8A61BB38EB36} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 		{8868238B-C347-4119-8622-D1E3E40F4C3F} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
+		{9DE0F7D4-9455-41FC-B9A9-657B00A87465} = {E2D79378-3C16-4054-9AC6-158E33400055}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}
