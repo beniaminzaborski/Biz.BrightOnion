@@ -25,4 +25,4 @@ cp -r ../../Services/Identity/Biz.BrightOnion.Identity.BackgroundTasks/bin/Debug
 
 cp -r ../../Services/Ordering/Biz.BrightOnion.Ordering.API/bin/Debug/netcoreapp2.2/publish/* ~/Biz.BrightOnion/Services/Ordering.API
 
-cp ./run.sh ~/Biz.BrightOnion
+cp ./*.sh ~/Biz.BrightOnion
