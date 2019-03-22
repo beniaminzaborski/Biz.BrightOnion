@@ -19,7 +19,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations
       // orderConfiguration.Ignore(b => b.DomainEvents);
 
       purchaserConfiguration.Property<string>("Email").IsRequired();
-      purchaserConfiguration.Property<bool>("NotificationEnabled").IsRequired().HasDefaultValue(false);
+      purchaserConfiguration.Property<bool>("NotificationEnabled")/*.IsRequired().HasDefaultValue(false)*/;
     }
   }
 }

@@ -14,10 +14,12 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate
 
     public Purchaser(
       long id,
-      string email) : this()
+      string email,
+      bool notificationEnabled = false) : this()
     {
       this.Id = id;
       this.Email = email;
+      this.NotificationEnabled = notificationEnabled;
     }
   }
 }
