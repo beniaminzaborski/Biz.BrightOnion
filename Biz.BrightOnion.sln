@@ -60,6 +60,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{9DE0F7D4-9455-41FC-B9A9-657B00A87465}"
 	ProjectSection(SolutionItems) = preProject
 		Publishing\linux\publish.sh = Publishing\linux\publish.sh
+		Publishing\linux\start.sh = Publishing\linux\start.sh
+		Publishing\linux\stop.sh = Publishing\linux\stop.sh
 	EndProjectSection
 EndProject
 Global
