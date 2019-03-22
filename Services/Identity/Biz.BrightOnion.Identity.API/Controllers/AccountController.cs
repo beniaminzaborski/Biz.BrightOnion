@@ -74,6 +74,7 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       {
         await userRepository.CreateAsync(user);
         await dbContext.SaveChangesAsync();
+        // dbContext.SaveChanges();
 
         var userRegisteredEvent = new UserRegisteredEvent(user.Id, user.Email);
 

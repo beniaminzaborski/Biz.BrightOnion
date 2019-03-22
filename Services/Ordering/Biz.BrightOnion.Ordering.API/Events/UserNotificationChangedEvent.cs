@@ -14,7 +14,7 @@ namespace Biz.BrightOnion.Ordering.API.Events
 
     public UserNotificationChangedEvent(long id, bool notificationEnabled)
     {
-      Id = Id;
+      Id = id;
       NotificationEnabled = notificationEnabled;
     }
   }

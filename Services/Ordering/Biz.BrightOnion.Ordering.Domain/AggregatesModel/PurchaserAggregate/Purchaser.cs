@@ -8,7 +8,7 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate
   public class Purchaser : Entity, IAggregateRoot
   {
     public string Email { get; private set; }
-    public bool NotificationEnabled { get; private set; }
+    public bool NotificationEnabled { get; private set; } = false;
 
     protected Purchaser() { }
 

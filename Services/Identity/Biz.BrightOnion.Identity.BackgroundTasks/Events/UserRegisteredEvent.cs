@@ -14,7 +14,7 @@ namespace Biz.BrightOnion.Identity.API.Events
 
     public UserRegisteredEvent(long id, string email)
     {
-      Id = Id;
+      Id = id;
       Email = email;
     }
   }

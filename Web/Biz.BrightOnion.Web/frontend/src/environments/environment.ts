@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  accountServiceUrl: "https://localhost:7100/identity-api/account",
-  roomServiceUrl: "https://localhost:7100/catalog-api/room",
-  orderServiceUrl: "https://localhost:7100/ordering-api/v1/orders"
+  accountServiceUrl: "http://localhost:7000/identity-api/account",
+  roomServiceUrl: "http://localhost:7000/catalog-api/room",
+  orderServiceUrl: "http://localhost:7000/ordering-api/v1/orders"
 };
