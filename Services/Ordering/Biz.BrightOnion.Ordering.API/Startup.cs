@@ -14,6 +14,7 @@ using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
 using Biz.BrightOnion.Ordering.Infrastructure;
 using Biz.BrightOnion.Ordering.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -47,6 +48,7 @@ namespace Biz.BrightOnion.Ordering.API
         .AddCustomDbContext(Configuration)
         .AddEventBus(Configuration);
 
+      services.AddScoped<IPurchaserRepository, PurchaserRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();
 
       services.AddCors();
@@ -91,6 +93,7 @@ namespace Biz.BrightOnion.Ordering.API
     protected virtual void ConfigureEventBus(IApplicationBuilder app)
     {
       var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+      eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
       eventBus.Subscribe<UserNotificationChangedEvent, UserNotificationChangedEventHandler>();
       eventBus.Subscribe<RoomNameChangedEvent, RoomNameChangedEventHandler>();
       eventBus.Subscribe<RoomDeletedEvent, RoomDeletedEventHandler>();
@@ -171,6 +174,7 @@ namespace Biz.BrightOnion.Ordering.API
       });
 
       services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+      services.AddTransient<UserRegisteredEventHandler>();
       services.AddTransient<UserNotificationChangedEventHandler>();
       services.AddTransient<RoomNameChangedEventHandler>();
       services.AddTransient<RoomDeletedEventHandler>();

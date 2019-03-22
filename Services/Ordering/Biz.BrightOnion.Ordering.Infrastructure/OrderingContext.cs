@@ -1,4 +1,5 @@
 ﻿using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
 using Biz.BrightOnion.Ordering.Domain.Seedwork;
 using Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
   public class OrderingContext : DbContext, IUnitOfWork
   {
     public DbSet<Order> Orders { get; set; }
+    public DbSet<Purchaser> Purchasers { get; set; }
 
     public OrderingContext() : base() { }
     public OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
@@ -38,6 +40,8 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
     {
       modelBuilder.ApplyConfiguration(new OrderEntityTypeConfiguration());
       modelBuilder.ApplyConfiguration(new OrderItemEntityTypeConfiguration());
+
+      modelBuilder.ApplyConfiguration(new PurchaserEntityTypeConfiguration());
     }
   }
 }
