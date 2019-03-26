@@ -64,12 +64,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux", "linux", "{9DE0F7D4
 		Publishing\linux\stop.sh = Publishing\linux\stop.sh
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{5B4FA211-C1FD-423C-AFB7-0E20702DAFEB}"
-	ProjectSection(SolutionItems) = preProject
-		Publishing\build\build-home.ps1 = Publishing\build\build-home.ps1
-		Publishing\build\build-work.ps1 = Publishing\build\build-work.ps1
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,7 +169,6 @@ Global
 		{205AF255-77BC-45FC-B2AA-8A61BB38EB36} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 		{8868238B-C347-4119-8622-D1E3E40F4C3F} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 		{9DE0F7D4-9455-41FC-B9A9-657B00A87465} = {E2D79378-3C16-4054-9AC6-158E33400055}
-		{5B4FA211-C1FD-423C-AFB7-0E20702DAFEB} = {E2D79378-3C16-4054-9AC6-158E33400055}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}
