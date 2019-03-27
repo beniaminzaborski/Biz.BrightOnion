@@ -33,8 +33,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!orderExists)
       {
         order = new Order(request.RoomId.Value, day);
-        // TODO: Publish domain event - NewOrderCreatedEvent.
-        // TODO: Handle NewOrderCreatedEvent and send e-mail with IMailerService
+        // TODO: Publish domain event - NewOrderCreatedDomainEvent.
+        // TODO: Handle NewOrderCreatedDomainEvent and send e-mail with IMailerService
       }
 
       order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);

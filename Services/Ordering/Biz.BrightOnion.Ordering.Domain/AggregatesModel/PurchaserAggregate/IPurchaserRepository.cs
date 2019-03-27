@@ -15,5 +15,7 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate
     Purchaser Add(Purchaser purchaser);
 
     void Update(Purchaser purchaser);
+
+    Task<IEnumerable<Purchaser>> GetAllWithEnabledNotification();
   }
 }

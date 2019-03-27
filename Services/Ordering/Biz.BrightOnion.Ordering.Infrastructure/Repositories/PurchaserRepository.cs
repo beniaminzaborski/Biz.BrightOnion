@@ -45,5 +45,10 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
     {
       context.Entry(purchaser).State = EntityState.Modified;
     }
+
+    public async Task<IEnumerable<Purchaser>> GetAllWithEnabledNotification()
+    {
+      return await context.Purchasers.Where(p => p.NotificationEnabled).ToListAsync();
+    }
   }
 }
