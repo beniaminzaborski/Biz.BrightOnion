@@ -15,8 +15,11 @@ using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
+using Biz.BrightOnion.Ordering.Domain.Services;
 using Biz.BrightOnion.Ordering.Infrastructure;
+using Biz.BrightOnion.Ordering.Infrastructure.Configuration;
 using Biz.BrightOnion.Ordering.Infrastructure.Repositories;
+using Biz.BrightOnion.Ordering.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -44,12 +47,16 @@ namespace Biz.BrightOnion.Ordering.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public IServiceProvider ConfigureServices(IServiceCollection services)
     {
+      services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+      services.Configure<MailerOptions>(Configuration.GetSection("Mailer"));
+
       services
         .AddCustomDbContext(Configuration)
         .AddEventBus(Configuration);
 
       services.AddScoped<IPurchaserRepository, PurchaserRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();
+      services.AddScoped<IMailerService, MailerService>();
 
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
