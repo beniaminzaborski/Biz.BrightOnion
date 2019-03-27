@@ -8,6 +8,8 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate
 {
   public interface IPurchaserRepository : IRepository<Purchaser>
   {
+    Task<Purchaser> Get(long id);
+
     Task<bool> CheckIfExistsAsync(long id);
 
     Purchaser Add(Purchaser purchaser);

@@ -21,5 +21,10 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate
       this.Email = email;
       this.NotificationEnabled = notificationEnabled;
     }
+
+    public void SetNotificationEnabled(bool notificationEnabled)
+    {
+      this.NotificationEnabled = notificationEnabled;
+    }
   }
 }

@@ -21,6 +21,11 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.Repositories
       }
     }
 
+    public async Task<Purchaser> Get(long id)
+    {
+      return await context.Purchasers.FirstOrDefaultAsync(p => p.Id == id);
+    }
+
     public async Task<bool> CheckIfExistsAsync(long id)
     {
       return await context.Purchasers.AnyAsync(p => p.Id == id);
