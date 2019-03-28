@@ -30,7 +30,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!orderExists)
       {
         order = new Order(request.RoomId.Value, day);
-        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Day, order.RoomId, request.PurchaserId.Value);
+        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Day, ""/*order.RoomName*/, request.PurchaserId.Value); // TODO: Inject room name by Aggregated API Gateway
         order.AddDomainEvent(newOrderCreatedDomainEvent);
       }
 

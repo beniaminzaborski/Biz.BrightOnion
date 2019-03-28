@@ -8,16 +8,16 @@ namespace Biz.BrightOnion.Ordering.Domain.Events
   public class NewOrderCreatedDomainEvent : INotification
   {
     public DateTime Day { get; private set; }
-    public long RoomId { get; set; }
+    public string RoomName { get; private set; }
     public long PurchaserId { get; private set; }
 
     public NewOrderCreatedDomainEvent(
       DateTime day,
-      long roomId,
+      string roomName,
       long purchaserId)
     {
       this.Day = day;
-      this.RoomId = roomId;
+      this.RoomName = roomName;
       this.PurchaserId = purchaserId;
     }
   }
