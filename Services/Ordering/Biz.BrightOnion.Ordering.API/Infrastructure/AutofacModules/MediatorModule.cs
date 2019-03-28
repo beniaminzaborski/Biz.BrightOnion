@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Biz.BrightOnion.Ordering.API.Application.Behaviors;
 using Biz.BrightOnion.Ordering.API.Application.Commands;
+using Biz.BrightOnion.Ordering.API.Application.DomainEventHandlers;
 using Biz.BrightOnion.Ordering.API.Application.Validations;
 using FluentValidation;
 using MediatR;
@@ -30,8 +31,8 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
           .AsClosedTypesOf(typeof(IRequestHandler<,>));
 
       // Register the DomainEventHandler classes (they implement INotificationHandler<>) in assembly holding the Domain Events
-      //builder.RegisterAssemblyTypes(typeof(ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler).GetTypeInfo().Assembly)
-      //    .AsClosedTypesOf(typeof(INotificationHandler<>));
+      builder.RegisterAssemblyTypes(typeof(NotifyPurchasersWhenNewOrderCreatedDomainEventHandler).GetTypeInfo().Assembly)
+          .AsClosedTypesOf(typeof(INotificationHandler<>));
 
       // Register the Command's Validators (Validators based on FluentValidation library)
       builder

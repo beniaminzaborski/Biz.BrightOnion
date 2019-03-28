@@ -1,5 +1,6 @@
 ﻿using Biz.BrightOnion.Ordering.API.Application.Dto;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.Events;
 using Biz.BrightOnion.Ordering.Domain.Services;
 using MediatR;
 using System;
@@ -13,14 +14,10 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
   public class PurchaseSliceCommandHandler : IRequestHandler<PurchaseSliceCommand, OrderDTO>
   {
     private readonly IOrderRepository orderRepository;
-    // private readonly IMailerService mailerService;
 
-    public PurchaseSliceCommandHandler(
-      IOrderRepository orderRepository/*,
-      IMailerService mailerService*/)
+    public PurchaseSliceCommandHandler(IOrderRepository orderRepository)
     {
       this.orderRepository = orderRepository;
-      // this.mailerService = mailerService;
     }
 
     public async Task<OrderDTO> Handle(PurchaseSliceCommand request, CancellationToken cancellationToken)
@@ -33,8 +30,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!orderExists)
       {
         order = new Order(request.RoomId.Value, day);
-        // TODO: Publish domain event - NewOrderCreatedDomainEvent.
-        // TODO: Handle NewOrderCreatedDomainEvent and send e-mail with IMailerService
+        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Day, order.RoomId, request.PurchaserId.Value);
+        order.AddDomainEvent(newOrderCreatedDomainEvent);
       }
 
       order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);

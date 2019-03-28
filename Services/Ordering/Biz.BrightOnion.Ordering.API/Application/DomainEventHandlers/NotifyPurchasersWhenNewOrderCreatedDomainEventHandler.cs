@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.API.Application.DomainEventHandlers
 {
-  public class NotifyPurchesersWhenNewOrderCreatedDomainEventHandler : INotificationHandler<NewOrderCreatedDomainEvent>
+  public class NotifyPurchasersWhenNewOrderCreatedDomainEventHandler : INotificationHandler<NewOrderCreatedDomainEvent>
   {
     private const string emailSubject = "Bright Onion";
     private const string emailBodyTemplate = "Oops someone is hungry. The pizza has been just opened in by {0}. Can you join me? Let's get some pizza.";
@@ -16,7 +16,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.DomainEventHandlers
     private readonly IPurchaserRepository purchaserRepository;
     private readonly IMailerService mailerService;
 
-    public NotifyPurchesersWhenNewOrderCreatedDomainEventHandler(
+    public NotifyPurchasersWhenNewOrderCreatedDomainEventHandler(
       IPurchaserRepository purchaserRepository,
       IMailerService mailerService)
     {
@@ -26,7 +26,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.DomainEventHandlers
 
     public async Task Handle(NewOrderCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-      string emailBody = string.Format(emailBodyTemplate, notification.Email);
+      var purchaser = await purchaserRepository.Get(notification.PurchaserId);
+      string emailBody = string.Format(emailBodyTemplate, purchaser?.Email);
       var purchasers = await purchaserRepository.GetAllWithEnabledNotification();
       purchasers?.ToList().ForEach(p => mailerService.Send(p.Email, emailSubject, emailBody));
     }

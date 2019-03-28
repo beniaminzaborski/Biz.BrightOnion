@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,38 +7,38 @@ namespace Biz.BrightOnion.Ordering.Domain.Seedwork
 {
   public abstract class Entity
   {
-    int? _requestedHashCode;
-    long _Id;
+    int? requestedHashCode;
+    long id;
     public virtual long Id
     {
       get
       {
-        return _Id;
+        return id;
       }
       protected set
       {
-        _Id = value;
+        id = value;
       }
     }
 
-    //private List<INotification> _domainEvents;
-    //public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
+    private List<INotification> domainEvents;
+    public IReadOnlyCollection<INotification> DomainEvents => domainEvents?.AsReadOnly();
 
-    //public void AddDomainEvent(INotification eventItem)
-    //{
-    //  _domainEvents = _domainEvents ?? new List<INotification>();
-    //  _domainEvents.Add(eventItem);
-    //}
+    public void AddDomainEvent(INotification eventItem)
+    {
+      domainEvents = domainEvents ?? new List<INotification>();
+      domainEvents.Add(eventItem);
+    }
 
-    //public void RemoveDomainEvent(INotification eventItem)
-    //{
-    //  _domainEvents?.Remove(eventItem);
-    //}
+    public void RemoveDomainEvent(INotification eventItem)
+    {
+      domainEvents?.Remove(eventItem);
+    }
 
-    //public void ClearDomainEvents()
-    //{
-    //  _domainEvents?.Clear();
-    //}
+    public void ClearDomainEvents()
+    {
+      domainEvents?.Clear();
+    }
 
     public bool IsTransient()
     {
@@ -67,10 +68,10 @@ namespace Biz.BrightOnion.Ordering.Domain.Seedwork
     {
       if (!IsTransient())
       {
-        if (!_requestedHashCode.HasValue)
-          _requestedHashCode = this.Id.GetHashCode() ^ 31; // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
+        if (!requestedHashCode.HasValue)
+          requestedHashCode = this.Id.GetHashCode() ^ 31; // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
 
-        return _requestedHashCode.Value;
+        return requestedHashCode.Value;
       }
       else
         return base.GetHashCode();

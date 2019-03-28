@@ -2,6 +2,7 @@
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
 using Biz.BrightOnion.Ordering.Domain.Seedwork;
 using Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,18 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
 {
   public class OrderingContext : DbContext, IUnitOfWork
   {
+    private readonly IMediator mediator;
+
     public DbSet<Order> Orders { get; set; }
     public DbSet<Purchaser> Purchasers { get; set; }
 
-    public OrderingContext() : base() { }
-    public OrderingContext(DbContextOptions<OrderingContext> options) : base(options) { }
+    //public OrderingContext() : base() { }
+    public OrderingContext(
+      DbContextOptions<OrderingContext> options, 
+      IMediator mediator) : base(options)
+    {
+      this.mediator = mediator;
+    }
 
     public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
     {
@@ -27,7 +35,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
       // side effects from the domain event handlers which are using the same DbContext with "InstancePerLifetimeScope" or "scoped" lifetime
       // B) Right AFTER committing data (EF SaveChanges) into the DB will make multiple transactions. 
       // You will need to handle eventual consistency and compensatory actions in case of failures in any of the Handlers. 
-      // await mediator.DispatchDomainEventsAsync(this);
+      await mediator.DispatchDomainEventsAsync(this);
 
       // After executing this line all the changes (from the Command Handler and Domain Event Handlers) 
       // performed through the DbContext will be committed

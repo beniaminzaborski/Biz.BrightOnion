@@ -7,11 +7,18 @@ namespace Biz.BrightOnion.Ordering.Domain.Events
 {
   public class NewOrderCreatedDomainEvent : INotification
   {
-    public string Email { get; private set; }
+    public DateTime Day { get; private set; }
+    public long RoomId { get; set; }
+    public long PurchaserId { get; private set; }
 
-    public NewOrderCreatedDomainEvent(string email)
+    public NewOrderCreatedDomainEvent(
+      DateTime day,
+      long roomId,
+      long purchaserId)
     {
-      this.Email = email;
+      this.Day = day;
+      this.RoomId = roomId;
+      this.PurchaserId = purchaserId;
     }
   }
 }
