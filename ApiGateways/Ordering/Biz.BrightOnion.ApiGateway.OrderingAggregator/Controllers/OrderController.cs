@@ -35,11 +35,11 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
     [ProducesResponseType(typeof(OrderData), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<OrderData>> PurchaseSliceAsync([FromBody] PurchaseSliceRequest data)
     {
-      // Step 1: Get room name by data.RoomId
-      string roomName = await roomApiClient.GetNameAsync(data.RoomId);
+      // Step 1: Get room by data.RoomId
+      var room = await roomApiClient.GetAsync(data.RoomId);
 
       // Step 2: Call purchase order on orderClient
-      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, roomName, data.PurchaserId, data.Quantity);
+      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, data.PurchaserId, data.Quantity);
 
       // Step 3: Get users list and set user's e-mail
       IEnumerable<UserDTO> users = await userClient.GetAllAsync();
