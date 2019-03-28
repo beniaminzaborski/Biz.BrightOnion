@@ -4,8 +4,10 @@ using Biz.BrightOnion.Ordering.Domain.Seedwork;
 using Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +17,10 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
   public class OrderingContext : DbContext, IUnitOfWork
   {
     private readonly IMediator mediator;
+    private IDbContextTransaction currentTransaction;
+
+    public IDbContextTransaction GetCurrentTransaction => currentTransaction;
+    public bool HasActiveTransaction => currentTransaction != null;
 
     public DbSet<Order> Orders { get; set; }
     public DbSet<Purchaser> Purchasers { get; set; }
@@ -42,6 +48,56 @@ namespace Biz.BrightOnion.Ordering.Infrastructure
       var result = await base.SaveChangesAsync();
 
       return true;
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+      if (currentTransaction != null) return null;
+
+      currentTransaction = await Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+      return currentTransaction;
+    }
+
+    public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+    {
+      if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+      if (transaction != currentTransaction) throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+
+      try
+      {
+        await SaveChangesAsync();
+        transaction.Commit();
+      }
+      catch
+      {
+        RollbackTransaction();
+        throw;
+      }
+      finally
+      {
+        if (currentTransaction != null)
+        {
+          currentTransaction.Dispose();
+          currentTransaction = null;
+        }
+      }
+    }
+
+    public void RollbackTransaction()
+    {
+      try
+      {
+        currentTransaction?.Rollback();
+      }
+      finally
+      {
+        if (currentTransaction != null)
+        {
+          currentTransaction.Dispose();
+          currentTransaction = null;
+        }
+      }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
