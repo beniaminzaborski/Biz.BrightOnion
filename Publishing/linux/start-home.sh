@@ -9,9 +9,16 @@ cd ..
 
 cd ApiGateway
 export ASPNETCORE_ENVIRONMENT=$app_env
-export ASPNETCORE_URLS=http://+:7000
-export ASPNETCORE_HTTP_PORT=7000
+export ASPNETCORE_URLS=http://+:9000
+export ASPNETCORE_HTTP_PORT=9000
 dotnet Biz.BrightOnion.ApiGateway.dll &
+cd ..
+
+cd ApiGateway.OrderingAggregator
+export ASPNETCORE_ENVIRONMENT=$app_env
+export ASPNETCORE_URLS=http://+:9010
+export ASPNETCORE_HTTP_PORT=9010
+dotnet Biz.BrightOnion.ApiGateway.OrderingAggregator.dll &
 cd ..
 
 cd Services/Identity.API
@@ -23,9 +30,9 @@ cd ../..
 
 cd Services/Identity.BackgroundTasks
 export ASPNETCORE_ENVIRONMENT=$app_env
-export ASPNETCORE_URLS=http://+:7011 
-export ASPNETCORE_HTTP_PORT=7011 
-dotnet Biz.BrightOnion.Identity.BackgroundTasks.dll & 
+export ASPNETCORE_URLS=http://+:7011
+export ASPNETCORE_HTTP_PORT=7011
+dotnet Biz.BrightOnion.Identity.BackgroundTasks.dll &
 cd ../..
 
 cd Services/Catalog.API
