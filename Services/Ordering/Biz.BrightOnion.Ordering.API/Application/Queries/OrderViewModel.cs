@@ -19,6 +19,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
   {
     public long OrderItemId { get; set; }
     public long PurchaserId { get; set; }
+    public string PurchaserEmail { get; set; }
     public int Quantity { get; set; }
   }
 }

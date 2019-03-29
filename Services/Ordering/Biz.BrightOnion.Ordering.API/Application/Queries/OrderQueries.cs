@@ -34,9 +34,10 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
         {
           var orderItems = await connection.QueryAsync<OrderItem>(@"
           SELECT 
-            i.Id as OrderItemId, i.PurchaserId, i.Quantity 
+            i.Id as OrderItemId, i.PurchaserId, p.Email AS PurchaserEmail, i.Quantity 
           FROM Orders o
           INNER JOIN OrderItems i ON i.OrderId = o.Id
+          LEFT JOIN Purchasers p ON p.Id = i.PurchaserId
           WHERE o.RoomId = @roomId and o.Day = @day", new { roomId, day });
 
           order.OrderItems = orderItems?.ToList();
