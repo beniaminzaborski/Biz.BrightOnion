@@ -11,16 +11,20 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
   {
     public long? RoomId { get; private set; }
 
+    public string RoomName { get; private set; }
+
     public long? PurchaserId { get; private set; }
 
     public int? Quantity { get; private set; }
 
     public PurchaseSliceCommand(
       long? roomId,
+      string roomName,
       long? purchaserId,
       int? quantity)
     {
       this.RoomId = roomId;
+      this.RoomName = roomName;
       this.PurchaserId = purchaserId;
       this.Quantity = quantity;
     }

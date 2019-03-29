@@ -562,7 +562,7 @@ var OrdersComponent = (function () {
         var pieChartData = [];
         if (this.order && this.order.orderItems) {
             this.order.orderItems.forEach(function (o) {
-                pieChartLabels.push(o.purchaserId.toString()); // TODO: Get user name by user id
+                pieChartLabels.push(o.purchaserEmail);
                 pieChartData.push(o.quantity);
             });
             if (this.order.totalPizzas == 0)

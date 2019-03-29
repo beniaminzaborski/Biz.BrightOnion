@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Biz.BrightOnion.ApiGateway.OrderingAggregator.Config;
+using Biz.BrightOnion.ApiGateway.OrderingAggregator.Infrastructure;
 using Biz.BrightOnion.ApiGateway.OrderingAggregator.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,10 +37,8 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
     {
       services
         .AddCustomMvc(Configuration)
-        .AddCustomAuthentication(Configuration)
+        // .AddCustomAuthentication(Configuration)
         .AddApplicationServices();
-
-      // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,30 +73,30 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
   {
     public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-      //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-      //var identityUrl = configuration.GetValue<string>("urls:identity");
-      //services.AddAuthentication(options =>
-      //{
-      //  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-      //  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+      var identityUrl = configuration.GetValue<string>("Urls:Identity");
+      services.AddAuthentication(options =>
+      {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-      //}).AddJwtBearer(options =>
-      //{
-      //  options.Authority = identityUrl;
-      //  options.RequireHttpsMetadata = false;
-      //  options.Audience = "webshoppingagg";
-      //  options.Events = new JwtBearerEvents()
-      //  {
-      //    OnAuthenticationFailed = async ctx =>
-      //    {
-      //      int i = 0;
-      //    },
-      //    OnTokenValidated = async ctx =>
-      //    {
-      //      int i = 0;
-      //    }
-      //  };
-      //});
+      }).AddJwtBearer(options =>
+      {
+        options.Authority = identityUrl;
+        options.RequireHttpsMetadata = false;
+        options.Audience = "brightonion";
+        options.Events = new JwtBearerEvents()
+        {
+          OnAuthenticationFailed = async ctx =>
+          {
+            int i = 0;
+          },
+          OnTokenValidated = async ctx =>
+          {
+            int i = 0;
+          }
+        };
+      });
 
       return services;
     }
@@ -102,7 +104,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
     public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
     {
       services.AddOptions();
-      // services.Configure<UrlsConfig>(configuration.GetSection("urls"));
+      services.Configure<UrlsConfig>(configuration.GetSection("Urls"));
 
       services.AddMvc()
           .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -149,23 +151,23 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
       //register delegating handlers
-      // services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+      services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
       services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
       //register http services
 
       services.AddHttpClient<IUserApiClient, UserApiClient>()
-          // .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+          .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
           .AddPolicyHandler(GetRetryPolicy())
           .AddPolicyHandler(GetCircuitBreakerPolicy());
 
       services.AddHttpClient<IRoomApiClient, RoomApiClient>()
-          // .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+          .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
           .AddPolicyHandler(GetRetryPolicy())
           .AddPolicyHandler(GetCircuitBreakerPolicy());
 
       services.AddHttpClient<IOrderApiClient, OrderApiClient>()
-          // .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+          .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
           .AddPolicyHandler(GetRetryPolicy())
           .AddPolicyHandler(GetCircuitBreakerPolicy());
 

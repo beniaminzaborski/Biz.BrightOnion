@@ -7,7 +7,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
 {
   public class UserDTO
   {
-    public long Id { get; set; }
+    public long UserId { get; set; }
     public string Email { get; set; }
   }
 }

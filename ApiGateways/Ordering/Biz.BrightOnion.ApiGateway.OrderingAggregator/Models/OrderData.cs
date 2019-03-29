@@ -27,7 +27,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
         TotalPizzas = orderDTO.TotalPizzas,
         FreeSlicesToGrab = orderDTO.FreeSlicesToGrab,
         OrderItems = orderDTO.OrderItems
-          .Select(i => new OrderItemData { PurchaserId = i.PurchaserId, PurchaserEmail = users.FirstOrDefault(u => u.Id == i.PurchaserId)?.Email, Quantity = i.Quantity }).ToList()
+          .Select(i => new OrderItemData { PurchaserId = i.PurchaserId, PurchaserEmail = users.FirstOrDefault(u => u.UserId == i.PurchaserId)?.Email, Quantity = i.Quantity }).ToList()
       };
     }
   }

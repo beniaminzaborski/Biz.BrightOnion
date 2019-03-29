@@ -130,7 +130,7 @@ export class OrdersComponent implements OnInit {
 
     if (this.order && this.order.orderItems) {
       this.order.orderItems.forEach((o) => {
-        pieChartLabels.push(o.purchaserId.toString()); // TODO: Get user name by user id
+        pieChartLabels.push(o.purchaserEmail);
         pieChartData.push(o.quantity);
       });
 

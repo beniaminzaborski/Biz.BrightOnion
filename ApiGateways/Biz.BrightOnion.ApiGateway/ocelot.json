@@ -23,6 +23,18 @@
       "UpstreamPathTemplate": "/catalog-api/{catchAll}"
     },
     {
+      "DownstreamPathTemplate": "/api/order/make",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7500
+        }
+      ],
+      "UpstreamPathTemplate": "/ordering-api/v1/orders/make",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

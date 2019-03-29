@@ -21,6 +21,7 @@ export class Order {
 export class OrderItem {
   public orderItemId: number;
   public purchaserId: number;
+  public purchaserEmail: string;
   public quantity: number;
 }
 
