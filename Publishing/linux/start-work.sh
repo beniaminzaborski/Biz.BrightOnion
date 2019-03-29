@@ -5,7 +5,7 @@ export ASPNETCORE_ENVIRONMENT=$app_env
 export ASPNETCORE_URLS=http://+:5000
 export ASPNETCORE_HTTP_PORT=5000
 dotnet Biz.BrightOnion.Web.dll &
-cd .. 
+cd ..
 
 cd ApiGateway
 export ASPNETCORE_ENVIRONMENT=$app_env
@@ -55,4 +55,3 @@ export ASPNETCORE_URLS=http://+:7003
 export ASPNETCORE_HTTP_PORT=7003
 dotnet Biz.BrightOnion.Ordering.API.dll &
 cd ../..
-
