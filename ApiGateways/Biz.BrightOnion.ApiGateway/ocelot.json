@@ -28,7 +28,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7500
+          "Port": 9010
         }
       ],
       "UpstreamPathTemplate": "/ordering-api/v1/orders/make",
@@ -40,7 +40,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7500
+          "Port": 9010
         }
       ],
       "UpstreamPathTemplate": "/ordering-api/v1/orders/cancel",

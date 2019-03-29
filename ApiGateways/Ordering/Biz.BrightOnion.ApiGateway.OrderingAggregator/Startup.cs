@@ -71,35 +71,35 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
 
   public static class ServiceCollectionExtensions
   {
-    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
-    {
-      JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-      var identityUrl = configuration.GetValue<string>("Urls:Identity");
-      services.AddAuthentication(options =>
-      {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    //public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+    //{
+    //  JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+    //  var identityUrl = configuration.GetValue<string>("Urls:Identity");
+    //  services.AddAuthentication(options =>
+    //  {
+    //    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    //    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-      }).AddJwtBearer(options =>
-      {
-        options.Authority = identityUrl;
-        options.RequireHttpsMetadata = false;
-        options.Audience = "brightonion";
-        options.Events = new JwtBearerEvents()
-        {
-          OnAuthenticationFailed = async ctx =>
-          {
-            int i = 0;
-          },
-          OnTokenValidated = async ctx =>
-          {
-            int i = 0;
-          }
-        };
-      });
+    //  }).AddJwtBearer(options =>
+    //  {
+    //    options.Authority = identityUrl;
+    //    options.RequireHttpsMetadata = false;
+    //    options.Audience = "brightonion";
+    //    options.Events = new JwtBearerEvents()
+    //    {
+    //      OnAuthenticationFailed = async ctx =>
+    //      {
+    //        int i = 0;
+    //      },
+    //      OnTokenValidated = async ctx =>
+    //      {
+    //        int i = 0;
+    //      }
+    //    };
+    //  });
 
-      return services;
-    }
+    //  return services;
+    //}
 
     public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
     {

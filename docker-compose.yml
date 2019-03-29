@@ -19,6 +19,15 @@ services:
         - https_proxy=http://10.0.1.31:808
       dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
 
+  biz.brightonion.apigateway.orderingaggregator:
+    image: ${DOCKER_REGISTRY-}bizbrightonionapigatewayorderingaggregator
+    build:
+      context: .
+      args:
+        - http_proxy=http://10.0.1.31:808
+        - https_proxy=http://10.0.1.31:808
+      dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
+
   biz.brightonion.identityservice:
     image: ${DOCKER_REGISTRY-}bizbrightonionidentityservice
     build:

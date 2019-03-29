@@ -1444,9 +1444,9 @@ var UserProfileComponent = (function () {
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    accountServiceUrl: "http://localhost:7000/identity-api/account",
-    roomServiceUrl: "http://localhost:7000/catalog-api/room",
-    orderServiceUrl: "http://localhost:7000/ordering-api/v1/orders"
+    accountServiceUrl: "http://localhost:9000/identity-api/account",
+    roomServiceUrl: "http://localhost:9000/catalog-api/room",
+    orderServiceUrl: "http://localhost:9000/ordering-api/v1/orders"
 };
 //# sourceMappingURL=environment.js.map
 
