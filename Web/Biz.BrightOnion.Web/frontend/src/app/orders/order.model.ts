@@ -16,6 +16,7 @@ export class Order {
   public totalPizzas: number = 0;
   public freeSlicesToGrab: number = 0;
   public orderItems: OrderItem[];
+  public isApproved: boolean;
 }
 
 export class OrderItem {

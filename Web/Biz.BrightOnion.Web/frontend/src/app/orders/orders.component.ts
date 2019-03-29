@@ -26,7 +26,6 @@ export class OrdersComponent implements OnInit {
   public selectedRoom: Room;
   public quantity: number;
   public order: Order = new Order();
-  public isApproved: boolean = false;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -116,12 +115,7 @@ export class OrdersComponent implements OnInit {
     this.order = order;
     if (!this.order)
       this.order = new Order();
-    this.checkIsApproved();
     this.preparePizzaChart();
-  }
-
-  private checkIsApproved(): void {
-    // this.isApproved = this.orderItems.some(item => item.isApproved);
   }
 
   private preparePizzaChart(): void {
@@ -183,23 +177,13 @@ export class OrdersComponent implements OnInit {
     return false;
   }
 
-  private getOrderId(): string {
-    let orderId: string;
-    //this.orderItems.forEach((o) => {
-    //  if (o.who == this.authenticationService.getLoggedUsername()) {
-    //    orderId = o.id;
-    //  }
-    //});
-    return orderId;
-  }
-
   public refresh(): boolean {
     this.loadOrdersInRoom(this.selectedRoom.id);
     return false;
   }
 
   public approveOrders(): void {
-    this.ordersService.approveOrders(this.selectedRoom.name)
+    this.ordersService.approveOrders(this.order.orderId)
       .subscribe(
       result => this.refresh(),
       error => alert(ErrorHelper.getErrorMessage(error))

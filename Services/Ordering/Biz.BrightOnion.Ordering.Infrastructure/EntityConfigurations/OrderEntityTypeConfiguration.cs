@@ -24,6 +24,8 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations
 
       var navigation = orderConfiguration.Metadata.FindNavigation(nameof(Order.OrderItems));
 
+      orderConfiguration.Property<bool>("IsApproved");
+
       navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
     }
   }

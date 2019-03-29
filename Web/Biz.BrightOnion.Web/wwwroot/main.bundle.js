@@ -144,7 +144,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<nav role=\"navigation\" class=\"navbar navbar-inverse navbar-fixed-top\" *ngIf=\"router.url != '/login'\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\"\r\n        aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\">Bright Onion</a>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li>\r\n          <a routerLink=\"/orders\" [routerLinkActive]=\"['active']\">Orders</a>\r\n        </li>\r\n        <li>\r\n          <a routerLink=\"/rooms\" [routerLinkActive]=\"['active']\">Rooms</a>\r\n        </li>\r\n      </ul>\r\n\r\n      <ul class=\"nav navbar-nav navbar-right\">\r\n        <li>\r\n          <a routerLink=\"/about\" [routerLinkActive]=\"['active']\">About</a>\r\n        </li>\r\n        <!--<li class=\"navbar-text pull-left\">{{username}}</li>-->\r\n        <li class=\"dropdown pull-right\">\r\n          <a href=\"#\" data-toggle=\"dropdown\" style=\"color:#777;\" class=\"dropdown-toggle\">\r\n            <span class=\"glyphicon glyphicon-user\"></span>\r\n            <b class=\"caret\"></b>\r\n          </a>\r\n          <ul class=\"dropdown-menu\">\r\n            <li>\r\n              <a routerLink=\"/profile\" [routerLinkActive]=\"['active']\" title=\"User profile\">\r\n                <span class=\"fa fa-user\" aria-hidden=\"true\"></span> Profile\r\n              </a>\r\n            </li>\r\n            <li>\r\n              <a href=\"#\" title=\"Sign Out\" (click)=\"logout(); $event.preventDefault()\">\r\n                <span class=\"fa fa-sign-out\" aria-hidden=\"true\"></span> Sign Out\r\n              </a>\r\n            </li>\r\n          </ul>\r\n        </li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div>\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<footer class=\"footer navbar-inverse navbar-fixed-bottom\">\r\n  <div class=\"container-fluid\">\r\n    <span class=\"text-muted pull-right\">\r\n      <small>&copy; 2017 Biz | ver. 0.7.6-alpha</small>\r\n    </span>\r\n  </div>\r\n</footer>\r\n"
+module.exports = "<nav role=\"navigation\" class=\"navbar navbar-inverse navbar-fixed-top\" *ngIf=\"router.url != '/login'\">\r\n  <div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n      <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\"\r\n        aria-controls=\"navbar\">\r\n        <span class=\"sr-only\">Toggle navigation</span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n      </button>\r\n      <a class=\"navbar-brand\">Bright Onion</a>\r\n    </div>\r\n    <div id=\"navbar\" class=\"navbar-collapse collapse\">\r\n      <ul class=\"nav navbar-nav\">\r\n        <li>\r\n          <a routerLink=\"/orders\" [routerLinkActive]=\"['active']\">Orders</a>\r\n        </li>\r\n        <li>\r\n          <a routerLink=\"/rooms\" [routerLinkActive]=\"['active']\">Rooms</a>\r\n        </li>\r\n      </ul>\r\n\r\n      <ul class=\"nav navbar-nav navbar-right\">\r\n        <li>\r\n          <a routerLink=\"/about\" [routerLinkActive]=\"['active']\">About</a>\r\n        </li>\r\n        <!--<li class=\"navbar-text pull-left\">{{username}}</li>-->\r\n        <li class=\"dropdown pull-right\">\r\n          <a href=\"#\" data-toggle=\"dropdown\" style=\"color:#777;\" class=\"dropdown-toggle\">\r\n            <span class=\"glyphicon glyphicon-user\"></span>\r\n            <b class=\"caret\"></b>\r\n          </a>\r\n          <ul class=\"dropdown-menu\">\r\n            <li>\r\n              <a routerLink=\"/profile\" [routerLinkActive]=\"['active']\" title=\"User profile\">\r\n                <span class=\"fa fa-user\" aria-hidden=\"true\"></span> Profile\r\n              </a>\r\n            </li>\r\n            <li>\r\n              <a href=\"#\" title=\"Sign Out\" (click)=\"logout(); $event.preventDefault()\">\r\n                <span class=\"fa fa-sign-out\" aria-hidden=\"true\"></span> Sign Out\r\n              </a>\r\n            </li>\r\n          </ul>\r\n        </li>\r\n      </ul>\r\n    </div>\r\n  </div>\r\n</nav>\r\n\r\n<div class=\"container\">\r\n  <div class=\"row\">\r\n    <div>\r\n      <router-outlet></router-outlet>\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<footer class=\"footer navbar-inverse navbar-fixed-bottom\">\r\n  <div class=\"container-fluid\">\r\n    <span class=\"text-muted pull-right\">\r\n      <small>&copy; 2019 Biz | ver. 0.6.0</small>\r\n    </span>\r\n  </div>\r\n</footer>\r\n"
 
 /***/ }),
 
@@ -436,7 +436,7 @@ var OrdersApproval = (function () {
 /***/ "../../../../../src/app/orders/orders.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li role=\"presentation\" *ngFor=\"let room of rooms\" [ngClass]=\"{ 'active' : room.isActive }\">\r\n    <a href=\"\" (click)=\"selectRoom(room)\">{{room.name}}</a>\r\n  </li>\r\n</ul>\r\n\r\n<div *ngIf=\"selectedRoom\">\r\n  <div>\r\n    <div *ngIf=\"order.totalPizzas > 0\">\r\n      <h4>\r\n        <span *ngIf=\"!isApproved\">\r\n          <strong>{{order.freeSlicesToGrab}}</strong> {{ order.freeSlicesToGrab == 1 ? 'slice' : 'slices' }} of\r\n          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} to get\r\n        </span>\r\n        <span *ngIf=\"isApproved\">\r\n          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} approved\r\n        </span>\r\n      </h4>\r\n    </div>\r\n    <div *ngIf=\"order.totalPizzas == 0\">\r\n      <h4>No orders</h4>\r\n    </div>\r\n\r\n    <form #orderForm=\"ngForm\" (submit)=\"makeOrder()\" class=\"form-inline\">\r\n      <div class=\"form-group\">\r\n        <input type=\"number\" class=\"form-control\" id=\"quantity\" name=\"quantity\" [(ngModel)]=\"quantity\" placeholder=\"Number of slices\"\r\n          [disabled]=\"isApproved\" required>\r\n        <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!orderForm.form.valid || isApproved\">Grab</button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"cancel()\" [disabled]=\"isApproved\">Cancel</button>\r\n        \r\n        <button class=\"btn btn-warning\" type=\"button\" (click)=\"approveOrders()\" [disabled]=\"isApproved || pizzas == 0\">Approve orders</button>\r\n        <!-- <button class=\"btn btn-success\" type=\"button\" (click)=\"refresh()\">Refresh</button> -->\r\n      </div>\r\n    </form>\r\n    <br>\r\n  </div>\r\n\r\n  <br>\r\n\r\n  <div class=\"col-md-10\" *ngIf=\"order.totalPizzas > 0\">\r\n    <canvas baseChart [data]=\"pieChartData\" [labels]=\"pieChartLabels\" [chartType]=\"pieChartType\" [colors]=\"pieChartColours\" \r\n      (chartHover)=\"chartHovered($event)\"\r\n      (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  </div>\r\n</div>\r\n\r\n<div *ngIf=\"!selectedRoom\">\r\n  <h3>Choose your room</h3>\r\n</div>\r\n"
+module.exports = "<ul class=\"nav nav-tabs\">\r\n  <li role=\"presentation\" *ngFor=\"let room of rooms\" [ngClass]=\"{ 'active' : room.isActive }\">\r\n    <a href=\"\" (click)=\"selectRoom(room)\">{{room.name}}</a>\r\n  </li>\r\n</ul>\r\n\r\n<div *ngIf=\"selectedRoom\">\r\n  <div>\r\n    <div *ngIf=\"order.totalPizzas > 0\">\r\n      <h4>\r\n        <span *ngIf=\"!order.isApproved\">\r\n          <strong>{{order.freeSlicesToGrab}}</strong> {{ order.freeSlicesToGrab == 1 ? 'slice' : 'slices' }} of\r\n          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} to get\r\n        </span>\r\n        <span *ngIf=\"order.isApproved\">\r\n          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} approved\r\n        </span>\r\n      </h4>\r\n    </div>\r\n    <div *ngIf=\"order.totalPizzas == 0\">\r\n      <h4>No orders</h4>\r\n    </div>\r\n\r\n    <form #orderForm=\"ngForm\" (submit)=\"makeOrder()\" class=\"form-inline\">\r\n      <div class=\"form-group\">\r\n        <input type=\"number\" class=\"form-control\" id=\"quantity\" name=\"quantity\" [(ngModel)]=\"quantity\" placeholder=\"Number of slices\"\r\n          [disabled]=\"order.isApproved\" required>\r\n        <button class=\"btn btn-primary btn-submit\" type=\"submit\" [disabled]=\"!orderForm.form.valid || order.isApproved\">Grab</button>\r\n        <button class=\"btn btn-danger\" type=\"button\" (click)=\"cancel()\" [disabled]=\"order.isApproved\">Cancel</button>\r\n        \r\n        <button class=\"btn btn-warning\" type=\"button\" (click)=\"approveOrders()\" [disabled]=\"order.isApproved || pizzas == 0\">Approve orders</button>\r\n        <!-- <button class=\"btn btn-success\" type=\"button\" (click)=\"refresh()\">Refresh</button> -->\r\n      </div>\r\n    </form>\r\n    <br>\r\n  </div>\r\n\r\n  <br>\r\n\r\n  <div class=\"col-md-10\" *ngIf=\"order.totalPizzas > 0\">\r\n    <canvas baseChart [data]=\"pieChartData\" [labels]=\"pieChartLabels\" [chartType]=\"pieChartType\" [colors]=\"pieChartColours\" \r\n      (chartHover)=\"chartHovered($event)\"\r\n      (chartClick)=\"chartClicked($event)\">\r\n    </canvas>\r\n  </div>\r\n</div>\r\n\r\n<div *ngIf=\"!selectedRoom\">\r\n  <h3>Choose your room</h3>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -479,7 +479,6 @@ var OrdersComponent = (function () {
         this.authenticationService = authenticationService;
         this.rooms = [];
         this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["c" /* Order */]();
-        this.isApproved = false;
         // Pie
         this.pieChartLabels = [];
         this.pieChartData = [];
@@ -550,11 +549,7 @@ var OrdersComponent = (function () {
         this.order = order;
         if (!this.order)
             this.order = new __WEBPACK_IMPORTED_MODULE_3__order_model__["c" /* Order */]();
-        this.checkIsApproved();
         this.preparePizzaChart();
-    };
-    OrdersComponent.prototype.checkIsApproved = function () {
-        // this.isApproved = this.orderItems.some(item => item.isApproved);
     };
     OrdersComponent.prototype.preparePizzaChart = function () {
         var _this = this;
@@ -602,22 +597,13 @@ var OrdersComponent = (function () {
             .subscribe(function (order) { return _this.onLoadOrder(order); }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
         return false;
     };
-    OrdersComponent.prototype.getOrderId = function () {
-        var orderId;
-        //this.orderItems.forEach((o) => {
-        //  if (o.who == this.authenticationService.getLoggedUsername()) {
-        //    orderId = o.id;
-        //  }
-        //});
-        return orderId;
-    };
     OrdersComponent.prototype.refresh = function () {
         this.loadOrdersInRoom(this.selectedRoom.id);
         return false;
     };
     OrdersComponent.prototype.approveOrders = function () {
         var _this = this;
-        this.ordersService.approveOrders(this.selectedRoom.name)
+        this.ordersService.approveOrders(this.order.orderId)
             .subscribe(function (result) { return _this.refresh(); }, function (error) { return alert(__WEBPACK_IMPORTED_MODULE_7__shared_error_helper__["a" /* ErrorHelper */].getErrorMessage(error)); });
     };
     // events
@@ -690,8 +676,8 @@ var OrdersService = (function () {
         var body = JSON.stringify(cancelOrder);
         return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/cancel", body, { observe: 'response' }).map(function (response) { console.log('body', response.body); return response.body; });
     };
-    OrdersService.prototype.approveOrders = function (room) {
-        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + room + "/approve", null, { observe: 'response' }).map(function (response) { return response.status == 201; });
+    OrdersService.prototype.approveOrders = function (orderId) {
+        return this.http.post(__WEBPACK_IMPORTED_MODULE_4__environments_environment__["a" /* environment */].orderServiceUrl + "/" + orderId + "/approve", null, { observe: 'response' }).map(function (response) { return response.status == 204; });
     };
     OrdersService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
@@ -1438,11 +1424,15 @@ var UserProfileComponent = (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
+// The file contents for the current environment will overwrite these during build.
+// The build system defaults to the dev environment which uses `environment.ts`, but if you do
+// `ng build --env=prod` then `environment.prod.ts` will be used instead.
+// The list of which env maps to which file can be found in `.angular-cli.json`.
 var environment = {
     production: false,
-    accountServiceUrl: "http://10.0.1.31:9000/identity-api/account",
-    roomServiceUrl: "http://10.0.1.31:9000/catalog-api/room",
-    orderServiceUrl: "http://10.0.1.31:9000/ordering-api/v1/orders"
+    accountServiceUrl: "http://localhost:9000/identity-api/account",
+    roomServiceUrl: "http://localhost:9000/catalog-api/room",
+    orderServiceUrl: "http://localhost:9000/ordering-api/v1/orders"
 };
 //# sourceMappingURL=environment.js.map
 

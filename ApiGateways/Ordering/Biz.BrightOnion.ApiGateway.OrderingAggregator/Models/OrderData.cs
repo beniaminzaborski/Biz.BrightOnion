@@ -13,6 +13,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
     public IList<OrderItemData> OrderItems { get; set; } = new List<OrderItemData>();
     public int TotalPizzas { get; set; }
     public int FreeSlicesToGrab { get; set; }
+    public bool IsApproved { get; set; }
 
     public static OrderData FromOrderDTO(OrderDTO orderDTO, IEnumerable<UserDTO> users)
     {
@@ -27,7 +28,8 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
         TotalPizzas = orderDTO.TotalPizzas,
         FreeSlicesToGrab = orderDTO.FreeSlicesToGrab,
         OrderItems = orderDTO.OrderItems
-          .Select(i => new OrderItemData { PurchaserId = i.PurchaserId, PurchaserEmail = users.FirstOrDefault(u => u.UserId == i.PurchaserId)?.Email, Quantity = i.Quantity }).ToList()
+          .Select(i => new OrderItemData { PurchaserId = i.PurchaserId, PurchaserEmail = users.FirstOrDefault(u => u.UserId == i.PurchaserId)?.Email, Quantity = i.Quantity }).ToList(),
+        IsApproved = orderDTO.IsApproved
       };
     }
   }

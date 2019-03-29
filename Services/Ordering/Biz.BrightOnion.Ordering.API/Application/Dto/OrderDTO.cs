@@ -14,6 +14,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Dto
     public IList<OrderItemDTO> OrderItems { get; set; } = new List<OrderItemDTO>();
     public int TotalPizzas { get; set; }
     public int FreeSlicesToGrab { get; set; }
+    public bool IsApproved { get; set; }
 
     public static OrderDTO FromOrder(Order order)
     {
@@ -27,7 +28,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Dto
         Day = order.Day,
         TotalPizzas = order.TotalPizzas,
         FreeSlicesToGrab = order.FreeSlicesToGrab,
-        OrderItems = order.OrderItems.Select(i => new OrderItemDTO { OrderItemId = i.Id, PurchaserId = i.PurchaserId, Quantity = i.Quantity }).ToList()
+        OrderItems = order.OrderItems.Select(i => new OrderItemDTO { OrderItemId = i.Id, PurchaserId = i.PurchaserId, Quantity = i.Quantity }).ToList(),
+        IsApproved = order.IsApproved
       };
     }
   }

@@ -31,9 +31,9 @@ export class OrdersService {
     ).map(response => { console.log('body', response.body); return response.body; });
   }
 
-  public approveOrders(room: string): Observable<boolean> {
+  public approveOrders(orderId: number): Observable<boolean> {
     return this.http.post(
-      `${environment.orderServiceUrl}/${room}/approve`, null, { observe: 'response' }
-    ).map(response => response.status == 201);
+      `${environment.orderServiceUrl}/${orderId}/approve`, null, { observe: 'response' }
+    ).map(response => response.status == 204);
   }
 }

@@ -29,6 +29,8 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
           .AsClosedTypesOf(typeof(IRequestHandler<,>));
       builder.RegisterAssemblyTypes(typeof(CancelSliceCommand).GetTypeInfo().Assembly)
           .AsClosedTypesOf(typeof(IRequestHandler<,>));
+      builder.RegisterAssemblyTypes(typeof(ApproveOrderCommand).GetTypeInfo().Assembly)
+          .AsClosedTypesOf(typeof(IRequestHandler<,>));
 
       // Register the DomainEventHandler classes (they implement INotificationHandler<>) in assembly holding the Domain Events
       builder.RegisterAssemblyTypes(typeof(NotifyPurchasersWhenNewOrderCreatedDomainEventHandler).GetTypeInfo().Assembly)
@@ -49,6 +51,10 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules
           .AsImplementedInterfaces();
       builder
           .RegisterAssemblyTypes(typeof(CancelSliceCommandValidator).GetTypeInfo().Assembly)
+          .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
+          .AsImplementedInterfaces();
+      builder
+          .RegisterAssemblyTypes(typeof(ApproveOrderCommandValidator).GetTypeInfo().Assembly)
           .Where(t => t.IsClosedTypeOf(typeof(IValidator<>)))
           .AsImplementedInterfaces();
 

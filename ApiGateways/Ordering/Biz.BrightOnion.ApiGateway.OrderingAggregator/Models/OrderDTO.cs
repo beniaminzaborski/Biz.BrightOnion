@@ -13,6 +13,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
     public IList<OrderItemDTO> OrderItems { get; set; } = new List<OrderItemDTO>();
     public int TotalPizzas { get; set; }
     public int FreeSlicesToGrab { get; set; }
+    public bool IsApproved { get; set; }
   }
 
   public class OrderItemDTO

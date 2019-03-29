@@ -56,5 +56,15 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     {
       return await mediator.Send(cancelSliceCommand);
     }
+
+    [Route("{orderId}/approve")]
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> ApproveOrderAsync(long? orderId)
+    {
+      var result = await mediator.Send(new ApproveOrderCommand(orderId));
+      return result ? (ActionResult)NoContent() : (ActionResult)BadRequest();
+    }
   }
 }

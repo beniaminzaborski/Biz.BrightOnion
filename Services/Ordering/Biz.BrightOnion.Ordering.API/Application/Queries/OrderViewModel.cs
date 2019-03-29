@@ -13,6 +13,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
     public IList<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public int TotalPizzas { get; set; }
     public int FreeSlicesToGrab { get; set; }
+    public bool IsApproved { get; set; }
   }
 
   public class OrderItem

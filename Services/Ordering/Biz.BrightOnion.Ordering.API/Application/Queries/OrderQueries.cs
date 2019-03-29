@@ -26,7 +26,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Queries
 
         order = await connection.QueryFirstOrDefaultAsync<Order>(@"
           SELECT 
-	          o.Id as OrderId, o.Day, o.RoomId, o.TotalPizzas, o.FreeSlicesToGrab
+	          o.Id as OrderId, o.Day, o.RoomId, o.TotalPizzas, o.FreeSlicesToGrab, o.IsApproved
           FROM Orders o
           WHERE o.RoomId = @roomId and o.Day = @day", new { roomId, day });
 

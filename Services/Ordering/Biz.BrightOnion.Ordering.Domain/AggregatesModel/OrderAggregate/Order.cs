@@ -15,6 +15,7 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
     public int FreeSlicesToGrab { get; private set; }
     private readonly List<OrderItem> orderItems;
     public IReadOnlyCollection<OrderItem> OrderItems => orderItems;
+    public bool IsApproved { get; private set; }
 
     protected Order()
     {
@@ -63,6 +64,11 @@ namespace Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate
 
       CalculateTotalPizzas();
       CalculateFreeSlicesToGrab();
+    }
+
+    public void Approve()
+    {
+      IsApproved = true;
     }
 
     private int GetTotalSlices()
