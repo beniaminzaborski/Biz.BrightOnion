@@ -40,5 +40,19 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
 
       return JsonConvert.DeserializeObject<OrderDTO>(orderResponse);
     }
+
+    public async Task<OrderDTO> CancelSliceAsync(long? orderId, long? purchaserId)
+    {
+      var requestData = new { OrderId = orderId, PurchaserId = purchaserId };
+      var requestDataContent = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
+
+      var response = await apiClient.PostAsync(urls.Order + UrlsConfig.OrderOperations.CancelSlice(), requestDataContent);
+
+      response.EnsureSuccessStatusCode();
+
+      var orderResponse = await response.Content.ReadAsStringAsync();
+
+      return JsonConvert.DeserializeObject<OrderDTO>(orderResponse);
+    }
   }
 }

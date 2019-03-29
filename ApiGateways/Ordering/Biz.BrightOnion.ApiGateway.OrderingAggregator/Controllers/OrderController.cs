@@ -47,5 +47,20 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
 
       return new OkObjectResult(result);
     }
+
+    [Route("cancel")]
+    [HttpPost]
+    [ProducesResponseType(typeof(OrderDTO), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<OrderData>> CancelSliceAsync([FromBody] CancelSliceRequest data)
+    {
+      // Step 1: Call cancel order on orderClient
+      var orderDTO = await orderClient.CancelSliceAsync(data.OrderId, data.PurchaserId);
+
+      // Step 2: Get users list and set user's e-mail
+      IEnumerable<UserDTO> users = await userClient.GetAllAsync();
+      var result = OrderData.FromOrderDTO(orderDTO, users);
+
+      return new OkObjectResult(result);
+    }
   }
 }

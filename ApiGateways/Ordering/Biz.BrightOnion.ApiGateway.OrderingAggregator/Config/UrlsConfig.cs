@@ -20,6 +20,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Config
     public class OrderOperations
     {
       public static string PurchaseSlice() => "/api/v1/orders/make";
+      public static string CancelSlice() => "/api/v1/orders/cancel";
     }
 
     public string Room { get; set; }
