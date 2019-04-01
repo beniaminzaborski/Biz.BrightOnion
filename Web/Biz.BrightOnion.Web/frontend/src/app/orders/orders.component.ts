@@ -7,9 +7,10 @@ import { AuthenticationService } from '../shared/auth/authentication.service';
 import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ErrorHelper } from '../shared/error-helper';
-// import { HubConnection } from '@aspnet/signalr-client';
+import * as signalR from "@aspnet/signalr";
 import { Message, OperationType } from '../shared/message.model';
 import { Config } from '../shared/config';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -48,32 +49,45 @@ export class OrdersComponent implements OnInit {
   }
 
   private registerSignalR() {
-    /*
-    let connection = new HubConnection(`${Config.baseUrl}message`);
-    connection.on('send', data => {
-      //console.log(data);
-      let message: Message = <Message>data;
-      if(message) {
-        switch(message.operation) {
-          case OperationType.RoomCreated:
-          case OperationType.RoomDeleted:
-            this.loadRooms();
-          break;
-          case OperationType.SliceGrabbed:
-          case OperationType.SliceCancelled:
-          case OperationType.OrdersApproved:
-            if(message.context == this.selectedRoomName)
-              this.loadOrdersInRoom(this.selectedRoomName);
-          break;
-        }
-      }
+
+    const hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(environment.orderSignalrHubUrl)
+      .build();
+
+    hubConnection
+      .start()
+      .then(() => console.log('Connection started'))
+      .catch(err => console.log('Error while starting connection: ' + err))
+
+    hubConnection.on('UpdatedOrderStatus', (data) => {
+      // console.log(data);
+      this.loadOrdersInRoom(data.roomId);
     });
 
-    connection.start()
-      .then(() => {
-         //console.log('MessageHub Connected');
-      });
-    */
+    //let connection = new HubConnection(`${Config.baseUrl}message`);
+    //connection.on('send', data => {
+    //  //console.log(data);
+    //  let message: Message = <Message>data;
+    //  if(message) {
+    //    switch(message.operation) {
+    //      case OperationType.RoomCreated:
+    //      case OperationType.RoomDeleted:
+    //        this.loadRooms();
+    //      break;
+    //      case OperationType.SliceGrabbed:
+    //      case OperationType.SliceCancelled:
+    //      case OperationType.OrdersApproved:
+    //        if(message.context == this.selectedRoomName)
+    //          this.loadOrdersInRoom(this.selectedRoomName);
+    //      break;
+    //    }
+    //  }
+    //});
+
+    //connection.start()
+    //  .then(() => {
+    //     //console.log('MessageHub Connected');
+    //  });
   }
 
   private loadRooms(): void {

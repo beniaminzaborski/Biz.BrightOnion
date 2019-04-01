@@ -46,6 +46,7 @@ namespace Biz.BrightOnion.ApiGateway
       }
 
       app.UseHttpsRedirection();
+      app.UseWebSockets();
       app.UseMvc();
       app.UseOcelot();
     }
