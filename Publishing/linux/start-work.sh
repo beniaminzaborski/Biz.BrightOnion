@@ -55,3 +55,11 @@ export ASPNETCORE_URLS=http://+:7003
 export ASPNETCORE_HTTP_PORT=7003
 dotnet Biz.BrightOnion.Ordering.API.dll &
 cd ../..
+
+cd Services/Ordering.SignalrHub
+export ASPNETCORE_ENVIRONMENT=$app_env
+export ASPNETCORE_URLS=http://+:7004
+export ASPNETCORE_HTTP_PORT=7004
+dotnet Biz.BrightOnion.Ordering.SignalrHub.dll &
+cd ../..
+
