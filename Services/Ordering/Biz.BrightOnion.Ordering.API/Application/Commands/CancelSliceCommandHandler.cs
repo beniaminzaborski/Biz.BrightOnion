@@ -1,5 +1,6 @@
 ﻿using Biz.BrightOnion.Ordering.API.Application.Dto;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.Events;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,10 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
         return null;
 
       order.RemoveOrderItem(request.PurchaserId.Value);
+
+      var sliceCanceledDomainEvent = new SliceCanceledDomainEvent(order.Id, order.RoomId, order.Day, request.PurchaserId.Value);
+      order.AddDomainEvent(sliceCanceledDomainEvent);
+
       if (order.OrderItems.Count() > 0)
         orderRepository.Update(order);
       else

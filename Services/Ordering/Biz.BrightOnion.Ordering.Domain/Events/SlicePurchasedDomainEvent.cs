@@ -5,26 +5,26 @@ using System.Text;
 
 namespace Biz.BrightOnion.Ordering.Domain.Events
 {
-  public class NewOrderCreatedDomainEvent : INotification
+  public class SlicePurchasedDomainEvent : INotification
   {
     public long OrderId { get; private set; }
     public DateTime Day { get; private set; }
     public long RoomId { get; private set; }
-    public string RoomName { get; private set; }
     public long PurchaserId { get; private set; }
+    public int Quantity { get; private set; }
 
-    public NewOrderCreatedDomainEvent(
+    public SlicePurchasedDomainEvent(
       long orderId,
       DateTime day,
       long roomId,
-      string roomName,
-      long purchaserId)
+      long purchaserId,
+      int quantity)
     {
       OrderId = orderId;
       Day = day;
       RoomId = roomId;
-      RoomName = roomName;
       PurchaserId = purchaserId;
+      Quantity = quantity;
     }
   }
 }

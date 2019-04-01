@@ -30,8 +30,13 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!orderExists)
       {
         order = new Order(request.RoomId.Value, day);
-        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Day, request.RoomName, request.PurchaserId.Value);
+        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Id, order.Day, order.RoomId, request.RoomName, request.PurchaserId.Value);
         order.AddDomainEvent(newOrderCreatedDomainEvent);
+      }
+      else
+      {
+        var slicePurchasedDomainEvent = new SlicePurchasedDomainEvent(order.Id, order.Day, order.RoomId, request.PurchaserId.Value, request.Quantity.Value);
+        order.AddDomainEvent(slicePurchasedDomainEvent);
       }
 
       order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);

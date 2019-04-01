@@ -1,4 +1,5 @@
 ﻿using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.Events;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!order.IsApproved)
       {
         order.Approve();
+
+        var orderApprovedDomainEvent = new OrderApprovedDomainEvent(order.Id, order.RoomId, order.Day);
+        order.AddDomainEvent(orderApprovedDomainEvent);
 
         orderRepository.Update(order);
 
