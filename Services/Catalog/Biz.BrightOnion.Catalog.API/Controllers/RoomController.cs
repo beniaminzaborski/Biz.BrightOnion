@@ -114,20 +114,11 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
 
         var roomNameChangedEvent = new RoomNameChangedEvent(room.Id, room.Name);
 
+        // Publish integration event: RoomNameChangedEvent
         using (var transaction = session.BeginTransaction())
         {
           await roomRepository.UpdateAsync(room.Id, room);
           await integrationEventLogService.SaveEventAsync(roomNameChangedEvent);
-          transaction?.Commit();
-        }
-
-        // Publish integration event: RoomNameChangedEvent
-        // TODO: Move to Event Publisher Worker !!!
-        // TODO: Check in event log store is message not published before !!!
-        using (var transaction = session.BeginTransaction())
-        {
-          eventBus.Publish(roomNameChangedEvent);
-          await integrationEventLogService.MarkEventAsPublishedAsync(roomNameChangedEvent.EventId);
           transaction?.Commit();
         }
       }
@@ -154,8 +145,6 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       }
 
       // Publish integration event: RoomDeletedEvent
-      // TODO: Move to Event Publisher Worker !!!
-      // TODO: Check in event log store is message not published before !!!
       using (var transaction = session.BeginTransaction())
       {
         eventBus.Publish(roomDeletedEvent);
