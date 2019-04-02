@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Ordering.SignalrHub
 {
-  // [Authorize]
+  [Authorize]
   public class NotificationsHub : Hub
   {
     //public override async Task OnConnectedAsync()

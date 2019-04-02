@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -10,6 +12,7 @@ using Biz.BrightOnion.EventBus.RabbitMQ;
 using Biz.BrightOnion.Ordering.SignalrHub.Configuration;
 using Biz.BrightOnion.Ordering.SignalrHub.Events;
 using Biz.BrightOnion.Ordering.SignalrHub.IntegrationEvents.EventHandlers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,12 +21,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using RabbitMQ.Client;
 
 namespace Biz.BrightOnion.Ordering.SignalrHub
 {
   public class Startup
   {
+    private const string notificationHubUrl = "/notificationhub";
+
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -51,6 +57,10 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
 
       services.AddSignalR();
 
+      ConfigureAuthService(services);
+
+      services.AddOptions();
+
       //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       var container = new ContainerBuilder();
@@ -63,11 +73,11 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
     {
       app.UseCors("CorsPolicy");
 
-      // app.UseAuthentication();
+      app.UseAuthentication();
 
       app.UseSignalR(routes =>
       {
-        routes.MapHub<NotificationsHub>("/notificationhub", options =>
+        routes.MapHub<NotificationsHub>(notificationHubUrl, options =>
             options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransports.All);
       });
 
@@ -81,6 +91,57 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
     {
       var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
       eventBus.Subscribe<OrderStatusChangedEvent, OrderStatusChangedEventHandler>();
+    }
+
+    private void ConfigureAuthService(IServiceCollection services)
+    {
+      // prevent from mapping "sub" claim to nameidentifier.
+      // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
+
+      // var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+
+      services.AddAuthentication(options =>
+      {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      
+      }).AddJwtBearer(options =>
+      {
+        // options.Authority = identityUrl;
+        options.RequireHttpsMetadata = false;
+        options.Audience = "orders.signalrhub";
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+          ValidateAudience = false,
+          ValidateIssuer = false,
+          ValidateActor = false,
+          ValidateLifetime = false,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]))
+        };
+
+        // We have to hook the OnMessageReceived event in order to
+        // allow the JWT authentication handler to read the access
+        // token from the query string when a WebSocket or 
+        // Server-Sent Events request comes in.
+        options.Events = new JwtBearerEvents
+        {
+          OnMessageReceived = context =>
+          {
+            var accessToken = context.Request.Query["access_token"];
+
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments(notificationHubUrl)))
+            {
+              // Read the token out of the query string
+              context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+          }
+        };
+      });
     }
   }
 
@@ -144,35 +205,5 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
 
       return services;
     }
-
-    //public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
-    //{
-    //  // configure strongly typed settings objects
-    //  var appSettingsSection = configuration.GetSection("AppSettings");
-    //  services.Configure<AppSettings>(appSettingsSection);
-
-    //  // configure jwt authentication
-    //  var appSettings = appSettingsSection.Get<AppSettings>();
-    //  var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-    //  services.AddAuthentication(x =>
-    //  {
-    //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //  })
-    //  .AddJwtBearer(x =>
-    //  {
-    //    x.RequireHttpsMetadata = false;
-    //    x.SaveToken = true;
-    //    x.TokenValidationParameters = new TokenValidationParameters
-    //    {
-    //      ValidateIssuerSigningKey = true,
-    //      IssuerSigningKey = new SymmetricSecurityKey(key),
-    //      ValidateIssuer = false,
-    //      ValidateAudience = false
-    //    };
-    //  });
-
-    //  return services;
-    //}
   }
 }

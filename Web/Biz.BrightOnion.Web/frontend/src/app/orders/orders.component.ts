@@ -51,7 +51,7 @@ export class OrdersComponent implements OnInit {
   private registerSignalR() {
 
     const hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(environment.orderSignalrHubUrl)
+      .withUrl(environment.orderSignalrHubUrl, { accessTokenFactory: () => this.authenticationService.getToken() })
       .build();
 
     hubConnection
@@ -63,31 +63,6 @@ export class OrdersComponent implements OnInit {
       // console.log(data);
       this.loadOrdersInRoom(data.roomId);
     });
-
-    //let connection = new HubConnection(`${Config.baseUrl}message`);
-    //connection.on('send', data => {
-    //  //console.log(data);
-    //  let message: Message = <Message>data;
-    //  if(message) {
-    //    switch(message.operation) {
-    //      case OperationType.RoomCreated:
-    //      case OperationType.RoomDeleted:
-    //        this.loadRooms();
-    //      break;
-    //      case OperationType.SliceGrabbed:
-    //      case OperationType.SliceCancelled:
-    //      case OperationType.OrdersApproved:
-    //        if(message.context == this.selectedRoomName)
-    //          this.loadOrdersInRoom(this.selectedRoomName);
-    //      break;
-    //    }
-    //  }
-    //});
-
-    //connection.start()
-    //  .then(() => {
-    //     //console.log('MessageHub Connected');
-    //  });
   }
 
   private loadRooms(): void {
