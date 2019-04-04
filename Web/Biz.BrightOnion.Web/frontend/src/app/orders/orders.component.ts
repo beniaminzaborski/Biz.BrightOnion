@@ -62,8 +62,9 @@ export class OrdersComponent implements OnInit {
       .catch(err => console.log('Error while starting connection: ' + err))
 
     hubConnection.on('UpdatedOrderStatus', (data) => {
-      // console.log(data);
-      this.loadOrdersInRoom(data.roomId);
+      if (this.selectedRoom.id == data.roomId) {
+        this.loadOrdersInRoom(data.roomId);
+      }
     });
   }
 
