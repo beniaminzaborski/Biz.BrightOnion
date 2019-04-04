@@ -42,7 +42,15 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
     {
       var rooms = roomRepository.GetAll().ToList();
       IList<RoomDTO> result = new List<RoomDTO>();
-      rooms.ForEach(r => result.Add(new RoomDTO { Id = r.Id, Name = r.Name, ManagerId = r.ManagerId, ManagerName = r.ManagerName }));
+      rooms.ForEach(r => result.Add(
+        new RoomDTO
+        {
+          Id = r.Id,
+          Name = r.Name,
+          ManagerId = r.ManagerId,
+          ManagerName = r.ManagerName,
+          SlicesPerPizza = r.SlicesPerPizza
+        }));
       return new ObjectResult(result);
     }
 
@@ -56,7 +64,15 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (room == null)
         return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
 
-      return Ok(new RoomDTO { Id = room.Id, Name = room.Name, ManagerId = room.ManagerId, ManagerName = room.ManagerName });
+      return Ok(
+        new RoomDTO
+        {
+          Id = room.Id,
+          Name = room.Name,
+          ManagerId = room.ManagerId,
+          ManagerName = room.ManagerName,
+          SlicesPerPizza = room.SlicesPerPizza
+        });
     }
 
     [HttpPost]
@@ -76,7 +92,13 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (room != null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room does exist" });
 
-      room = new Room { Name = roomDTO.Name, ManagerId = roomDTO.ManagerId, ManagerName = roomDTO.ManagerName };
+      room = new Room
+      {
+        Name = roomDTO.Name,
+        ManagerId = roomDTO.ManagerId,
+        ManagerName = roomDTO.ManagerName,
+        SlicesPerPizza = roomDTO.SlicesPerPizza
+      };
 
       using (var transaction = session.BeginTransaction())
       {
@@ -84,7 +106,15 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         transaction?.Commit();
       }
 
-      return CreatedAtAction(nameof(GetAsync), new { id = room.Id }, new RoomDTO { Id = room.Id, Name = room.Name, ManagerId = room.ManagerId, ManagerName = room.ManagerName });
+      return CreatedAtAction(nameof(GetAsync), new { id = room.Id },
+        new RoomDTO
+        {
+          Id = room.Id,
+          Name = room.Name,
+          ManagerId = room.ManagerId,
+          ManagerName = room.ManagerName,
+          SlicesPerPizza = room.SlicesPerPizza
+        });
     }
 
     [HttpPut]
@@ -108,9 +138,11 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (roomWithNameExists)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room with passed name does exist" });
 
-      bool isRoomNameChanged = false, isRoomManagerChanged = false;
+      bool isRoomNameChanged = false, isRoomManagerChanged = false, isSlicesPerPizzaChanged = false;
       RoomNameChangedEvent roomNameChangedEvent = null;
       RoomManagerChangedEvent roomManagerChangedEvent = null;
+      SlicesPerPizzaInRoomChangedEvent slicesPerPizzaInRoomChangedEvent = null;
+
 
       if (room.Name != roomDTO.Name)
       {
@@ -131,7 +163,16 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         roomManagerChangedEvent = new RoomManagerChangedEvent(room.Id, room.Name, room.ManagerId, room.ManagerName);
       }
 
-      if (isRoomNameChanged || isRoomManagerChanged)
+      if (room.SlicesPerPizza != roomDTO.SlicesPerPizza)
+      {
+        isSlicesPerPizzaChanged = true;
+
+        room.SlicesPerPizza = roomDTO.SlicesPerPizza;
+
+        slicesPerPizzaInRoomChangedEvent = new SlicesPerPizzaInRoomChangedEvent(room.Id, room.Name, room.SlicesPerPizza);
+      }
+
+      if (isRoomNameChanged || isRoomManagerChanged || isSlicesPerPizzaChanged)
       {
         // Publish integration events
         using (var transaction = session.BeginTransaction())
@@ -141,6 +182,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
             await integrationEventLogService.SaveEventAsync(roomNameChangedEvent);
           if (isRoomManagerChanged)
             await integrationEventLogService.SaveEventAsync(roomManagerChangedEvent);
+          if (isSlicesPerPizzaChanged)
+            await integrationEventLogService.SaveEventAsync(slicesPerPizzaInRoomChangedEvent);
           transaction?.Commit();
         }
       }

@@ -17,5 +17,7 @@ namespace Biz.BrightOnion.Catalog.API.Entities
 
     [MaxLength(250)]
     public virtual string ManagerName { get; set; }
+
+    public virtual int SlicesPerPizza { get; set; } = 8;
   }
 }

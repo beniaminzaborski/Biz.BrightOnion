@@ -13,5 +13,5 @@
 
 <div class="list-group">
   <a href="#" class="list-group-item" *ngFor="let room of rooms" (click)="selectRoom(room)"
-     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}}{{ room.managerName ? ' (room manager: ' + room.managerName + ')' : '' }}</a>
+     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}} {{ '(slices: ' + room.slicesPerPizza }}{{ room.managerName ? ', manager: ' + room.managerName : '' }})</a>
 </div>

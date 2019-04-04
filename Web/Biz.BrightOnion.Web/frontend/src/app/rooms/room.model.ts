@@ -4,4 +4,5 @@ export class Room {
   public isActive: boolean;
   public managerId: number;
   public managerName: string;
+  public slicesPerPizza: number = 8;
 }
