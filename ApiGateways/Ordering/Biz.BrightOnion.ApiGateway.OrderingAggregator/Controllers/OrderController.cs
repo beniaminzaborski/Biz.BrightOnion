@@ -37,6 +37,8 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
     {
       // Step 1: Get room by data.RoomId
       var room = await roomApiClient.GetAsync(data.RoomId);
+      if (room == null)
+        return new BadRequestResult();
 
       // Step 2: Call purchase order on orderClient
       var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, data.Quantity);
@@ -71,7 +73,6 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
     {
       // Step 1: Check if user is a room manager
       var room = await roomApiClient.GetAsync(data.RoomId);
-
       if (room == null)
         return new BadRequestResult();
 
