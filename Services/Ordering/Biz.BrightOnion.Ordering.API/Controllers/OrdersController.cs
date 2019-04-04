@@ -49,17 +49,19 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     [Route("make")]
     [HttpPost]
     [ProducesResponseType(typeof(OrderDTO), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceCommand purchaseSliceCommand)
+    public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceRequest purchaseSliceRequest)
     {
-      return await mediator.Send(purchaseSliceCommand);
+      string userId = identityService.GetUserIdentity();
+      return await mediator.Send(new PurchaseSliceCommand(purchaseSliceRequest.RoomId, purchaseSliceRequest.RoomName, Int64.Parse(userId), purchaseSliceRequest.Quantity));
     }
 
     [Route("cancel")]
     [HttpPost]
     [ProducesResponseType(typeof(OrderDTO), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<OrderDTO>> CancelSliceAsync([FromBody] CancelSliceCommand cancelSliceCommand)
+    public async Task<ActionResult<OrderDTO>> CancelSliceAsync([FromBody] CancelSliceRequest cancelSliceRequest)
     {
-      return await mediator.Send(cancelSliceCommand);
+      string userId = identityService.GetUserIdentity();
+      return await mediator.Send(new CancelSliceCommand(cancelSliceRequest.OrderId, Int64.Parse(userId)));
     }
 
     [Route("approve")]

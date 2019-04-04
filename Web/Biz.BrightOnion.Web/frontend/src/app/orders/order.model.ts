@@ -2,13 +2,11 @@ import { exec } from "child_process";
 
 export class MakeOrder {
   public roomId: number;
-  public purchaserId: number;
   public quantity: number;
 }
 
 export class CancelOrder {
   public orderId: number;
-  public purchaserId: number;
 }
 
 export class ApproveOrder {
@@ -31,9 +29,4 @@ export class OrderItem {
   public purchaserId: number;
   public purchaserEmail: string;
   public quantity: number;
-}
-
-export class OrdersApproval {
-  public pizzaQuantity: number;
-  public room: string;
 }

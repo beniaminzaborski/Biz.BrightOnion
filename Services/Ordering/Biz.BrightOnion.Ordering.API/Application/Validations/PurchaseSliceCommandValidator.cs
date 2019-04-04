@@ -14,6 +14,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Validations
       RuleFor(command => command.RoomId).NotNull();
       RuleFor(command => command.PurchaserId).NotNull();
       RuleFor(command => command.Quantity).NotNull();
+      RuleFor(command => command.RoomId).NotNull();
+      RuleFor(command => command.RoomName).NotEmpty();
     }
   }
 }

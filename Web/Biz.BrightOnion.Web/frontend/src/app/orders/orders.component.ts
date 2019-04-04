@@ -144,7 +144,6 @@ export class OrdersComponent implements OnInit {
   public makeOrder(): boolean {
     let makeOrderCommand = new MakeOrder();
     makeOrderCommand.roomId = this.selectedRoom.id;
-    makeOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
     makeOrderCommand.quantity = this.quantity;
     this.ordersService.makeOrder(makeOrderCommand)
       .subscribe(
@@ -157,7 +156,6 @@ export class OrdersComponent implements OnInit {
   public cancel(): boolean {
     let cancelOrderCommand = new CancelOrder();
     cancelOrderCommand.orderId = this.order.orderId;
-    cancelOrderCommand.purchaserId = this.authenticationService.getLoggedUserId();
 
     this.ordersService.removeOrder(cancelOrderCommand)
       .subscribe(

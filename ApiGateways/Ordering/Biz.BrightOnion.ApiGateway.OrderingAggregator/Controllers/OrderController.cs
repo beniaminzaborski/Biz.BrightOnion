@@ -39,7 +39,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
       var room = await roomApiClient.GetAsync(data.RoomId);
 
       // Step 2: Call purchase order on orderClient
-      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, data.PurchaserId, data.Quantity);
+      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, data.Quantity);
 
       // Step 3: Get users list and set user's e-mail
       IEnumerable<UserDTO> users = await userClient.GetAllAsync();
@@ -54,7 +54,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
     public async Task<ActionResult<OrderData>> CancelSliceAsync([FromBody] CancelSliceRequest data)
     {
       // Step 1: Call cancel order on orderClient
-      var orderDTO = await orderClient.CancelSliceAsync(data.OrderId, data.PurchaserId);
+      var orderDTO = await orderClient.CancelSliceAsync(data.OrderId);
 
       // Step 2: Get users list and set user's e-mail
       IEnumerable<UserDTO> users = await userClient.GetAllAsync();

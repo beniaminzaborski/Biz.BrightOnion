@@ -29,9 +29,9 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
       urls = config.Value;
     }
 
-    public async Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, long? purchaserId, int? quantity)
+    public async Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, int? quantity)
     {
-      var requestData = new { RoomId = roomId, RoomName = roomName, PurchaserId = purchaserId, Quantity = quantity };
+      var requestData = new { RoomId = roomId, RoomName = roomName, Quantity = quantity };
       var requestDataContent = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
 
       var response = await apiClient.PostAsync(urls.Order + UrlsConfig.OrderOperations.PurchaseSlice(), requestDataContent);
@@ -43,9 +43,9 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
       return JsonConvert.DeserializeObject<OrderDTO>(orderResponse);
     }
 
-    public async Task<OrderDTO> CancelSliceAsync(long? orderId, long? purchaserId)
+    public async Task<OrderDTO> CancelSliceAsync(long? orderId)
     {
-      var requestData = new { OrderId = orderId, PurchaserId = purchaserId };
+      var requestData = new { OrderId = orderId };
       var requestDataContent = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
 
       var response = await apiClient.PostAsync(urls.Order + UrlsConfig.OrderOperations.CancelSlice(), requestDataContent);
