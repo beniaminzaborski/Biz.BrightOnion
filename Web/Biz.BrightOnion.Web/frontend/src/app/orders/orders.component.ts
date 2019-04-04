@@ -177,7 +177,6 @@ export class OrdersComponent implements OnInit {
     const approveOrder = new ApproveOrder();
     approveOrder.orderId = this.order.orderId;
     approveOrder.roomId = this.order.roomId;
-    approveOrder.userId = this.authenticationService.getLoggedUserId();
 
     this.ordersService.approveOrders(approveOrder)
       .subscribe(

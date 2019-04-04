@@ -21,7 +21,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Config
     {
       public static string PurchaseSlice() => "/api/v1/orders/make";
       public static string CancelSlice() => "/api/v1/orders/cancel";
-      public static string ApproveOrder() => "/api/v1/orders/{0}/approve";
+      public static string ApproveOrder() => "/api/v1/orders/approve";
     }
 
     public string Room { get; set; }

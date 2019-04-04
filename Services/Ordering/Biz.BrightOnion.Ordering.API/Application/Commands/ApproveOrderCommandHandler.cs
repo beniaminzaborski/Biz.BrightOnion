@@ -27,6 +27,9 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
       if (!order.IsApproved)
       {
+        if (request.RoomManagerId.HasValue && request.RoomManagerId.ToString() != request.UserId)
+          return false; // TODO: Throw exception with an error message?!
+
         order.Approve();
 
         var orderApprovedDomainEvent = new OrderApprovedDomainEvent(order.Id, order.RoomId, order.Day);

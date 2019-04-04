@@ -1,6 +1,8 @@
 ﻿using Biz.BrightOnion.Ordering.API.Application.Commands;
 using Biz.BrightOnion.Ordering.API.Application.Dto;
 using Biz.BrightOnion.Ordering.API.Application.Queries;
+using Biz.BrightOnion.Ordering.API.Infrastructure.Services;
+using Biz.BrightOnion.Ordering.API.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,15 +23,18 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     private readonly IMediator mediator;
     private readonly IOrderQueries orderQueries;
     private readonly ILogger<OrdersController> logger;
+    private readonly IIdentityService identityService;
 
     public OrdersController(
       IMediator mediator,
       IOrderQueries orderQueries,
-      ILogger<OrdersController> logger)
+      ILogger<OrdersController> logger,
+      IIdentityService identityService)
     {
       this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
       this.orderQueries = orderQueries ?? throw new ArgumentNullException(nameof(orderQueries));
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+      this.identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
     }
 
     [HttpGet("{roomId}")]
@@ -57,13 +62,14 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
       return await mediator.Send(cancelSliceCommand);
     }
 
-    [Route("{orderId}/approve")]
+    [Route("approve")]
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-    public async Task<ActionResult> ApproveOrderAsync(long? orderId)
+    public async Task<ActionResult> ApproveOrderAsync([FromBody] ApproveOrderRequest approveOrderRequest)
     {
-      var result = await mediator.Send(new ApproveOrderCommand(orderId));
+      string userId = identityService.GetUserIdentity();
+      var result = await mediator.Send(new ApproveOrderCommand(approveOrderRequest.OrderId, approveOrderRequest.RoomManagerId, userId));
       return result ? (ActionResult)NoContent() : (ActionResult)BadRequest();
     }
   }

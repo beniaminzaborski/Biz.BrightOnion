@@ -14,6 +14,6 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
 
     Task<OrderDTO> CancelSliceAsync(long? orderId, long? purchaserId);
 
-    Task<HttpStatusCode> ApproveOrderAsync(long? orderId);
+    Task<HttpStatusCode> ApproveOrderAsync(long? orderId, long? roomManagerId);
   }
 }

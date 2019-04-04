@@ -75,11 +75,8 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
       if (room == null)
         return new BadRequestResult();
 
-      if (room.ManagerId.HasValue && room.ManagerId != data.UserId)
-        return new BadRequestResult();
-
       // Step 2: Approve order
-      var statusCode = await orderClient.ApproveOrderAsync(data.OrderId);
+      var statusCode = await orderClient.ApproveOrderAsync(data.OrderId, room.ManagerId);
 
       if (statusCode == HttpStatusCode.BadRequest)
         return BadRequest();

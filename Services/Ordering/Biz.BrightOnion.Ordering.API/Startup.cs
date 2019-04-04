@@ -13,6 +13,7 @@ using Biz.BrightOnion.Ordering.API.Configuration;
 using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
+using Biz.BrightOnion.Ordering.API.Infrastructure.Services;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
 using Biz.BrightOnion.Ordering.Domain.Services;
@@ -23,6 +24,7 @@ using Biz.BrightOnion.Ordering.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +55,9 @@ namespace Biz.BrightOnion.Ordering.API
       services
         .AddCustomDbContext(Configuration)
         .AddEventBus(Configuration);
+
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+      services.AddTransient<IIdentityService, IdentityService>();
 
       services.AddScoped<IPurchaserRepository, PurchaserRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();

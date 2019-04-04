@@ -14,7 +14,6 @@ export class CancelOrder {
 export class ApproveOrder {
   public orderId: number;
   public roomId: number;
-  public userId: number;
 }
 
 export class Order {
