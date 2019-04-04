@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { Room } from './room.model';
 import { RoomService } from './rooms.service';
 import { ErrorHelper } from '../shared/error-helper';
+import { AuthenticationService } from '../shared/auth/authentication.service';
 
 @Component({
   selector: 'app-root',
   providers: [
-    RoomService
+    RoomService,
+    AuthenticationService
   ],
   templateUrl: './rooms.component.html'
 })
@@ -19,7 +21,8 @@ export class RoomsComponent implements OnInit {
 
   constructor(
     public router: Router,
-    private roomService: RoomService) {
+    private roomService: RoomService,
+    private authenticationService: AuthenticationService) {
       this.room = new Room();
   }
 
@@ -36,6 +39,8 @@ export class RoomsComponent implements OnInit {
   }
 
   public addRoom(): void {
+    this.room.managerId = this.authenticationService.getLoggedUserId();
+    this.room.managerName = this.authenticationService.getLoggedUsername();
     this.roomService.addRoom(this.room)
       .subscribe(result => {
         if(result) {
@@ -61,11 +66,11 @@ export class RoomsComponent implements OnInit {
       return false;
 
     this.roomService.removeRoom(this.selectedRoom.id)
-    .subscribe(result => {
-      if(result) {
-        this.selectedRoom = null;
-        this.loadRooms();
-      }
+      .subscribe(result => {
+        if(result) {
+          this.selectedRoom = null;
+          this.loadRooms();
+        }
     },
     error => alert(ErrorHelper.getErrorMessage(error))
     );

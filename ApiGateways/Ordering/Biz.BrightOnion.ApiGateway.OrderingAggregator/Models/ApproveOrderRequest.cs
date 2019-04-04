@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
 {
-  public class RoomDTO
+  public class ApproveOrderRequest
   {
-    public long Id { get; set; }
-    public string Name { get; set; }
-    public long? ManagerId { get; set; }
+    public long? OrderId { get; set; }
+
+    public long? RoomId { get; set; }
+
+    public long? UserId { get; set; }
   }
 }

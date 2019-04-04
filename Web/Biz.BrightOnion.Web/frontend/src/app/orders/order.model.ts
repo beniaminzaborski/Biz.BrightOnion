@@ -1,3 +1,5 @@
+import { exec } from "child_process";
+
 export class MakeOrder {
   public roomId: number;
   public purchaserId: number;
@@ -7,6 +9,12 @@ export class MakeOrder {
 export class CancelOrder {
   public orderId: number;
   public purchaserId: number;
+}
+
+export class ApproveOrder {
+  public orderId: number;
+  public roomId: number;
+  public userId: number;
 }
 
 export class Order {

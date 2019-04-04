@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../rooms/rooms.service';
 import { Room } from '../rooms/room.model';
-import { MakeOrder, Order, OrderItem, CancelOrder } from './order.model';
+import { MakeOrder, Order, OrderItem, CancelOrder, ApproveOrder } from './order.model';
 import { AuthenticationService } from '../shared/auth/authentication.service';
 import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
@@ -27,6 +27,7 @@ export class OrdersComponent implements OnInit {
   public selectedRoom: Room;
   public quantity: number;
   public order: Order = new Order();
+  public currentUserId: number;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -41,6 +42,7 @@ export class OrdersComponent implements OnInit {
     private roomService: RoomService,
     private ordersService: OrdersService,
     private authenticationService: AuthenticationService) {
+    this.currentUserId = authenticationService.getLoggedUserId();
   }
 
   public ngOnInit(): void {
@@ -172,7 +174,12 @@ export class OrdersComponent implements OnInit {
   }
 
   public approveOrders(): void {
-    this.ordersService.approveOrders(this.order.orderId)
+    const approveOrder = new ApproveOrder();
+    approveOrder.orderId = this.order.orderId;
+    approveOrder.roomId = this.order.roomId;
+    approveOrder.userId = this.authenticationService.getLoggedUserId();
+
+    this.ordersService.approveOrders(approveOrder)
       .subscribe(
       result => this.refresh(),
       error => alert(ErrorHelper.getErrorMessage(error))

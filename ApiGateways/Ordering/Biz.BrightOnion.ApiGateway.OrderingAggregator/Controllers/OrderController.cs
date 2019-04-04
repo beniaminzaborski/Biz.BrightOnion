@@ -62,5 +62,29 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
 
       return new OkObjectResult(result);
     }
+
+    [Route("approve")]
+    [HttpPost]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    public async Task<ActionResult> ApproveOrderAsync([FromBody] ApproveOrderRequest data)
+    {
+      // Step 1: Check if user is a room manager
+      var room = await roomApiClient.GetAsync(data.RoomId);
+
+      if (room == null)
+        return new BadRequestResult();
+
+      if (room.ManagerId.HasValue && room.ManagerId != data.UserId)
+        return new BadRequestResult();
+
+      // Step 2: Approve order
+      var statusCode = await orderClient.ApproveOrderAsync(data.OrderId);
+
+      if (statusCode == HttpStatusCode.BadRequest)
+        return BadRequest();
+
+      return NoContent();
+    }
   }
 }

@@ -12,5 +12,10 @@ namespace Biz.BrightOnion.Catalog.API.Entities
     [Required]
     [MaxLength(25)]
     public virtual string Name { get; set; }
+
+    public virtual long? ManagerId { get; set; }
+
+    [MaxLength(250)]
+    public virtual string ManagerName { get; set; }
   }
 }

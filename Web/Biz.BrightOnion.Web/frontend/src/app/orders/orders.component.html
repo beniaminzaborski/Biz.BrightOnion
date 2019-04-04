@@ -6,29 +6,36 @@
 
 <div *ngIf="selectedRoom">
   <div>
-    <div *ngIf="order.totalPizzas > 0">
-      <h4>
-        <span *ngIf="!order.isApproved">
-          <strong>{{order.freeSlicesToGrab}}</strong> {{ order.freeSlicesToGrab == 1 ? 'slice' : 'slices' }} of
-          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} to get
-        </span>
-        <span *ngIf="order.isApproved">
-          <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} approved
-        </span>
-      </h4>
-    </div>
-    <div *ngIf="order.totalPizzas == 0">
-      <h4>No orders</h4>
+    <div class="row">
+      <div class="col col-sm-6">
+        <div *ngIf="order.totalPizzas > 0">
+          <h4>
+            <span *ngIf="!order.isApproved">
+              <strong>{{order.freeSlicesToGrab}}</strong> {{ order.freeSlicesToGrab == 1 ? 'slice' : 'slices' }} of
+              <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} to get
+            </span>
+            <span *ngIf="order.isApproved">
+              <strong>{{order.totalPizzas}}</strong> {{ order.totalPizzas == 1 ? 'pizza' : 'pizzas' }} approved
+            </span>
+          </h4>
+        </div>
+        <div *ngIf="order.totalPizzas == 0">
+          <h4>No orders</h4>
+        </div>
+      </div>
+      <div class="col col-sm-6">
+        <h4 class="pull-right" *ngIf="selectedRoom.managerName">Room manager: {{selectedRoom.managerName}}</h4>
+      </div>
     </div>
 
     <form #orderForm="ngForm" (submit)="makeOrder()" class="form-inline">
       <div class="form-group">
         <input type="number" class="form-control" id="quantity" name="quantity" [(ngModel)]="quantity" placeholder="Number of slices"
-          [disabled]="order.isApproved" required>
+               [disabled]="order.isApproved" required>
         <button class="btn btn-primary btn-submit" type="submit" [disabled]="!orderForm.form.valid || order.isApproved">Grab</button>
         <button class="btn btn-danger" type="button" (click)="cancel()" [disabled]="order.isApproved">Cancel</button>
-        
-        <button class="btn btn-warning" type="button" (click)="approveOrders()" [disabled]="order.isApproved || pizzas == 0">Approve orders</button>
+
+        <button class="btn btn-warning" type="button" (click)="approveOrders()" [disabled]="order.isApproved || pizzas == 0 || (selectedRoom.managerId && selectedRoom.managerId != currentUserId)">Approve</button>
         <!-- <button class="btn btn-success" type="button" (click)="refresh()">Refresh</button> -->
       </div>
     </form>
@@ -38,10 +45,9 @@
   <br>
 
   <div class="col-md-10" *ngIf="order.totalPizzas > 0">
-    <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [colors]="pieChartColours" 
-      (chartHover)="chartHovered($event)"
-      (chartClick)="chartClicked($event)">
-    </canvas>
+    <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [colors]="pieChartColours"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
   </div>
 </div>
 

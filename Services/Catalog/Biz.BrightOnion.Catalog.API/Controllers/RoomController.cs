@@ -42,7 +42,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
     {
       var rooms = roomRepository.GetAll().ToList();
       IList<RoomDTO> result = new List<RoomDTO>();
-      rooms.ForEach(r => result.Add(new RoomDTO { Id = r.Id, Name = r.Name }));
+      rooms.ForEach(r => result.Add(new RoomDTO { Id = r.Id, Name = r.Name, ManagerId = r.ManagerId, ManagerName = r.ManagerName }));
       return new ObjectResult(result);
     }
 
@@ -56,7 +56,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (room == null)
         return NotFound(new ErrorDTO { ErrorMessage = "Room does not exist" });
 
-      return Ok(new RoomDTO { Id = room.Id, Name = room.Name });
+      return Ok(new RoomDTO { Id = room.Id, Name = room.Name, ManagerId = room.ManagerId, ManagerName = room.ManagerName });
     }
 
     [HttpPost]
@@ -76,7 +76,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (room != null)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room does exist" });
 
-      room = new Room { Name = roomDTO.Name };
+      room = new Room { Name = roomDTO.Name, ManagerId = roomDTO.ManagerId, ManagerName = roomDTO.ManagerName };
 
       using (var transaction = session.BeginTransaction())
       {
@@ -84,7 +84,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         transaction?.Commit();
       }
 
-      return CreatedAtAction(nameof(GetAsync), new { id = room.Id }, new RoomDTO { Id = room.Id, Name = room.Name });
+      return CreatedAtAction(nameof(GetAsync), new { id = room.Id }, new RoomDTO { Id = room.Id, Name = room.Name, ManagerId = room.ManagerId, ManagerName = room.ManagerName });
     }
 
     [HttpPut]
@@ -108,17 +108,39 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       if (roomWithNameExists)
         return new BadRequestObjectResult(new ErrorDTO { ErrorMessage = "Room with passed name does exist" });
 
+      bool isRoomNameChanged = false, isRoomManagerChanged = false;
+      RoomNameChangedEvent roomNameChangedEvent = null;
+      RoomManagerChangedEvent roomManagerChangedEvent = null;
+
       if (room.Name != roomDTO.Name)
       {
+        isRoomNameChanged = true;
+
         room.Name = roomDTO.Name;
 
-        var roomNameChangedEvent = new RoomNameChangedEvent(room.Id, room.Name);
+        roomNameChangedEvent = new RoomNameChangedEvent(room.Id, room.Name);
+      }
 
-        // Publish integration event: RoomNameChangedEvent
+      if (room.ManagerId != roomDTO.ManagerId)
+      {
+        isRoomManagerChanged = true;
+
+        room.ManagerId = roomDTO.ManagerId;
+        room.ManagerName = roomDTO.ManagerName;
+
+        roomManagerChangedEvent = new RoomManagerChangedEvent(room.Id, room.Name, room.ManagerId, room.ManagerName);
+      }
+
+      if (isRoomNameChanged || isRoomManagerChanged)
+      {
+        // Publish integration events
         using (var transaction = session.BeginTransaction())
         {
           await roomRepository.UpdateAsync(room.Id, room);
-          await integrationEventLogService.SaveEventAsync(roomNameChangedEvent);
+          if(isRoomNameChanged)
+            await integrationEventLogService.SaveEventAsync(roomNameChangedEvent);
+          if (isRoomManagerChanged)
+            await integrationEventLogService.SaveEventAsync(roomManagerChangedEvent);
           transaction?.Commit();
         }
       }

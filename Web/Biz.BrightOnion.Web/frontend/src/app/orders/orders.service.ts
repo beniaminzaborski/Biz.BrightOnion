@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs/Observable";
 import "rxjs/add/operator/do";
 import "rxjs/add/operator/map";
-import { MakeOrder, Order, OrderItem, CancelOrder } from "./order.model";
+import { MakeOrder, Order, OrderItem, CancelOrder, ApproveOrder } from "./order.model";
 import { environment } from "../../environments/environment";
 
 @Injectable()
@@ -31,9 +31,10 @@ export class OrdersService {
     ).map(response => { console.log('body', response.body); return response.body; });
   }
 
-  public approveOrders(orderId: number): Observable<boolean> {
+  public approveOrders(approveOrder: ApproveOrder): Observable<boolean> {
+    let body = JSON.stringify(approveOrder);
     return this.http.post(
-      `${environment.orderServiceUrl}/${orderId}/approve`, null, { observe: 'response' }
+      `${environment.orderServiceUrl}/approve`, body, { observe: 'response' }
     ).map(response => response.status == 204);
   }
 }

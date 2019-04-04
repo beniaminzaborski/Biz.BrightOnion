@@ -1,11 +1,13 @@
 ﻿using Biz.BrightOnion.ApiGateway.OrderingAggregator.Config;
 using Biz.BrightOnion.ApiGateway.OrderingAggregator.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -53,6 +55,15 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
       var orderResponse = await response.Content.ReadAsStringAsync();
 
       return JsonConvert.DeserializeObject<OrderDTO>(orderResponse);
+    }
+
+    public async Task<HttpStatusCode> ApproveOrderAsync(long? orderId)
+    {
+      var response = await apiClient.PostAsync(urls.Order + string.Format(UrlsConfig.OrderOperations.ApproveOrder(), orderId), null);
+
+      response.EnsureSuccessStatusCode();
+
+      return response.StatusCode;
     }
   }
 }

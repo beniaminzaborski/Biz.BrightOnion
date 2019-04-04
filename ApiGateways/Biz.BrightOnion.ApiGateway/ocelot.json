@@ -47,6 +47,18 @@
       "UpstreamHttpMethod": [ "Post" ]
     },
     {
+      "DownstreamPathTemplate": "/api/order/approve",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9010
+        }
+      ],
+      "UpstreamPathTemplate": "/ordering-api/v1/orders/approve",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
