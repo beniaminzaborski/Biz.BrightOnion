@@ -10,6 +10,8 @@ import { AuthData } from './auth-data.model';
 import { UserProfile } from "./user-profile.model";
 import { environment } from "../../../environments/environment";
 
+import * as jwtDecode from 'jwt-decode';
+
 @Injectable()
 export class AuthenticationService {
   constructor(private http: HttpClient) { }
@@ -26,32 +28,25 @@ export class AuthenticationService {
     )
       .map(response => {
         let data = response.body;
-        return { userId: data['userId'], token: data['token'], email: user.email };
+        return { token: data['token'] };
       })
       .do(authData => {
         localStorage.setItem('token', authData.token);
-        localStorage.setItem('userId', authData.userId);
-        localStorage.setItem('username', authData.email);
       }).catch(this.handleErrors);
   }
 
   logout() {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
     localStorage.removeItem('token');
   }
 
   public getLoggedUsername(): string {
-    return localStorage.getItem('username');
+    var decoded = jwtDecode(this.getToken());
+    return decoded.unique_name;
   }
 
   public getLoggedUserId(): number {
-    let userId: number = 0;
-    let strUserId = localStorage.getItem('userId');
-    if (strUserId) {
-      userId = parseInt(strUserId);
-    }
-    return userId;
+    var decoded = jwtDecode(this.getToken());
+    return decoded.nameid;
   }
 
   public changePassword(changePassword: ChangePassword) {
