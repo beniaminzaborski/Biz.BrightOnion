@@ -29,12 +29,13 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
       if (!orderExists)
       {
-        order = new Order(request.RoomId.Value, day);
+        order = new Order(request.RoomId.Value, request.SlicesPerPizza, day);
         var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Id, order.Day, order.RoomId, request.RoomName, request.PurchaserId.Value);
         order.AddDomainEvent(newOrderCreatedDomainEvent);
       }
       else
       {
+        order.SetSlicesPerPizza(request.SlicesPerPizza);
         var slicePurchasedDomainEvent = new SlicePurchasedDomainEvent(order.Id, order.Day, order.RoomId, request.PurchaserId.Value, request.Quantity.Value);
         order.AddDomainEvent(slicePurchasedDomainEvent);
       }

@@ -29,9 +29,9 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
       urls = config.Value;
     }
 
-    public async Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, int? quantity)
+    public async Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, int slicesPerPizza, int? quantity)
     {
-      var requestData = new { RoomId = roomId, RoomName = roomName, Quantity = quantity };
+      var requestData = new { RoomId = roomId, RoomName = roomName, SlicesPerPizza = slicesPerPizza, Quantity = quantity };
       var requestDataContent = new StringContent(JsonConvert.SerializeObject(requestData), System.Text.Encoding.UTF8, "application/json");
 
       var response = await apiClient.PostAsync(urls.Order + UrlsConfig.OrderOperations.PurchaseSlice(), requestDataContent);

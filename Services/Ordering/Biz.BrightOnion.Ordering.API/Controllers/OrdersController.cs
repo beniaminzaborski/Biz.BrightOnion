@@ -52,7 +52,7 @@ namespace Biz.BrightOnion.Ordering.API.Controllers
     public async Task<ActionResult<OrderDTO>> PurchaseSliceAsync([FromBody] PurchaseSliceRequest purchaseSliceRequest)
     {
       string userId = identityService.GetUserIdentity();
-      return await mediator.Send(new PurchaseSliceCommand(purchaseSliceRequest.RoomId, purchaseSliceRequest.RoomName, Int64.Parse(userId), purchaseSliceRequest.Quantity));
+      return await mediator.Send(new PurchaseSliceCommand(purchaseSliceRequest.RoomId, purchaseSliceRequest.RoomName, purchaseSliceRequest.SlicesPerPizza, Int64.Parse(userId), purchaseSliceRequest.Quantity));
     }
 
     [Route("cancel")]

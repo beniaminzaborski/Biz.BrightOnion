@@ -10,7 +10,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
 {
   public interface IOrderApiClient
   {
-    Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, int? quantity);
+    Task<OrderDTO> PurchaseSliceAsync(long? roomId, string roomName, int slicesPerPizza, int? quantity);
 
     Task<OrderDTO> CancelSliceAsync(long? orderId);
 

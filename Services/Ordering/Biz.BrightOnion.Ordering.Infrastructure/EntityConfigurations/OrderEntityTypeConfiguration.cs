@@ -18,6 +18,7 @@ namespace Biz.BrightOnion.Ordering.Infrastructure.EntityConfigurations
       // orderConfiguration.Ignore(b => b.DomainEvents);
 
       orderConfiguration.Property<long>("RoomId").IsRequired();
+      orderConfiguration.Property<int>("SlicesPerPizza").IsRequired();
       orderConfiguration.Property<DateTime>("Day").IsRequired();
       orderConfiguration.Property<int>("TotalPizzas").IsRequired().HasDefaultValue(0);
       orderConfiguration.Property<int>("FreeSlicesToGrab").IsRequired().HasDefaultValue(0);

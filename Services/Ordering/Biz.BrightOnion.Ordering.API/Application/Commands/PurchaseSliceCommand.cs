@@ -13,6 +13,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
     public string RoomName { get; private set; }
 
+    public int SlicesPerPizza { get; set; }
+
     public long? PurchaserId { get; private set; }
 
     public int? Quantity { get; private set; }
@@ -20,11 +22,13 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
     public PurchaseSliceCommand(
       long? roomId,
       string roomName,
+      int slicesPerPizza,
       long? purchaserId,
       int? quantity)
     {
       this.RoomId = roomId;
       this.RoomName = roomName;
+      this.SlicesPerPizza = slicesPerPizza;
       this.PurchaserId = purchaserId;
       this.Quantity = quantity;
     }

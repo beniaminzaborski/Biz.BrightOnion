@@ -11,6 +11,8 @@ namespace Biz.BrightOnion.Ordering.API.Models
 
     public string RoomName { get; set; }
 
+    public int SlicesPerPizza { get; set; }
+
     public int? Quantity { get; set; }
   }
 }

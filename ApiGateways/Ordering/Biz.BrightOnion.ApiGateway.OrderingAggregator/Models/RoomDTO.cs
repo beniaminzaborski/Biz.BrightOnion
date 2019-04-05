@@ -10,5 +10,6 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Models
     public long Id { get; set; }
     public string Name { get; set; }
     public long? ManagerId { get; set; }
+    public int SlicesPerPizza { get; set; }
   }
 }

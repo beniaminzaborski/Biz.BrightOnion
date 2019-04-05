@@ -41,7 +41,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Controllers
         return new BadRequestResult();
 
       // Step 2: Call purchase order on orderClient
-      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, data.Quantity);
+      var orderDTO = await orderClient.PurchaseSliceAsync(data.RoomId, room.Name, room.SlicesPerPizza, data.Quantity);
 
       // Step 3: Get users list and set user's e-mail
       IEnumerable<UserDTO> users = await userClient.GetAllAsync();
