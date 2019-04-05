@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Room } from './room.model';
+import { Room, User } from './room.model';
 import { RoomService } from './rooms.service';
 import { ErrorHelper } from '../shared/error-helper';
 import { AuthenticationService } from '../shared/auth/authentication.service';
@@ -15,19 +15,20 @@ import { AuthenticationService } from '../shared/auth/authentication.service';
 })
 export class RoomsComponent implements OnInit {
   
-  public room: Room;
   public rooms: Room[] = [];
-  public selectedRoom: Room = null;
+  public selectedRoom: Room;
+  public users: User[] = [];
 
   constructor(
     public router: Router,
     private roomService: RoomService,
     private authenticationService: AuthenticationService) {
-      this.room = new Room();
+    this.selectedRoom = new Room();
   }
 
   public ngOnInit(): void {
     this.loadRooms();
+    this.loadUsers();
   }
 
   private loadRooms(): void {
@@ -38,26 +39,59 @@ export class RoomsComponent implements OnInit {
       );
   }
 
-  public addRoom(): void {
-    this.room.managerId = this.authenticationService.getLoggedUserId();
-    this.room.managerName = this.authenticationService.getLoggedUsername();
-    this.roomService.addRoom(this.room)
-      .subscribe(result => {
-        if(result) {
-          this.room.name = '';
-          this.selectedRoom = null;
-          this.loadRooms();
-        }
-      },
-      error => alert(ErrorHelper.getErrorMessage(error))
-    );
+  private loadUsers(): void {
+    this.roomService.getUsers()
+      .subscribe(
+        users => this.users = users,
+        error => alert(ErrorHelper.getErrorMessage(error))
+      );
+  }
+
+  public onManagerChange(value: any) {
+    //this.selectedRoom.managerId = value.userId;
+    //this.selectedRoom.managerName = value.email;
+    // Making sure that the two-way data binding works properly
+    console.log('select value', value);
+    console.log('selectedRoom', this.selectedRoom);
+  }
+
+  public saveRoom(): void {
+    if (!this.selectedRoom.id) { // New Room
+
+      // this.selectedRoom.managerId = this.authenticationService.getLoggedUserId();
+      // this.selectedRoom.managerName = this.authenticationService.getLoggedUsername();
+
+      this.roomService.addRoom(this.selectedRoom)
+        .subscribe(result => {
+          if (result) {
+            this.selectedRoom = new Room();
+            this.loadRooms();
+          }
+        },
+          error => alert(ErrorHelper.getErrorMessage(error))
+        );
+    } else { // Update Room
+
+      this.roomService.editRoom(this.selectedRoom)
+        .subscribe(result => {
+          if (result) {
+            this.selectedRoom = new Room();
+            this.loadRooms();
+          }
+        },
+          error => alert(ErrorHelper.getErrorMessage(error))
+        );
+    }
   }
 
   public selectRoom(room: Room): boolean {
-    if(this.selectedRoom == room)
-      this.selectedRoom = null;
-    else
-      this.selectedRoom = room;
+    console.log('selectRoom:', room);
+    this.selectedRoom = room;
+    return false;
+  }
+
+  public newRoom(): boolean {
+    this.selectedRoom = new Room();
     return false;
   }
 
@@ -67,8 +101,8 @@ export class RoomsComponent implements OnInit {
 
     this.roomService.removeRoom(this.selectedRoom.id)
       .subscribe(result => {
-        if(result) {
-          this.selectedRoom = null;
+        if (result) {
+          this.selectedRoom = new Room();
           this.loadRooms();
         }
     },

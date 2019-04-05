@@ -1,17 +1,33 @@
 <div>
   <br>
-  <form #roomForm="ngForm" (submit)="addRoom()" class="form-inline">
-    <div class="form-group">
-      <label for="name">Room name</label>
-      <input type="text" class="form-control" id="name" name="name" [(ngModel)]="room.name" required>
+  <form #roomForm="ngForm" (submit)="saveRoom()" class="form">
+    <div class="row">
+      <div class="form-group col col-sm-3">
+        <!--<label for="name">Name</label>-->
+        <input type="text" class="form-control" id="name" name="name" [(ngModel)]="selectedRoom.name" placeholder="Room name" required>
+      </div>
+      <div class="form-group col col-sm-3">
+        <!--<label for="name">Slices</label>-->
+        <input type="number" maxlength="2" size="2" class="form-control" id="slicesPerPizza" name="slicesPerPizza" [(ngModel)]="selectedRoom.slicesPerPizza" placeholder="Slices per pizza" required>
+      </div>
+      <div class="form-group col col-sm-3">
+        <!--<label for="manager">Manager</label>-->
+        <select class="form-control" id="manager" name="manager" placeholder="Manager" [(ngModel)]="selectedRoom.manager" (ngModelChange)="onManagerChange($event)">
+          <option *ngFor="let u of users" [ngValue]="u">{{u.email}}</option>
+        </select>
+        <!--<input type="text" class="form-control" id="manager" name="managerId" [(ngModel)]="selectedRoom.managerId" required>-->
+      </div>
+      <div class="col col-sm-3 pull-right">
+        <button class="btn btn-warning" (click)="newRoom()">New</button>
+        <button class="btn btn-primary btn-submit" type="submit" [disabled]="!roomForm.form.valid">Save</button>
+        <button class="btn btn-danger" type="button" [disabled]="!selectedRoom" (click)="removeRoom()">Remove</button>
+      </div>
     </div>
-    <button class="btn btn-primary btn-submit" type="submit" [disabled]="!roomForm.form.valid">Add</button>
-    <button class="btn btn-danger" type="button" [disabled]="!selectedRoom" (click)="removeRoom()">Remove selected</button>
   </form>
   <br>
 </div>
 
 <div class="list-group">
   <a href="#" class="list-group-item" *ngFor="let room of rooms" (click)="selectRoom(room)"
-     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}} {{ '(slices: ' + room.slicesPerPizza }}{{ room.managerName ? ', manager: ' + room.managerName : '' }})</a>
+     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}}{{ '(slices: ' + room.slicesPerPizza }}{{ room.manager.email ? ', manager: ' + room.manager.email : '' }})</a>
 </div>
