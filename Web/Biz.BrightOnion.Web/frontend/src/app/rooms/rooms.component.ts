@@ -48,18 +48,11 @@ export class RoomsComponent implements OnInit {
   }
 
   public onManagerChange(value: any) {
-    //this.selectedRoom.managerId = value.userId;
-    //this.selectedRoom.managerName = value.email;
-    // Making sure that the two-way data binding works properly
-    console.log('select value', value);
-    console.log('selectedRoom', this.selectedRoom);
+    this.selectedRoom.managerName = this.users.find(u => u.userId == value).email;
   }
 
   public saveRoom(): void {
     if (!this.selectedRoom.id) { // New Room
-
-      // this.selectedRoom.managerId = this.authenticationService.getLoggedUserId();
-      // this.selectedRoom.managerName = this.authenticationService.getLoggedUsername();
 
       this.roomService.addRoom(this.selectedRoom)
         .subscribe(result => {

@@ -47,9 +47,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         {
           Id = r.Id,
           Name = r.Name,
-          Manager = new UserDTO { UserId = r.ManagerId, Email = r.ManagerName },
-          //ManagerId = r.ManagerId,
-          //ManagerName = r.ManagerName,
+          ManagerId = r.ManagerId,
+          ManagerName = r.ManagerName,
           SlicesPerPizza = r.SlicesPerPizza
         }));
       return new ObjectResult(result);
@@ -70,9 +69,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         {
           Id = room.Id,
           Name = room.Name,
-          Manager = new UserDTO { UserId = room.ManagerId, Email = room.ManagerName },
-          //ManagerId = room.ManagerId,
-          //ManagerName = room.ManagerName,
+          ManagerId = room.ManagerId,
+          ManagerName = room.ManagerName,
           SlicesPerPizza = room.SlicesPerPizza
         });
     }
@@ -97,10 +95,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       room = new Room
       {
         Name = roomDTO.Name,
-        //ManagerId = roomDTO.ManagerId,
-        //ManagerName = roomDTO.ManagerName,
-        ManagerId = roomDTO.Manager?.UserId,
-        ManagerName = roomDTO.Manager?.Email,
+        ManagerId = roomDTO.ManagerId,
+        ManagerName = roomDTO.ManagerName,
         SlicesPerPizza = roomDTO.SlicesPerPizza
       };
 
@@ -115,9 +111,8 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         {
           Id = room.Id,
           Name = room.Name,
-          //ManagerId = room.ManagerId,
-          //ManagerName = room.ManagerName,
-          Manager = new UserDTO { UserId = room.ManagerId, Email = room.ManagerName },
+          ManagerId = room.ManagerId,
+          ManagerName = room.ManagerName,
           SlicesPerPizza = room.SlicesPerPizza
         });
     }
@@ -158,12 +153,12 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
         roomNameChangedEvent = new RoomNameChangedEvent(room.Id, room.Name);
       }
 
-      if (room.ManagerId != roomDTO.Manager?.UserId)
+      if (room.ManagerId != roomDTO.ManagerId)
       {
         isRoomManagerChanged = true;
 
-        room.ManagerId = roomDTO.Manager?.UserId;
-        room.ManagerName = roomDTO.Manager?.Email;
+        room.ManagerId = roomDTO.ManagerId;
+        room.ManagerName = roomDTO.ManagerName;
 
         roomManagerChangedEvent = new RoomManagerChangedEvent(room.Id, room.Name, room.ManagerId, room.ManagerName);
       }

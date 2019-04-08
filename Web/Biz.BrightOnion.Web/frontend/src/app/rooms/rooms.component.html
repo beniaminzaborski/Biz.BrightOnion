@@ -12,10 +12,9 @@
       </div>
       <div class="form-group col col-sm-3">
         <!--<label for="manager">Manager</label>-->
-        <select class="form-control" id="manager" name="manager" placeholder="Manager" [(ngModel)]="selectedRoom.manager" (ngModelChange)="onManagerChange($event)">
-          <option *ngFor="let u of users" [ngValue]="u">{{u.email}}</option>
+        <select class="form-control" id="manager" name="manager" placeholder="Manager" [(ngModel)]="selectedRoom.managerId" (ngModelChange)="onManagerChange($event)">
+          <option *ngFor="let u of users" [ngValue]="u.userId">{{u.email}}</option>
         </select>
-        <!--<input type="text" class="form-control" id="manager" name="managerId" [(ngModel)]="selectedRoom.managerId" required>-->
       </div>
       <div class="col col-sm-3 pull-right">
         <button class="btn btn-warning" (click)="newRoom()">New</button>
@@ -29,5 +28,5 @@
 
 <div class="list-group">
   <a href="#" class="list-group-item" *ngFor="let room of rooms" (click)="selectRoom(room)"
-     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}}{{ '(slices: ' + room.slicesPerPizza }}{{ room.manager.email ? ', manager: ' + room.manager.email : '' }})</a>
+     [ngClass]="{ 'active' : selectedRoom?.name == room.name }">{{room.name}}{{ '(slices: ' + room.slicesPerPizza }}{{ room.managerName ? ', manager: ' + room.managerName : '' }})</a>
 </div>

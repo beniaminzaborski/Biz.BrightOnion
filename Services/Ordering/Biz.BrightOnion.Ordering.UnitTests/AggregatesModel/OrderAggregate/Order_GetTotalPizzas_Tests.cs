@@ -12,7 +12,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalQunatityLowerThan8_ShouldReturn1()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 2);
       order.AddOrderItem(2, 1);
 
@@ -27,7 +27,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalQunatityEquals8_ShouldReturn1()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 5);
       order.AddOrderItem(2, 3);
 
@@ -42,7 +42,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalQunatityGreaterThan8AndLowerThan16_ShouldReturn2()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 5);
       order.AddOrderItem(2, 3);
       order.AddOrderItem(3, 2);
@@ -58,7 +58,7 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalQunatityEquals16_ShouldReturn2()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 5);
       order.AddOrderItem(2, 3);
       order.AddOrderItem(3, 8);
