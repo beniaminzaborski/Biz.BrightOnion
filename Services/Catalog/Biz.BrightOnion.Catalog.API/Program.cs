@@ -16,8 +16,6 @@ namespace Biz.BrightOnion.Catalog.API
   {
     public static void Main(string[] args)
     {
-      // CreateWebHostBuilder(args).Build().Run();
-
       var webHost = CreateWebHostBuilder(args).Build();
 
       if (args.Length > 0 && args[0] == "dm")

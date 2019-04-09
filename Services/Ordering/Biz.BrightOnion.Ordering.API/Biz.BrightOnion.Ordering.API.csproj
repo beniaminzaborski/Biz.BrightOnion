@@ -26,6 +26,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="run_database_migration_dev.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="run_database_migration.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
