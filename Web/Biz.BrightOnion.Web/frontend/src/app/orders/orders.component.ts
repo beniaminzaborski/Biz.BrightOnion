@@ -85,7 +85,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
         .then(() => console.log('Connection started'))
         .catch(err => {
           console.log('Error while starting connection: ' + err);
-          this.startSignalRConnection()
+          // this.startSignalRConnection()
         });
     }
   }
