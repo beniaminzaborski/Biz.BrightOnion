@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, SimpleChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../rooms/rooms.service';
 import { Room } from '../rooms/room.model';
@@ -21,13 +21,16 @@ import { environment } from '../../environments/environment';
   ],
   templateUrl: './orders.component.html'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
 
   public rooms: Room[] = [];
   public selectedRoom: Room;
   public quantity: number;
   public order: Order = new Order();
   public currentUserId: number;
+
+  private hubConnection: signalR.HubConnection;
+  private isDestroyed: boolean = false;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -50,22 +53,51 @@ export class OrdersComponent implements OnInit {
     this.loadRooms();
   }
 
+  public ngOnDestroy(): void {
+    this.stopSignalRConnection();
+  }
+
   private registerSignalR() {
 
-    const hubConnection = new signalR.HubConnectionBuilder()
+    this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.orderSignalrHubUrl, { accessTokenFactory: () => this.authenticationService.getToken() })
       .build();
 
-    hubConnection
-      .start()
-      .then(() => console.log('Connection started'))
-      .catch(err => console.log('Error while starting connection: ' + err))
+    this.startSignalRConnection();
 
-    hubConnection.on('UpdatedOrderStatus', (data) => {
+    this.hubConnection.on('UpdatedOrderStatus', (data) => {
       if (this.selectedRoom.id == data.roomId) {
         this.loadOrdersInRoom(data.roomId);
       }
     });
+
+    this.hubConnection
+      .onclose(error => {
+        console.log('Connection stoped with error:', error);
+        this.startSignalRConnection();
+      });
+  }
+
+  private startSignalRConnection(): void {
+    if (!this.isDestroyed) {
+      this.hubConnection
+        .start()
+        .then(() => console.log('Connection started'))
+        .catch(err => {
+          console.log('Error while starting connection: ' + err);
+          this.startSignalRConnection()
+        });
+    }
+  }
+
+  private stopSignalRConnection(): void {
+    if (this.hubConnection) {
+      this.isDestroyed = true;
+      this.hubConnection
+        .stop()
+        .then(() => console.log('Connection stoped'))
+        .catch(err => console.log('Error while stoping connection: ' + err))
+    }
   }
 
   private loadRooms(): void {
