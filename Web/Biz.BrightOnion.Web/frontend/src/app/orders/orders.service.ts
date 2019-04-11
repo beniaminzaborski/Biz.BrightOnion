@@ -21,14 +21,14 @@ export class OrdersService {
     let body = JSON.stringify(makeOrder);
     return this.http.post<Order>(
       `${environment.orderServiceUrl}/make`, body, { observe: 'response' }
-    ).map(response => { console.log('body', response.body); return response.body; });
+    ).map(response => { return response.body; });
   }
 
   public removeOrder(cancelOrder: CancelOrder): Observable<Order> {
     let body = JSON.stringify(cancelOrder);
     return this.http.post<Order>(
       `${environment.orderServiceUrl}/cancel`, body, { observe: 'response' }
-    ).map(response => { console.log('body', response.body); return response.body; });
+    ).map(response => { return response.body; });
   }
 
   public approveOrders(approveOrder: ApproveOrder): Observable<boolean> {

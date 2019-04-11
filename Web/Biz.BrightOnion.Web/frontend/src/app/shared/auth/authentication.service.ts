@@ -91,7 +91,7 @@ export class AuthenticationService {
   }
 
   private handleErrors(error: any) {
-    console.log(JSON.stringify(error.json()));
+    // console.log(JSON.stringify(error.json()));
     return Observable.throw(error);
   }
 }

@@ -73,7 +73,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     this.hubConnection
       .onclose(error => {
-        console.log('Connection stoped with error:', error);
+        // console.log('Connection stoped with error:', error);
         this.startSignalRConnection();
       });
   }
@@ -82,9 +82,9 @@ export class OrdersComponent implements OnInit, OnDestroy {
     if (!this.isDestroyed) {
       this.hubConnection
         .start()
-        .then(() => console.log('Connection started'))
+        // .then(() => console.log('Connection started'))
         .catch(err => {
-          console.log('Error while starting connection: ' + err);
+          // console.log('Error while starting connection: ' + err);
           // this.startSignalRConnection()
         });
     }
@@ -95,8 +95,8 @@ export class OrdersComponent implements OnInit, OnDestroy {
       this.isDestroyed = true;
       this.hubConnection
         .stop()
-        .then(() => console.log('Connection stoped'))
-        .catch(err => console.log('Error while stoping connection: ' + err))
+        // .then(() => console.log('Connection stoped'))
+        // .catch(err => console.log('Error while stoping connection: ' + err))
     }
   }
 

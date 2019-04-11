@@ -78,7 +78,6 @@ export class RoomsComponent implements OnInit {
   }
 
   public selectRoom(room: Room): boolean {
-    console.log('selectRoom:', room);
     this.selectedRoom = room;
     return false;
   }
