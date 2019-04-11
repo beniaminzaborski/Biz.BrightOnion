@@ -1,6 +1,7 @@
 ﻿using Biz.BrightOnion.Ordering.API.Application.Dto;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.Events;
+using Biz.BrightOnion.Ordering.Domain.Exceptions;
 using Biz.BrightOnion.Ordering.Domain.Services;
 using MediatR;
 using System;

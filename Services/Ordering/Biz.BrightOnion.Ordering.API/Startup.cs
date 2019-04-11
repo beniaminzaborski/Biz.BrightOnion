@@ -13,6 +13,7 @@ using Biz.BrightOnion.Ordering.API.Configuration;
 using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
+using Biz.BrightOnion.Ordering.API.Infrastructure.Filters;
 using Biz.BrightOnion.Ordering.API.Infrastructure.Services;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
@@ -64,7 +65,10 @@ namespace Biz.BrightOnion.Ordering.API
       services.AddScoped<IMailerService, MailerService>();
 
       services.AddCors();
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddMvc(options =>
+      {
+        options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+      }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       services.AddJwtAuthentication(Configuration);
 

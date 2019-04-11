@@ -1,5 +1,6 @@
 ﻿using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
 using Biz.BrightOnion.Ordering.Domain.Events;
+using Biz.BrightOnion.Ordering.Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
       if (!order.IsApproved)
       {
         if (request.RoomManagerId.HasValue && request.RoomManagerId.ToString() != request.UserId)
-          return false; // TODO: Throw exception with an error message?!
+          throw new OrderingDomainException("Can't approve order because you are not room manager");
 
         order.Approve();
 
