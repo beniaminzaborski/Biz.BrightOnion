@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Polly;
 
 namespace Biz.BrightOnion.ApiGateway
 {
@@ -29,7 +30,19 @@ namespace Biz.BrightOnion.ApiGateway
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-      services.AddOcelot(Configuration);
+      services.AddCors(options =>
+      {
+        options.AddPolicy("CorsPolicy",
+            builder => builder
+            .SetIsOriginAllowed((host) => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+      });
+
+      services
+        .AddOcelot(Configuration)
+        .AddPolly();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,7 +50,7 @@ namespace Biz.BrightOnion.ApiGateway
     {
       if (env.IsDevelopment())
       {
-        app.UseDeveloperExceptionPage();
+        // app.UseDeveloperExceptionPage();
       }
       else
       {

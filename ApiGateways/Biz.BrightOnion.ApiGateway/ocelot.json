@@ -9,7 +9,12 @@
           "Port": 7001
         }
       ],
-      "UpstreamPathTemplate": "/identity-api/{catchAll}"
+      "UpstreamPathTemplate": "/identity-api/{catchAll}",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
@@ -20,7 +25,12 @@
           "Port": 7002
         }
       ],
-      "UpstreamPathTemplate": "/catalog-api/{catchAll}"
+      "UpstreamPathTemplate": "/catalog-api/{catchAll}",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/api/order/make",
@@ -32,7 +42,12 @@
         }
       ],
       "UpstreamPathTemplate": "/ordering-api/v1/orders/make",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Options", "Post" ],
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/api/order/cancel",
@@ -44,7 +59,12 @@
         }
       ],
       "UpstreamPathTemplate": "/ordering-api/v1/orders/cancel",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Options", "Post" ],
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/api/order/approve",
@@ -56,7 +76,12 @@
         }
       ],
       "UpstreamPathTemplate": "/ordering-api/v1/orders/approve",
-      "UpstreamHttpMethod": [ "Post" ]
+      "UpstreamHttpMethod": [ "Options", "Post" ],
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
@@ -67,7 +92,12 @@
           "Port": 7003
         }
       ],
-      "UpstreamPathTemplate": "/ordering-api/{catchAll}"
+      "UpstreamPathTemplate": "/ordering-api/{catchAll}",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 5,
+        "TimeoutValue": 5000
+      }
     },
     {
       "DownstreamPathTemplate": "/{catchAll}",
