@@ -23,6 +23,8 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
     public async Task<OrderDTO> Handle(PurchaseSliceCommand request, CancellationToken cancellationToken)
     {
+      throw new OrderingDomainException("An example business error!!!");
+
       DateTime day = DateTime.Now.Date;
 
       Order order = await orderRepository.GetByDayAndRoomEagerAsync(day, request.RoomId.Value);

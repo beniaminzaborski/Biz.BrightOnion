@@ -1,4 +1,5 @@
 ﻿using Biz.BrightOnion.ApiGateway.OrderingAggregator.Config;
+using Biz.BrightOnion.ApiGateway.OrderingAggregator.Infrastructure;
 using Biz.BrightOnion.ApiGateway.OrderingAggregator.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -36,7 +37,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator.Services
 
       var response = await apiClient.PostAsync(urls.Order + UrlsConfig.OrderOperations.PurchaseSlice(), requestDataContent);
 
-      response.EnsureSuccessStatusCode();
+      await response.CustomEnsureSuccessStatusCodeAsync();
 
       var orderResponse = await response.Content.ReadAsStringAsync();
 

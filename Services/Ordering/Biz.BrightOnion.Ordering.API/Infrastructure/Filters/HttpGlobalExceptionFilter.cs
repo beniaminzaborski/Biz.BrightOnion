@@ -32,16 +32,17 @@ namespace Biz.BrightOnion.Ordering.API.Infrastructure.Filters
 
       if (context.Exception.GetType() == typeof(OrderingDomainException))
       {
-        var problemDetails = new ValidationProblemDetails()
-        {
-          Instance = context.HttpContext.Request.Path,
-          Status = StatusCodes.Status400BadRequest,
-          Detail = "Please refer to the errors property for additional details."
-        };
+        //var problemDetails = new ValidationProblemDetails()
+        //{
+        //  Instance = context.HttpContext.Request.Path,
+        //  Status = StatusCodes.Status400BadRequest,
+        //  Detail = "Please refer to the errors property for additional details."
+        //};
 
-        problemDetails.Errors.Add("DomainValidations", new string[] { context.Exception.Message.ToString() });
+        //problemDetails.Errors.Add("DomainValidations", new string[] { context.Exception.Message.ToString() });
 
-        context.Result = new BadRequestObjectResult(problemDetails);
+        // context.Result = new BadRequestObjectResult(problemDetails);
+        context.Result = new BadRequestObjectResult(new { ErrorMessage = context.Exception.Message });
         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
       }
       else
