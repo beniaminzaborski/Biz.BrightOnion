@@ -1,14 +1,14 @@
 export class ErrorHelper {
 
   public static getErrorMessage(error: any): string {
-    //console.log('error', error);
+    // console.log('error', error.error.message);
     let errorMessage: string = '';
-    if (error._body)
-      errorMessage = error._body;
-    else if (error.error)
-      errorMessage = error.error;
+    if (error.error.message)
+      errorMessage = error.error.message;
     else if (error.statusText)
       errorMessage = error.statusText;
+    else if (error.error.message)
+      errorMessage = error.error.message;
 
     if (error.status == 403)
       errorMessage = 'You do not have enought priviliges';

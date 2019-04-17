@@ -48,7 +48,7 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
 
       if (env.IsDevelopment())
       {
-        app.UseDeveloperExceptionPage();
+        // app.UseDeveloperExceptionPage();
       }
       else
       {
@@ -106,8 +106,10 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
       services.AddOptions();
       services.Configure<UrlsConfig>(configuration.GetSection("Urls"));
 
-      services.AddMvc()
-          .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddMvc(options =>
+      {
+        options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+      }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       //services.AddSwaggerGen(options =>
       //{
