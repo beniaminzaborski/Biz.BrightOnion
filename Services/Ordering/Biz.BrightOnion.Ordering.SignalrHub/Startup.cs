@@ -42,6 +42,8 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
     {
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+      services.AddHealthChecks();
+
       services
         .AddCors(options =>
         {
@@ -71,6 +73,8 @@ namespace Biz.BrightOnion.Ordering.SignalrHub
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
+      app.UseHealthChecks("/hc");
+
       app.UseCors("CorsPolicy");
 
       app.UseAuthentication();

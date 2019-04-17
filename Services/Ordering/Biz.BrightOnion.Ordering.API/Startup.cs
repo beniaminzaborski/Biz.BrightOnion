@@ -53,6 +53,9 @@ namespace Biz.BrightOnion.Ordering.API
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
       services.Configure<MailerOptions>(Configuration.GetSection("Mailer"));
 
+      services.AddHealthChecks()
+        .AddDbContextCheck<OrderingContext>();
+
       services
         .AddCustomDbContext(Configuration)
         .AddEventBus(Configuration);
@@ -91,6 +94,8 @@ namespace Biz.BrightOnion.Ordering.API
         // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
         app.UseHsts();
       }
+
+      app.UseHealthChecks("/hc");
 
       // global cors policy
       app.UseCors(x => x
