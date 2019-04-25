@@ -1,5 +1,7 @@
 # Biz.BrightOnion
-Sample pizza manager. HotOnion port to microservices architecture with Docker.
+A sample pizza manager created for educational reasons. **BrightOnion** is a port of [HotOnion](https://github.com/beniaminzaborski/PizzaHotOnion) project to microservices architecture with Docker.
+Powered by: ASP.NET Core, FluentNHibernate, EntityFramework Core, Dapper, RabbitMQ, MediatR, Ocelot, Autofac, FluentMigrator, DDD, CQRS, Docker, SignalR, Angular
 
+###### Simplified components diagram:
 ![alt text](https://github.com/beniaminzaborski/Biz.BrightOnion/blob/master/BrightOnionArchitecture.png)
 

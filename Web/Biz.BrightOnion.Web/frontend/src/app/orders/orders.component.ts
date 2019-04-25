@@ -1,17 +1,16 @@
-import { Component, OnInit, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, SimpleChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoomService } from '../rooms/rooms.service';
 import { Room } from '../rooms/room.model';
-import { Order } from './order.model';
+import { MakeOrder, Order, OrderItem, CancelOrder, ApproveOrder } from './order.model';
 import { AuthenticationService } from '../shared/auth/authentication.service';
-import { OrderItem } from './order-item.model';
 import { OrdersService } from './orders.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { OrdersApproval } from './orders-approval.model';
 import { ErrorHelper } from '../shared/error-helper';
-// import { HubConnection } from '@aspnet/signalr-client';
+import * as signalR from "@aspnet/signalr";
 import { Message, OperationType } from '../shared/message.model';
 import { Config } from '../shared/config';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -22,16 +21,16 @@ import { Config } from '../shared/config';
   ],
   templateUrl: './orders.component.html'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
 
   public rooms: Room[] = [];
-  public order: Order;
-  public orderItems: OrderItem[] = [];
-  public selectedRoomName: string;
-  public slices: number = 0;
-  public pizzas: number = 0;
-  public slicesToGet: number = 0;
-  public isApproved: boolean = false;
+  public selectedRoom: Room;
+  public quantity: number;
+  public order: Order = new Order();
+  public currentUserId: number;
+
+  private hubConnection: signalR.HubConnection;
+  private isDestroyed: boolean = false;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
@@ -46,8 +45,7 @@ export class OrdersComponent implements OnInit {
     private roomService: RoomService,
     private ordersService: OrdersService,
     private authenticationService: AuthenticationService) {
-    this.order = new Order();
-    this.order.who = this.authenticationService.getLoggedUser();
+    this.currentUserId = authenticationService.getLoggedUserId();
   }
 
   public ngOnInit(): void {
@@ -55,33 +53,51 @@ export class OrdersComponent implements OnInit {
     this.loadRooms();
   }
 
+  public ngOnDestroy(): void {
+    this.stopSignalRConnection();
+  }
+
   private registerSignalR() {
-    /*
-    let connection = new HubConnection(`${Config.baseUrl}message`);
-    connection.on('send', data => {
-      //console.log(data);
-      let message: Message = <Message>data;
-      if(message) {
-        switch(message.operation) {
-          case OperationType.RoomCreated:
-          case OperationType.RoomDeleted:
-            this.loadRooms();
-          break;
-          case OperationType.SliceGrabbed:
-          case OperationType.SliceCancelled:
-          case OperationType.OrdersApproved:
-            if(message.context == this.selectedRoomName)
-              this.loadOrdersInRoom(this.selectedRoomName);
-          break;
-        }
+
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(environment.orderSignalrHubUrl, { accessTokenFactory: () => this.authenticationService.getToken() })
+      .build();
+
+    this.startSignalRConnection();
+
+    this.hubConnection.on('UpdatedOrderStatus', (data) => {
+      if (this.selectedRoom.id == data.roomId) {
+        this.loadOrdersInRoom(data.roomId);
       }
     });
 
-    connection.start()
-      .then(() => {
-         //console.log('MessageHub Connected');
+    this.hubConnection
+      .onclose(error => {
+        // console.log('Connection stoped with error:', error);
+        this.startSignalRConnection();
       });
-    */
+  }
+
+  private startSignalRConnection(): void {
+    if (!this.isDestroyed) {
+      this.hubConnection
+        .start()
+        // .then(() => console.log('Connection started'))
+        .catch(err => {
+          // console.log('Error while starting connection: ' + err);
+          // this.startSignalRConnection()
+        });
+    }
+  }
+
+  private stopSignalRConnection(): void {
+    if (this.hubConnection) {
+      this.isDestroyed = true;
+      this.hubConnection
+        .stop()
+        // .then(() => console.log('Connection stoped'))
+        // .catch(err => console.log('Error while stoping connection: ' + err))
+    }
   }
 
   private loadRooms(): void {
@@ -92,132 +108,108 @@ export class OrdersComponent implements OnInit {
   private onLoadRooms(rooms: Room[]): void {
     this.rooms = rooms;
     if (rooms.length > 0) {
-      if (this.selectedRoomName && this.rooms.some(r => r.name == this.selectedRoomName))
-        this.selectRoom(this.selectedRoomName);
+      if (this.selectedRoom && this.rooms.some(r => r.name == this.selectedRoom.name))
+        this.selectRoom(this.selectedRoom);
       else
-        this.selectRoom(rooms[0].name);
+        this.selectRoom(rooms[0]);
     }
   }
 
-  public selectRoom(roomName: string): boolean {
-    //this.rooms.forEach((r) => {
-    //  r.isActive = r.name == roomName;
-    //});
+  public selectRoom(room: Room): boolean {
+    this.rooms.forEach((r) => {
+      r.isActive = r.id == room.id;
+    });
 
-    this.selectedRoomName = roomName;
-    this.order.room = roomName;
+    this.selectedRoom = room;
 
-    this.loadOrdersInRoom(this.selectedRoomName);
+    this.loadOrdersInRoom(this.selectedRoom.id);
 
     return false;
   }
 
-  private loadOrdersInRoom(roomName: string) {
-    this.ordersService.getOrders(roomName)
+  private loadOrdersInRoom(roomId: number) {
+    this.ordersService.getOrder(roomId)
       .subscribe(
-      orderItems => this.onLoadOrderItems(orderItems),
-      error => alert(ErrorHelper.getErrorMessage(error))
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
       );
   }
 
-  private onLoadOrderItems(orderItems: OrderItem[]): void {
-    this.orderItems = orderItems;
-    this.slices = 0;
-    this.pizzas = 0;
-    this.setNumberOfSlices();
-    this.checkIsApproved();
+  private onLoadOrder(order: Order): void {
+    this.order = order;
+    if (!this.order)
+      this.order = new Order();
     this.preparePizzaChart();
-  }
-
-  private checkIsApproved(): void {
-    this.isApproved = this.orderItems.some(item => item.isApproved);
-  }
-
-  private setNumberOfSlices(): void {
-    let currentUserEmail = this.authenticationService.getLoggedUser();
-
-    this.orderItems.forEach((o) => {
-      if (o.who == currentUserEmail) {
-        this.order.quantity = o.quantity;
-      }
-    });
   }
 
   private preparePizzaChart(): void {
     let pieChartLabels: string[] = [];
     let pieChartData: number[] = [];
 
-    this.orderItems.forEach((o) => {
-      this.slices += o.quantity;
-      pieChartLabels.push(o.who);
-      pieChartData.push(o.quantity);
-    });
+    if (this.order && this.order.orderItems) {
+      this.order.orderItems.forEach((o) => {
+        pieChartLabels.push(o.purchaserEmail);
+        pieChartData.push(o.quantity);
+      });
 
-    this.pizzas = Math.ceil(this.slices / 8);
+      if (this.order.totalPizzas == 0)
+        return;
 
-    if (this.pizzas == 0)
-      return;
-
-    this.slicesToGet = (this.pizzas * 8) - this.slices;
-    if (this.slicesToGet > 0) {
-      pieChartLabels.push('FREE');
-      pieChartData.push(this.slicesToGet);
-    }
-
-    this.pieChartLabels = pieChartLabels;
-    this.pieChartData = pieChartData;
-
-    setTimeout(() => {
-      if (this.chart && this.chart.chart && this.chart.chart.config) {
-        this.chart.chart.config.data.labels = this.pieChartLabels;
-        //// this.chart.chart.config.data.datasets = this.pieChartData;
-        // this.chart.chart.config.data.colors = this.pieChartColours;
-        this.chart.chart.update();
+      if (this.order.freeSlicesToGrab > 0) {
+        pieChartLabels.push('FREE');
+        pieChartData.push(this.order.freeSlicesToGrab);
       }
-    });
+
+      this.pieChartLabels = pieChartLabels;
+      this.pieChartData = pieChartData;
+
+      setTimeout(() => {
+        if (this.chart && this.chart.chart && this.chart.chart.config) {
+          this.chart.chart.config.data.labels = this.pieChartLabels;
+          //this.chart.chart.config.data.datasets = this.pieChartData;
+          this.chart.chart.config.data.colors = this.pieChartColours;
+          this.chart.chart.update();
+        }
+      });
+    }
   }
 
   public makeOrder(): boolean {
-    this.ordersService.makeOrder(this.order)
-      .subscribe(result => {
-        if (result)
-          this.loadOrdersInRoom(this.selectedRoomName);
-      },
-      error => alert(ErrorHelper.getErrorMessage(error))
+    let makeOrderCommand = new MakeOrder();
+    makeOrderCommand.roomId = this.selectedRoom.id;
+    makeOrderCommand.quantity = this.quantity;
+    this.ordersService.makeOrder(makeOrderCommand)
+      .subscribe(
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
       );
     return false;
   }
 
   public cancel(): boolean {
-    let orderId: string = this.getOrderId();
+    let cancelOrderCommand = new CancelOrder();
+    cancelOrderCommand.orderId = this.order.orderId;
 
-    this.ordersService.removeOrder(this.selectedRoomName, orderId)
-      .subscribe(result => {
-        if (result)
-          this.loadOrdersInRoom(this.selectedRoomName);
-      },
-      error => alert(ErrorHelper.getErrorMessage(error))
-      );
+    this.ordersService.removeOrder(cancelOrderCommand)
+      .subscribe(
+        order => this.onLoadOrder(order),
+        error => alert(ErrorHelper.getErrorMessage(error))
+    );
+
     return false;
   }
 
-  private getOrderId(): string {
-    let orderId: string;
-    this.orderItems.forEach((o) => {
-      if (o.who == this.authenticationService.getLoggedUser()) {
-        orderId = o.id;
-      }
-    });
-    return orderId;
-  }
-
   public refresh(): boolean {
-    this.loadOrdersInRoom(this.selectedRoomName);
+    this.loadOrdersInRoom(this.selectedRoom.id);
     return false;
   }
 
   public approveOrders(): void {
-    this.ordersService.approveOrders(this.selectedRoomName)
+    const approveOrder = new ApproveOrder();
+    approveOrder.orderId = this.order.orderId;
+    approveOrder.roomId = this.order.roomId;
+
+    this.ordersService.approveOrders(approveOrder)
       .subscribe(
       result => this.refresh(),
       error => alert(ErrorHelper.getErrorMessage(error))

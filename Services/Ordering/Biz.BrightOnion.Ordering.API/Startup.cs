@@ -13,12 +13,19 @@ using Biz.BrightOnion.Ordering.API.Configuration;
 using Biz.BrightOnion.Ordering.API.EventHandlers;
 using Biz.BrightOnion.Ordering.API.Events;
 using Biz.BrightOnion.Ordering.API.Infrastructure.AutofacModules;
+using Biz.BrightOnion.Ordering.API.Infrastructure.Filters;
+using Biz.BrightOnion.Ordering.API.Infrastructure.Services;
 using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.AggregatesModel.PurchaserAggregate;
+using Biz.BrightOnion.Ordering.Domain.Services;
 using Biz.BrightOnion.Ordering.Infrastructure;
+using Biz.BrightOnion.Ordering.Infrastructure.Configuration;
 using Biz.BrightOnion.Ordering.Infrastructure.Repositories;
+using Biz.BrightOnion.Ordering.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,14 +50,28 @@ namespace Biz.BrightOnion.Ordering.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public IServiceProvider ConfigureServices(IServiceCollection services)
     {
+      services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+      services.Configure<MailerOptions>(Configuration.GetSection("Mailer"));
+
+      services.AddHealthChecks()
+        .AddDbContextCheck<OrderingContext>();
+
       services
         .AddCustomDbContext(Configuration)
         .AddEventBus(Configuration);
 
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+      services.AddTransient<IIdentityService, IdentityService>();
+
+      services.AddScoped<IPurchaserRepository, PurchaserRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();
+      services.AddScoped<IMailerService, MailerService>();
 
       services.AddCors();
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddMvc(options =>
+      {
+        options.Filters.Add(typeof(HttpGlobalExceptionFilter));
+      }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       services.AddJwtAuthentication(Configuration);
 
@@ -74,6 +95,8 @@ namespace Biz.BrightOnion.Ordering.API
         app.UseHsts();
       }
 
+      app.UseHealthChecks("/hc");
+
       // global cors policy
       app.UseCors(x => x
         .AllowAnyOrigin()
@@ -91,6 +114,7 @@ namespace Biz.BrightOnion.Ordering.API
     protected virtual void ConfigureEventBus(IApplicationBuilder app)
     {
       var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+      eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
       eventBus.Subscribe<UserNotificationChangedEvent, UserNotificationChangedEventHandler>();
       eventBus.Subscribe<RoomNameChangedEvent, RoomNameChangedEventHandler>();
       eventBus.Subscribe<RoomDeletedEvent, RoomDeletedEventHandler>();
@@ -171,6 +195,7 @@ namespace Biz.BrightOnion.Ordering.API
       });
 
       services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
+      services.AddTransient<UserRegisteredEventHandler>();
       services.AddTransient<UserNotificationChangedEventHandler>();
       services.AddTransient<RoomNameChangedEventHandler>();
       services.AddTransient<RoomDeletedEventHandler>();

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Biz.BrightOnion.EventBus.Abstractions;
@@ -68,8 +70,17 @@ namespace Biz.BrightOnion.Identity.API.Controllers
       var passwordHash = passwordHasher.Hash(registerUserDTO.Email, registerUserDTO.Password);
       user = new User { Email = registerUserDTO.Email, PasswordHash = passwordHash };
 
-      await userRepository.CreateAsync(user);
-      await dbContext.SaveChangesAsync();
+      using (var transaction = dbContext.Database.BeginTransaction())
+      {
+        await userRepository.CreateAsync(user);
+        await dbContext.SaveChangesAsync();
+
+        var userRegisteredEvent = new UserRegisteredEvent(user.Id, user.Email);
+
+        await integrationEventLogService.SaveEventAsync(userRegisteredEvent);
+        await dbContext.SaveChangesAsync();
+        transaction.Commit();
+      }
 
       return NoContent();
     }
@@ -147,6 +158,15 @@ namespace Biz.BrightOnion.Identity.API.Controllers
         return new NotFoundObjectResult(new ErrorDTO { ErrorMessage = "User does not exist" });
 
       return Ok(new UserDTO { Email = user.Email, NotificationEnabled = user.NotificationEnabled });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<UserItemDTO>), (int)HttpStatusCode.OK)]
+    public async Task<IEnumerable<UserItemDTO>> GetAllAsync()
+    {
+      var users = await userRepository.GetAll();
+      return users.Select(u => new UserItemDTO { UserId = u.Id, Email = u.Email })
+        .ToList();
     }
 
     [HttpPut]

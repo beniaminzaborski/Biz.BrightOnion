@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Biz.BrightOnion.Ordering.API.Application.Dto;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,24 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
   {
     public long? RoomId { get; private set; }
 
+    public string RoomName { get; private set; }
+
+    public int SlicesPerPizza { get; set; }
+
     public long? PurchaserId { get; private set; }
 
     public int? Quantity { get; private set; }
 
     public PurchaseSliceCommand(
       long? roomId,
+      string roomName,
+      int slicesPerPizza,
       long? purchaserId,
       int? quantity)
     {
       this.RoomId = roomId;
+      this.RoomName = roomName;
+      this.SlicesPerPizza = slicesPerPizza;
       this.PurchaserId = purchaserId;
       this.Quantity = quantity;
     }

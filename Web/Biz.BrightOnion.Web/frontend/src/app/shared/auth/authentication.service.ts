@@ -10,6 +10,8 @@ import { AuthData } from './auth-data.model';
 import { UserProfile } from "./user-profile.model";
 import { environment } from "../../../environments/environment";
 
+import * as jwtDecode from 'jwt-decode';
+
 @Injectable()
 export class AuthenticationService {
   constructor(private http: HttpClient) { }
@@ -26,21 +28,25 @@ export class AuthenticationService {
     )
       .map(response => {
         let data = response.body;
-        return new AuthData(data['token'], user.email);
+        return { token: data['token'] };
       })
       .do(authData => {
         localStorage.setItem('token', authData.token);
-        localStorage.setItem('username', authData.login);
       }).catch(this.handleErrors);
   }
 
   logout() {
-    localStorage.removeItem('username');
     localStorage.removeItem('token');
   }
 
-  public getLoggedUser(): string {
-    return localStorage.getItem('username');
+  public getLoggedUsername(): string {
+    var decoded = jwtDecode(this.getToken());
+    return decoded.unique_name;
+  }
+
+  public getLoggedUserId(): number {
+    var decoded = jwtDecode(this.getToken());
+    return decoded.nameid;
   }
 
   public changePassword(changePassword: ChangePassword) {
@@ -85,7 +91,7 @@ export class AuthenticationService {
   }
 
   private handleErrors(error: any) {
-    console.log(JSON.stringify(error.json()));
+    // console.log(JSON.stringify(error.json()));
     return Observable.throw(error);
   }
 }

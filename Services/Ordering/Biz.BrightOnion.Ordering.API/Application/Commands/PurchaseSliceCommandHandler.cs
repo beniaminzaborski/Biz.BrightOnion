@@ -1,4 +1,8 @@
-﻿using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+﻿using Biz.BrightOnion.Ordering.API.Application.Dto;
+using Biz.BrightOnion.Ordering.Domain.AggregatesModel.OrderAggregate;
+using Biz.BrightOnion.Ordering.Domain.Events;
+using Biz.BrightOnion.Ordering.Domain.Exceptions;
+using Biz.BrightOnion.Ordering.Domain.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,21 +16,32 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
   {
     private readonly IOrderRepository orderRepository;
 
-    public PurchaseSliceCommandHandler(
-      IOrderRepository orderRepository)
+    public PurchaseSliceCommandHandler(IOrderRepository orderRepository)
     {
       this.orderRepository = orderRepository;
     }
 
     public async Task<OrderDTO> Handle(PurchaseSliceCommand request, CancellationToken cancellationToken)
     {
+      // throw new OrderingDomainException("An example business error!!!");
+
       DateTime day = DateTime.Now.Date;
 
-      Order order = await orderRepository.GetByDayEagerAsync(day);
+      Order order = await orderRepository.GetByDayAndRoomEagerAsync(day, request.RoomId.Value);
       bool orderExists = order != null;
 
       if (!orderExists)
-        order = new Order(request.RoomId.Value, day);
+      {
+        order = new Order(request.RoomId.Value, request.SlicesPerPizza, day);
+        var newOrderCreatedDomainEvent = new NewOrderCreatedDomainEvent(order.Id, order.Day, order.RoomId, request.RoomName, request.PurchaserId.Value);
+        order.AddDomainEvent(newOrderCreatedDomainEvent);
+      }
+      else
+      {
+        order.SetSlicesPerPizza(request.SlicesPerPizza);
+        var slicePurchasedDomainEvent = new SlicePurchasedDomainEvent(order.Id, order.Day, order.RoomId, request.PurchaserId.Value, request.Quantity.Value);
+        order.AddDomainEvent(slicePurchasedDomainEvent);
+      }
 
       order.AddOrderItem(request.PurchaserId.Value, request.Quantity.Value);
 
@@ -40,35 +55,5 @@ namespace Biz.BrightOnion.Ordering.API.Application.Commands
 
       return OrderDTO.FromOrder(order);
     }
-  }
-
-  public class OrderDTO
-  {
-    public long OrderId { get; set; }
-    public long RoomId { get; set; }
-    public DateTime Day { get; set; }
-    public IList<OrderItemDTO> OrderItems { get; set; } = new List<OrderItemDTO>();
-    public int TotalPizzas { get; set; }
-    public int FreeSlicesToGrab { get; set; }
-
-    public static OrderDTO FromOrder(Order order)
-    {
-      return new OrderDTO()
-      {
-        OrderId = order.Id,
-        RoomId = order.RoomId,
-        Day = order.Day,
-        TotalPizzas = order.GetTotalPizzas(),
-        FreeSlicesToGrab = order.GetFreeSlicesToGrab(),
-        OrderItems = order.OrderItems.Select(i => new OrderItemDTO { OrderItemId = i.Id, PurchaserId = i.PurchaserId, Quantity = i.Quantity }).ToList()
-      };
-    }
-  }
-
-  public class OrderItemDTO
-  {
-    public long OrderItemId { get; set; }
-    public long PurchaserId { get; set; }
-    public int Quantity { get; set; }
   }
 }

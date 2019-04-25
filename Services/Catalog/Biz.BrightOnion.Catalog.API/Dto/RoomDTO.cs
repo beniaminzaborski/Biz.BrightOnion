@@ -9,5 +9,8 @@ namespace Biz.BrightOnion.Catalog.API.Dto
   {
     public long Id { get; set; }
     public string Name { get; set; }
+    public long? ManagerId { get; set; }
+    public string ManagerName { get; set; }
+    public int SlicesPerPizza { get; set; } = 8;
   }
 }

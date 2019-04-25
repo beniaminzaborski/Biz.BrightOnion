@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "pizza-hot-onion"
+    "name": "pizza-bright-onion"
   },
   "apps": [
     {
@@ -29,7 +29,9 @@
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
+        "prod": "environments/environment.prod.ts",
+        "presentation-work": "environments/environment.presentation-work.ts",
+        "presentation-home": "environments/environment.presentation-home.ts"
       }
     }
   ],

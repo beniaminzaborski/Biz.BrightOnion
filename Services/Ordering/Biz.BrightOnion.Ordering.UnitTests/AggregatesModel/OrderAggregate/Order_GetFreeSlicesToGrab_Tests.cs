@@ -12,10 +12,10 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void EmptyOrderItems_ShouldReturn0()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
 
       // Act
-      int freeSlicesToGrab = order.GetFreeSlicesToGrab();
+      int freeSlicesToGrab = order.FreeSlicesToGrab;
 
       // Assert
       Assert.Equal(0, freeSlicesToGrab);
@@ -25,11 +25,11 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalSlices1_ShouldReturn7()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 1);
 
       // Act
-      int freeSlicesToGrab = order.GetFreeSlicesToGrab();
+      int freeSlicesToGrab = order.FreeSlicesToGrab;
 
       // Assert
       Assert.Equal(7, freeSlicesToGrab);
@@ -39,11 +39,11 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalSlices8_ShouldReturn0()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 8);
 
       // Act
-      int freeSlicesToGrab = order.GetFreeSlicesToGrab();
+      int freeSlicesToGrab = order.FreeSlicesToGrab;
 
       // Assert
       Assert.Equal(0, freeSlicesToGrab);
@@ -53,12 +53,12 @@ namespace Biz.BrightOnion.Ordering.UnitTests.AggregatesModel.OrderAggregate
     public void TotalSlice11_ShouldReturn5()
     {
       // Arrange
-      var order = new Order(1, new DateTime(2019, 3, 12));
+      var order = new Order(1, 8, new DateTime(2019, 3, 12));
       order.AddOrderItem(1, 8);
       order.AddOrderItem(2, 3);
 
       // Act
-      int freeSlicesToGrab = order.GetFreeSlicesToGrab();
+      int freeSlicesToGrab = order.FreeSlicesToGrab;
 
       // Assert
       Assert.Equal(5, freeSlicesToGrab);

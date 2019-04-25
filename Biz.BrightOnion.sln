@@ -55,6 +55,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.Ordering.Infrastructure", "Services\Ordering\Biz.BrightOnion.Ordering.Infrastructure\Biz.BrightOnion.Ordering.Infrastructure.csproj", "{8868238B-C347-4119-8622-D1E3E40F4C3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ordering", "Ordering", "{71314197-2EC0-492A-9716-07433452A817}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biz.BrightOnion.ApiGateway.OrderingAggregator", "ApiGateways\Ordering\Biz.BrightOnion.ApiGateway.OrderingAggregator\Biz.BrightOnion.ApiGateway.OrderingAggregator.csproj", "{881AF468-FF5C-4102-BC59-919C7C26AAC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz.BrightOnion.Ordering.SignalrHub", "Services\Ordering\Biz.BrightOnion.Ordering.SignalrHub\Biz.BrightOnion.Ordering.SignalrHub.csproj", "{861E9D3B-4779-4391-A5FF-3B3C26701AAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +139,14 @@ Global
 		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8868238B-C347-4119-8622-D1E3E40F4C3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{881AF468-FF5C-4102-BC59-919C7C26AAC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{881AF468-FF5C-4102-BC59-919C7C26AAC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{881AF468-FF5C-4102-BC59-919C7C26AAC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{881AF468-FF5C-4102-BC59-919C7C26AAC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{861E9D3B-4779-4391-A5FF-3B3C26701AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{861E9D3B-4779-4391-A5FF-3B3C26701AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{861E9D3B-4779-4391-A5FF-3B3C26701AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{861E9D3B-4779-4391-A5FF-3B3C26701AAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +173,9 @@ Global
 		{D26A1A2A-1B36-4DAB-8225-70C4069D1C8B} = {B466F5C9-5F34-4ED6-AAE0-717676D6EE04}
 		{205AF255-77BC-45FC-B2AA-8A61BB38EB36} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 		{8868238B-C347-4119-8622-D1E3E40F4C3F} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
+		{71314197-2EC0-492A-9716-07433452A817} = {5DE4117C-F169-42B9-8540-1A6DD7A5E8A1}
+		{881AF468-FF5C-4102-BC59-919C7C26AAC7} = {71314197-2EC0-492A-9716-07433452A817}
+		{861E9D3B-4779-4391-A5FF-3B3C26701AAD} = {6E6883CF-EFB5-4885-AB5E-E6648BBD9375}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CF106B7-E7DD-4757-A408-D5CF2B7BECC7}

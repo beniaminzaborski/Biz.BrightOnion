@@ -1,6 +1,5 @@
 export class AuthData {
-  constructor(
-    public token: string,
-    public login: string
-  ) { }
+  public userId: number;
+  public token: string;
+  public login: string;
 }
