@@ -1,7 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Biz.BrightOnion.EventBus;
 using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.RabbitMQ;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 
 namespace Biz.BrightOnion.Identity.API
@@ -33,31 +35,17 @@ namespace Biz.BrightOnion.Identity.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddHealthChecks()
-              .AddDbContextCheck<ApplicationContext>();
-
-            services.AddDbContext<ApplicationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IIntegrationEventLogRepository, IntegrationEventLogRepository>();
-
-            services.AddScoped<IPasswordHasher, Md5PasswordHasher>();
-            services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
-
-            services.AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
-            services.AddEventBus(Configuration);
-
-            services.AddCors();
-            // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            services.AddJwtAuthentication(Configuration);
-
-            var container = new ContainerBuilder();
-            container.Populate(services);
-            return new AutofacServiceProvider(container.Build());
+            services
+                .AddCustomHealthChecks()
+                .AddEntityFramework(Configuration)
+                .AddBusinessComponents()
+                .AddEventBus(Configuration)
+                .AddCors()
+                .AddCustomControllers()
+                .AddJwtAuthentication(Configuration)
+                .AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,29 +61,57 @@ namespace Biz.BrightOnion.Identity.API
                 app.UseHsts();
             }
 
-            app.UseHealthChecks("/hc");
-
-            // global cors policy
-            app.UseCors(x => x
-              .AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader());
-
-            app.UseAuthentication();
-
-            app.UseHttpsRedirection();
-
-            // app.UseMvc();
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app
+                .UseHttpsRedirection()
+                .UseRouting()
+                .UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                })
+                .UseHealthChecks("/hc")
+                .UseCustomSwagger();
         }
     }
 
-    public static class CustomExtensionMethods
+    public static class IdentityApiExtensions
     {
+        public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services)
+        {
+            services.AddHealthChecks()
+                .AddDbContextCheck<ApplicationContext>();
+            return services;
+        }
+
+        public static IServiceCollection AddEntityFramework(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            return services;
+        }
+
+        public static IServiceCollection AddCustomControllers(this IServiceCollection services)
+        {
+            services
+                .AddControllers()
+                .AddNewtonsoftJson();
+
+            return services;
+        }
+
+        public static IServiceCollection AddBusinessComponents(this IServiceCollection services)
+        {
+            services
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IIntegrationEventLogRepository, IntegrationEventLogRepository>()
+                .AddScoped<IPasswordHasher, Md5PasswordHasher>()
+                .AddScoped<IAuthenticationService, JwtAuthenticationService>()
+                .AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
+            return services;
+        }
+
         public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
         {
             var appSettingsSection = configuration.GetSection("AppSettings");
@@ -182,6 +198,39 @@ namespace Biz.BrightOnion.Identity.API
             });
 
             return services;
+        }
+
+        public static IServiceCollection AddSwagger(this IServiceCollection services)
+        {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var callingAssemblyName = callingAssembly.GetName().Name;
+            var callingAssemblyMajorVersion = $"v{callingAssembly.GetName().Version?.Major}";
+            var callingAssemblyVersion = $"v{callingAssembly.GetName().Version?.ToString()}";
+
+            return services.AddSwaggerGen(c =>
+            {
+                var securityRequirements = new OpenApiSecurityRequirement();
+                securityRequirements.Add(new OpenApiSecurityScheme() { Scheme = "Bearer" }, new string[] { });
+                c.SwaggerDoc(callingAssemblyMajorVersion, new OpenApiInfo { Title = callingAssemblyName, Version = callingAssemblyVersion });
+                c.AddSecurityRequirement(securityRequirements);
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() { In = ParameterLocation.Header, Description = "Please insert token with Bearer into field", Name = "Authorization", Type = SecuritySchemeType.ApiKey });
+                //// Set the comments path for the Swagger JSON and UI.
+                //var basePath = AppContext.BaseDirectory;
+                //var xmlPath = Path.Combine(basePath, $"{callingAssemblyName}.xml");
+                //c.IncludeXmlComments(xmlPath);
+            });
+        }
+
+        public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)
+        {
+            var callingAssembly = Assembly.GetCallingAssembly();
+            var callingAssemblyName = callingAssembly.GetName().Name;
+            var callingAssemblyMajorVersion = $"v{callingAssembly.GetName().Version?.Major}";
+            var callingAssemblyVersion = $"v{callingAssembly.GetName().Version?.ToString()}";
+
+            return app
+                .UseSwagger()
+                .UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", $"{callingAssemblyName} {callingAssemblyVersion}"));
         }
     }
 }

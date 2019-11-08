@@ -22,11 +22,9 @@ namespace Biz.BrightOnion.Identity.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                    {
-                        // Set properties and call methods on options
-                    })
-                    .UseStartup<Startup>();
+                    webBuilder
+                        .ConfigureKestrel(serverOptions => {})
+                        .UseStartup<Startup>();
                 });
     }
 }
