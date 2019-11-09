@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Biz.BrightOnion.Identity.BackgroundTasks.Configuration
+﻿namespace Biz.BrightOnion.Identity.BackgroundTasks.Configuration
 {
-  public class AppSettings
+    public class AppSettings
   {
     public virtual string Secret { get; set; }
 

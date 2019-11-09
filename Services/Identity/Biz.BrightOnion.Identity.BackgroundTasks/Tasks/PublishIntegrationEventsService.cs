@@ -4,18 +4,16 @@ using Biz.BrightOnion.Identity.BackgroundTasks.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Biz.BrightOnion.Identity.BackgroundTasks.Tasks
 {
-  public class PublishIntegrationEventsService : BackgroundService
+    public class PublishIntegrationEventsService : BackgroundService
   {
     private readonly ILogger<PublishIntegrationEventsService> logger;
     private readonly IEventBus eventBus;
