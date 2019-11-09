@@ -63,6 +63,7 @@ namespace Biz.BrightOnion.Identity.API
 
             app
                 .UseHttpsRedirection()
+                .UseCustomSwagger()
                 .UseRouting()
                 .UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
                 .UseAuthentication()
@@ -71,8 +72,7 @@ namespace Biz.BrightOnion.Identity.API
                 {
                     endpoints.MapControllers();
                 })
-                .UseHealthChecks("/hc")
-                .UseCustomSwagger();
+                .UseHealthChecks("/hc");
         }
     }
 
@@ -214,10 +214,6 @@ namespace Biz.BrightOnion.Identity.API
                 c.SwaggerDoc(callingAssemblyMajorVersion, new OpenApiInfo { Title = callingAssemblyName, Version = callingAssemblyVersion });
                 c.AddSecurityRequirement(securityRequirements);
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() { In = ParameterLocation.Header, Description = "Please insert token with Bearer into field", Name = "Authorization", Type = SecuritySchemeType.ApiKey });
-                //// Set the comments path for the Swagger JSON and UI.
-                //var basePath = AppContext.BaseDirectory;
-                //var xmlPath = Path.Combine(basePath, $"{callingAssemblyName}.xml");
-                //c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -230,7 +226,7 @@ namespace Biz.BrightOnion.Identity.API
 
             return app
                 .UseSwagger()
-                .UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", $"{callingAssemblyName} {callingAssemblyVersion}"));
+                .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{callingAssemblyName} {callingAssemblyVersion}"));
         }
     }
 }
