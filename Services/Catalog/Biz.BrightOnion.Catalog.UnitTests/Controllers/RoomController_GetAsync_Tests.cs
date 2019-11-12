@@ -7,15 +7,12 @@ using Biz.BrightOnion.EventBus.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHibernate;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Biz.BrightOnion.Catalog.UnitTests.Controller
 {
-  public class RoomController_GetAsync_Tests
+    public class RoomController_GetAsync_Tests
   {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IRoomRepository> roomRepositoryMock;

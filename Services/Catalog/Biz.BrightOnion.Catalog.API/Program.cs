@@ -1,26 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentMigrator.Runner;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Biz.BrightOnion.Catalog.API
 {
-  public class Program
+    public class Program
   {
     public static void Main(string[] args)
     {
-      var webHost = CreateWebHostBuilder(args).Build();
+      var host = CreateHostBuilder(args).Build();
 
       if (args.Length > 0 && args[0] == "dm")
       {
-        using (var scope = webHost.Services.CreateScope())
+        using (var scope = host.Services.CreateScope())
         {
           UpdateDatabase(scope.ServiceProvider);
         }
@@ -28,12 +22,16 @@ namespace Biz.BrightOnion.Catalog.API
         return;
       }
 
-      webHost.Run();
+      host.Run();
     }
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.ConfigureKestrel(serverOptions => {})
+                .UseStartup<Startup>();
+            });
 
     private static void UpdateDatabase(IServiceProvider serviceProvider)
     {
