@@ -1,3 +1,5 @@
+docker pull mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
+
 cd ..\..\src\Services\Identity\Biz.BrightOnion.Identity.API
 dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
 docker image build -t biz_onion_identity_api .
