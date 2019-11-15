@@ -9,7 +9,7 @@ cd ..\Biz.BrightOnion.Identity.BackgroundTasks
 dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
 docker image build -t biz_onion_identity_bgt .
 
-cd ..\Catalog\Biz.BrightOnion.Catalog.API
+cd ..\..\Catalog\Biz.BrightOnion.Catalog.API
 dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
 docker image build -t biz_onion_catalog_api .
 
