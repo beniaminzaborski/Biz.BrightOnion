@@ -3,43 +3,50 @@ using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Biz.BrightOnion.Catalog.API
 {
     public class Program
-  {
-    public static void Main(string[] args)
     {
-      var host = CreateHostBuilder(args).Build();
-
-      if (args.Length > 0 && args[0] == "dm")
-      {
-        using (var scope = host.Services.CreateScope())
+        public static void Main(string[] args)
         {
-          UpdateDatabase(scope.ServiceProvider);
+            CreateHostBuilder(args)
+                .Build()
+                .MigrateDatabase()
+                .Run();
         }
 
-        return;
-      }
-
-      host.Run();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureKestrel(serverOptions => { })
+                    .UseStartup<Startup>();
+                });
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.ConfigureKestrel(serverOptions => {})
-                .UseStartup<Startup>();
-            });
-
-    private static void UpdateDatabase(IServiceProvider serviceProvider)
+    public static class ExtensionMethods
     {
-      // Instantiate the runner
-      var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+        public static IHost MigrateDatabase(this IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var runner = services.GetRequiredService<IMigrationRunner>();
+                    runner.MigrateUp();
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Database Creation/Migrations failed!");
+                    throw ex;
+                }
 
-      // Execute the migrations
-      runner.MigrateUp();
+            }
+            return host;
+        }
     }
-  }
 }
