@@ -1,20 +1,4 @@
 FROM microsoft/dotnet:2.2-aspnetcore-runtime AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
-
-FROM microsoft/dotnet:2.2-sdk AS build
-WORKDIR /src
-COPY ["Web/Biz.BrightOnion.Web/Biz.BrightOnion.Web.csproj", "Web/Biz.BrightOnion.Web/"]
-RUN dotnet restore "Web/Biz.BrightOnion.Web/Biz.BrightOnion.Web.csproj"
-COPY . .
-WORKDIR "/src/Web/Biz.BrightOnion.Web"
-RUN dotnet build "Biz.BrightOnion.Web.csproj" -c Release -o /app
-
-FROM build AS publish
-RUN dotnet publish "Biz.BrightOnion.Web.csproj" -c Release -o /app
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
+COPY /bin/Release/netcoreapp3.0/publish .
 ENTRYPOINT ["dotnet", "Biz.BrightOnion.Web.dll"]
