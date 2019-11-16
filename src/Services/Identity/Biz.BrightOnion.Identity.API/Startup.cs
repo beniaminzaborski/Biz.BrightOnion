@@ -41,7 +41,6 @@ namespace Biz.BrightOnion.Identity.API
                 .AddCustomHealthChecks()
                 .AddEntityFramework(Configuration)
                 .AddBusinessComponents()
-                .AddEventBus(Configuration)
                 .AddCors()
                 .AddCustomControllers()
                 .AddJwtAuthentication(Configuration)
@@ -109,64 +108,6 @@ namespace Biz.BrightOnion.Identity.API
                 .AddScoped<IPasswordHasher, Md5PasswordHasher>()
                 .AddScoped<IAuthenticationService, JwtAuthenticationService>()
                 .AddScoped<IIntegrationEventLogService, IntegrationEventLogService>();
-            return services;
-        }
-
-        public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
-        {
-            var appSettingsSection = configuration.GetSection("AppSettings");
-            var appSettings = appSettingsSection.Get<AppSettings>();
-
-            // RabbitMQ Persistent Connection
-            services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
-            {
-                var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
-
-                var factory = new ConnectionFactory()
-                {
-                    HostName = appSettings.EventBusConnection
-                };
-
-                if (!string.IsNullOrEmpty(appSettings.EventBusUserName))
-                {
-                    factory.UserName = appSettings.EventBusUserName;
-                }
-
-                if (!string.IsNullOrEmpty(appSettings.EventBusPassword))
-                {
-                    factory.Password = appSettings.EventBusPassword;
-                }
-
-                var retryCount = 5;
-                if (appSettings.EventBusRetryCount.HasValue)
-                {
-                    retryCount = appSettings.EventBusRetryCount.Value;
-                }
-
-                return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
-            });
-
-            var subscriptionClientName = appSettings.SubscriptionClientName;
-
-            // RabbitMQ Event Bus
-            services.AddSingleton<IEventBus, RabbitMqEventBus>(sp =>
-            {
-                var rabbitMQPersistentConnection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
-                var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
-                var logger = sp.GetRequiredService<ILogger<RabbitMqEventBus>>();
-                var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
-
-                var retryCount = 5;
-                if (appSettings.EventBusRetryCount.HasValue)
-                {
-                    retryCount = appSettings.EventBusRetryCount.Value;
-                }
-
-                return new RabbitMqEventBus(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
-            });
-
-            services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
-
             return services;
         }
 
