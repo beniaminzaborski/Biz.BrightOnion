@@ -4,6 +4,8 @@ docker image rm biz_onion_identity_bgt
 docker image rm biz_onion_identity_api
 docker image rm biz_onion_order_api
 docker image rm biz_onion_order_hub
+docker image rm biz_onion_gw
+docker image rm biz_onion_order_gw
 docker image rm biz_onion_web
 
 rem docker image rm rabbitmq:3-management

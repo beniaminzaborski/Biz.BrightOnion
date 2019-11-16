@@ -18,13 +18,21 @@ dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
 docker image build -t biz_onion_catalog_bgt .
 
 cd ..\..\Ordering\Biz.BrightOnion.Ordering.API
-dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
+dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
 docker image build -t biz_onion_order_api .
 
 cd ..\Biz.BrightOnion.Ordering.SignalrHub
-dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
+dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
 docker image build -t biz_onion_order_hub .
 
+cd ..\..\..\ApiGateways\Biz.BrightOnion.ApiGateway
+dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
+docker image build -t biz_onion_gw .
+
+cd ..\Ordering\Biz.BrightOnion.ApiGateway.OrderingAggregator
+dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
+docker image build -t biz_onion_order_gw .
+
 cd ..\..\..\Web\Biz.BrightOnion.Web
-dotnet publish -c Release -o bin\Release\netcoreapp3.0\publish
+dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
 docker image build -t biz_onion_web .

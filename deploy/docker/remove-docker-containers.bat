@@ -16,6 +16,12 @@ docker container rm biz_onion_order_api_1
 docker container stop biz_onion_order_hub_1
 docker container rm biz_onion_order_hub_1
 
+docker container stop biz_onion_order_gw_1
+docker container rm biz_onion_order_gw_1
+
+docker container stop biz_onion_gw_1
+docker container rm biz_onion_gw_1
+
 docker container stop biz_onion_web_1
 docker container rm biz_onion_web_1
 
