@@ -33,6 +33,9 @@ cd ..\Ordering\Biz.BrightOnion.ApiGateway.OrderingAggregator
 dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
 docker image build -t biz_onion_order_gw .
 
-cd ..\..\..\Web\Biz.BrightOnion.Web
+cd ..\..\..\Web\Biz.BrightOnion.Web\frontend
+call npm install
+call ng build --configuration=docker
+cd ..
 dotnet publish -c Release -o bin\Release\netcoreapp2.2\publish
 docker image build -t biz_onion_web .
