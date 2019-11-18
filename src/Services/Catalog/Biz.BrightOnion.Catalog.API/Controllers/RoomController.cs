@@ -23,18 +23,18 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
     private readonly ISession session;
     private readonly IRoomRepository roomRepository;
     private readonly IIntegrationEventLogService integrationEventLogService;
-    private readonly IEventBus eventBus;
+    // private readonly IEventBus eventBus;
 
     public RoomController(
       ISession session,
       IRoomRepository roomRepository,
-      IIntegrationEventLogService integrationEventLogService,
-      IEventBus eventBus)
+      IIntegrationEventLogService integrationEventLogService
+      /*IEventBus eventBus*/)
     {
       this.session = session;
       this.roomRepository = roomRepository;
       this.integrationEventLogService = integrationEventLogService;
-      this.eventBus = eventBus;
+      // this.eventBus = eventBus;
     }
 
     [HttpGet]
@@ -212,7 +212,7 @@ namespace Biz.BrightOnion.Catalog.API.Controllers
       // Publish integration event: RoomDeletedEvent
       using (var transaction = session.BeginTransaction())
       {
-        eventBus.Publish(roomDeletedEvent);
+        // eventBus.Publish(roomDeletedEvent);
         await integrationEventLogService.MarkEventAsPublishedAsync(roomDeletedEvent.EventId);
         transaction?.Commit();
       }
