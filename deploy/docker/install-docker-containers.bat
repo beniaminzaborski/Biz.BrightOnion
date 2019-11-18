@@ -15,4 +15,5 @@ docker container run -p 7004:80 --net biz_onion_net -e ASPNETCORE_ENVIRONMENT="D
 docker container run -p 9000:80 --net biz_onion_net -e ASPNETCORE_ENVIRONMENT="Docker" --name biz_onion_gw_1 -d biz_onion_gw
 docker container run -p 9010:80 --net biz_onion_net -e ASPNETCORE_ENVIRONMENT="Docker" --name biz_onion_order_gw_1 -d biz_onion_order_gw
 
-docker container run -p 5000:80 --net biz_onion_net -e ASPNETCORE_ENVIRONMENT="Docker" --name biz_onion_web_1 -d biz_onion_web
+rem docker container run -p 5000:80 --net biz_onion_net -e ASPNETCORE_ENVIRONMENT="Docker" --name biz_onion_web_1 -d biz_onion_web
+docker container run -p 5000:80 --net biz_onion_net --name biz_onion_web_1 -d biz_onion_web
