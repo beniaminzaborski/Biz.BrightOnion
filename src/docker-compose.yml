@@ -1,59 +1,90 @@
 version: '3.4'
 
 services:
-  biz.brightonion.web:
-    image: ${DOCKER_REGISTRY-}bizbrightonionweb
-    build:
-      context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
-      dockerfile: Web/Biz.BrightOnion.Web/Dockerfile
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
+    container_name: brightonion_sql
 
-  biz.brightonion.apigateway:
-    image: ${DOCKER_REGISTRY-}bizbrightonionapigateway
-    build:
-      context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
-      dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: brightonion_rabbit
 
-  biz.brightonion.apigateway.orderingaggregator:
-    image: ${DOCKER_REGISTRY-}bizbrightonionapigatewayorderingaggregator
-    build:
-      context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
-      dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: brightonion_jaeger
 
-  biz.brightonion.identityservice:
-    image: ${DOCKER_REGISTRY-}bizbrightonionidentityservice
+  consul:
+    image: consul
+    container_name: brightonion_consul
+
+#  biz.brightonion.web:
+#    image: ${DOCKER_REGISTRY-}bizbrightonionweb
+#    build:
+#      context: .
+#      dockerfile: Web/Biz.BrightOnion.Web/Dockerfile
+#
+#  biz.brightonion.apigateway:
+#    image: ${DOCKER_REGISTRY-}bizbrightonionapigateway
+#    build:
+#      context: .
+#      dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
+#
+#  biz.brightonion.apigateway.orderingaggregator:
+#    image: ${DOCKER_REGISTRY-}bizbrightonionapigatewayorderingaggregator
+#    build:
+#      context: .
+#      dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
+
+  identity_api:
+    image: ${DOCKER_REGISTRY-}brightonion_identity_api
     build:
       context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
       dockerfile: Services/Identity/Biz.BrightOnion.Identity.API/Dockerfile
+    depends_on:
+      - sql
 
-  biz.brightonion.catalog.api:
-    image: ${DOCKER_REGISTRY-}bizbrightonioncatalogapi
+  identity_bgt:
+    image: ${DOCKER_REGISTRY-}brightonion_identity_bgt
     build:
       context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
+      dockerfile: Services/Identity/Biz.BrightOnion.Identity.BackgroundTasks/Dockerfile
+    depends_on:
+      - sql
+      - rabbitmq
+
+  catalog_api:
+    image: ${DOCKER_REGISTRY-}brightonion_catalog_api
+    build:
+      context: .
       dockerfile: Services/Catalog/Biz.BrightOnion.Catalog.API/Dockerfile
+    depends_on:
+      - sql
 
-  biz.brightonion.orderingservice:
-    image: ${DOCKER_REGISTRY-}bizbrightonionorderingservice
+  catalog_bgt:
+    image: ${DOCKER_REGISTRY-}brightonion_catalog_bgt
     build:
       context: .
-      args:
-        - http_proxy=http://10.0.1.31:808
-        - https_proxy=http://10.0.1.31:808
+      dockerfile: Services/Catalog/Biz.BrightOnion.Catalog.BackgroundTasks/Dockerfile
+    depends_on:
+      - sql
+      - rabbitmq
+
+  order_api:
+    image: ${DOCKER_REGISTRY-}brightonion_order_api
+    build:
+      context: .
       dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
+    depends_on:
+      - sql
+      - rabbitmq
+
+  order_hub:
+    image: ${DOCKER_REGISTRY-}brightonion_order_hub
+    build:
+      context: .
+      dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.SignalrHub/Dockerfile
+    depends_on:
+      - rabbitmq
 
 #  biz.brightonion.analytics.api:
 #    image: ${DOCKER_REGISTRY-}bizbrightonionanalyticsapi

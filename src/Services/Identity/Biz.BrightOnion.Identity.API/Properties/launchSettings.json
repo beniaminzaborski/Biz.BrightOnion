@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Biz.BrightOnion.IdentityService": {
+    "Biz.BrightOnion.IdentityAPI": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger/index.html",
