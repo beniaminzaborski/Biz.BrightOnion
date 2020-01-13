@@ -17,23 +17,23 @@ services:
     image: consul
     container_name: brightonion_consul
 
-#  biz.brightonion.web:
-#    image: ${DOCKER_REGISTRY-}bizbrightonionweb
-#    build:
-#      context: .
-#      dockerfile: Web/Biz.BrightOnion.Web/Dockerfile
-#
-#  biz.brightonion.apigateway:
-#    image: ${DOCKER_REGISTRY-}bizbrightonionapigateway
-#    build:
-#      context: .
-#      dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
-#
-#  biz.brightonion.apigateway.orderingaggregator:
-#    image: ${DOCKER_REGISTRY-}bizbrightonionapigatewayorderingaggregator
-#    build:
-#      context: .
-#      dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
+  web:
+    image: ${DOCKER_REGISTRY-}brightonion_web
+    build:
+      context: .
+      dockerfile: Web/Biz.BrightOnion.Web/frontend/Dockerfile
+
+  api_gateway:
+    image: ${DOCKER_REGISTRY-}brightonion_api_gateway
+    build:
+      context: .
+      dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
+
+  ordering_aggregator:
+    image: ${DOCKER_REGISTRY-}brightonion_ordering_aggregator
+    build:
+      context: .
+      dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
 
   identity_api:
     image: ${DOCKER_REGISTRY-}brightonion_identity_api
@@ -86,8 +86,8 @@ services:
     depends_on:
       - rabbitmq
 
-#  biz.brightonion.analytics.api:
-#    image: ${DOCKER_REGISTRY-}bizbrightonionanalyticsapi
+#  analytics_api:
+#    image: ${DOCKER_REGISTRY-}brightonion_analytics_api
 #    build:
 #      context: .
 #      dockerfile: Services/Analytics/Biz.BrightOnion.Analytics.API/Dockerfile
