@@ -21,7 +21,7 @@ services:
     image: ${DOCKER_REGISTRY-}brightonion_web
     build:
       context: .
-      dockerfile: Web/Biz.BrightOnion.Web/frontend/Dockerfile
+      dockerfile: Web/frontend/Dockerfile
 
   api_gateway:
     image: ${DOCKER_REGISTRY-}brightonion_api_gateway

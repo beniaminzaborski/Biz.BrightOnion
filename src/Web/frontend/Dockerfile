@@ -1,6 +1,6 @@
 FROM node:11.6.0-alpine AS builder
 WORKDIR /src
-COPY ["Web/Biz.BrightOnion.Web/frontend/", "frontend/"]
+COPY ["Web/frontend/", "frontend/"]
 WORKDIR "/src/frontend"
 RUN npm install
 RUN npx ng build --prod --env=docker
