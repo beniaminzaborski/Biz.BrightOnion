@@ -66,7 +66,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7001
     ports:
-      - "7001:80"
+      - "7101-7110:80"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -81,7 +81,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7002
     ports:
-      - "7002:80"
+      - "7201-7210:80"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -96,7 +96,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7003
     ports:
-      - "7003:80"
+      - "7301-7310:80"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -107,7 +107,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7004
     ports:
-      - "7004:80"
+      - "7401-7410:80"
     volumes:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
