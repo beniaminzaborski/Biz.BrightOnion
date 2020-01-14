@@ -8,6 +8,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Biz.BrightOnion.Catalog.API.Configuration;
 using Biz.BrightOnion.Catalog.API.Data;
+using Biz.BrightOnion.Catalog.API.Infrastructure.Migrations;
 using Biz.BrightOnion.Catalog.API.Repositories;
 using Biz.BrightOnion.Catalog.API.Services;
 using Biz.BrightOnion.EventBus;
@@ -95,6 +96,9 @@ namespace Biz.BrightOnion.Catalog.API
 
         public static IServiceCollection AddDatabaseMigration(this IServiceCollection services, string connectionString)
         {
+            // Create database if does not exist
+            DbMigrationHelper.EnsureCreated(connectionString);
+
             // SQL Server database migration
             services
               .AddFluentMigratorCore()

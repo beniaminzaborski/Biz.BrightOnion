@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_identity_api_1",
+          "Host": "src_identity_api_1",
           "Port": 80
         }
       ],
@@ -21,7 +21,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_catalog_api_1",
+          "Host": "src_catalog_api_1",
           "Port": 80
         }
       ],
@@ -37,7 +37,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_order_gw_1",
+          "Host": "src_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -54,7 +54,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_order_gw_1",
+          "Host": "src_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -71,7 +71,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_order_gw_1",
+          "Host": "src_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -88,7 +88,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_order_api_1",
+          "Host": "src_order_api_1",
           "Port": 80
         }
       ],
@@ -104,7 +104,7 @@
       "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "biz_onion_order_hub_1",
+          "Host": "src_order_hub_1",
           "Port": 80
         }
       ],
@@ -113,6 +113,6 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://biz_onion_gw_1"
+    "BaseUrl": "http://brightonion_gw_1"
   }
 }

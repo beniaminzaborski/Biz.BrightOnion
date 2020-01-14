@@ -1,1 +1,0 @@
-To build install Node.js before and run .\build\build-*.ps1 powershell script.
