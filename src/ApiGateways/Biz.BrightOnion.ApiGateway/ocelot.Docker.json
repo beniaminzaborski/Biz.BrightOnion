@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_identity_api_1",
+          "Host": "src_brightonion_identity_api_1",
           "Port": 80
         }
       ],
@@ -21,11 +21,11 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_catalog_api_1",
+          "Host": "src_brightonion_rooms_api_1",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/catalog-api/{catchAll}",
+      "UpstreamPathTemplate": "/rooms-api/{catchAll}",
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
         "DurationOfBreak": 5,
@@ -37,7 +37,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_ordering_aggregator_1",
+          "Host": "src_brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -54,7 +54,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_ordering_aggregator_1",
+          "Host": "src_brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -71,7 +71,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_ordering_aggregator_1",
+          "Host": "src_brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -88,7 +88,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_order_api_1",
+          "Host": "src_brightonion_order_api_1",
           "Port": 80
         }
       ],
@@ -104,7 +104,7 @@
       "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_order_hub_1",
+          "Host": "src_brightonion_order_hub_1",
           "Port": 80
         }
       ],

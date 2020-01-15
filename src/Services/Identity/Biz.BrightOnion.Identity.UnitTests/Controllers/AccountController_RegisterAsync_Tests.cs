@@ -14,6 +14,8 @@ using Biz.BrightOnion.Identity.API.Entities;
 using System.Threading.Tasks;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.EventBus.Abstractions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Biz.BrightOnion.Identity.UnitTests.Controllers
 {
@@ -24,7 +26,6 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
     private readonly Mock<IPasswordHasher> passwordHasherMock;
     private readonly Mock<IAuthenticationService> authenticationService;
     private readonly Mock<IIntegrationEventLogService> integrationEventLogServiceMock;
-    private readonly Mock<IEventBus> eventBusMock;
 
     public AccountController_RegisterAsync_Tests()
     {
@@ -33,12 +34,15 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
       integrationEventLogServiceMock = new Mock<IIntegrationEventLogService>();
-      eventBusMock = new Mock<IEventBus>();
     }
 
     private AccountController CreateAccountController()
     {
-      return new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      var databaseFasadeMock = new Mock<DatabaseFacade>(dbContextMock.Object);
+      databaseFasadeMock.Setup(m => m.BeginTransaction()).Returns(new Mock<IDbContextTransaction>().Object);
+      dbContextMock.SetupGet(x => x.Database).Returns(databaseFasadeMock.Object);
+
+      return new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, integrationEventLogServiceMock.Object);
     }
 
     [Fact]

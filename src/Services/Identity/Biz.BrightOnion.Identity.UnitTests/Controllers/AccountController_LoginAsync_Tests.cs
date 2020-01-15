@@ -33,12 +33,11 @@ namespace Biz.BrightOnion.Identity.UnitTests.Controllers
       passwordHasherMock = new Mock<IPasswordHasher>();
       authenticationService = new Mock<IAuthenticationService>();
       integrationEventLogServiceMock = new Mock<IIntegrationEventLogService>();
-      eventBusMock = new Mock<IEventBus>();
     }
 
     private AccountController CreateAccountController()
     {
-      return new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, integrationEventLogServiceMock.Object, eventBusMock.Object);
+      return new AccountController(dbContextMock.Object, userRepositoryMock.Object, passwordHasherMock.Object, authenticationService.Object, integrationEventLogServiceMock.Object);
     }
 
     [Fact]

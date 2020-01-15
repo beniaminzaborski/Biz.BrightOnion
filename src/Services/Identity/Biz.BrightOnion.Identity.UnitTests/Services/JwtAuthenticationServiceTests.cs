@@ -49,7 +49,7 @@ namespace Biz.BrightOnion.Identity.UnitTests.Services
       var jwtAuthenticationService = CreateJwtAuthenticationService();
 
       // Act
-      var result = jwtAuthenticationService.CreateToken(new User { Id = 1 });
+      var result = jwtAuthenticationService.CreateToken(new User { Id = 1, Email = "jan.kowalski@eee.eu" });
 
       // Assert
       Assert.NotNull(result);

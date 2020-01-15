@@ -25,7 +25,7 @@
           "Port": 7002
         }
       ],
-      "UpstreamPathTemplate": "/catalog-api/{catchAll}",
+      "UpstreamPathTemplate": "/rooms-api/{catchAll}",
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
         "DurationOfBreak": 5,
