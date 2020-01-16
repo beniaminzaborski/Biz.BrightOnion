@@ -1,92 +1,92 @@
 version: '3.4'
 
 services:
-  brightonion_sql:
+  sql:
     image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
     container_name: brightonion_sql
 
-  brightonion_rabbit:
+  rabbit:
     image: rabbitmq:3-management-alpine
     container_name: brightonion_rabbit
 
-  brightonion_jaeger:
+  jaeger:
     image: jaegertracing/all-in-one
     container_name: brightonion_jaeger
 
-  brightonion_consul:
+  consul:
     image: consul
     container_name: brightonion_consul
 
-  brightonion_web:
+  web:
     image: ${DOCKER_REGISTRY-}brightonion_web
     build:
       context: .
       dockerfile: Web/frontend/Dockerfile
 
-  brightonion_api_gateway:
+  api_gateway:
     image: ${DOCKER_REGISTRY-}brightonion_api_gateway
     build:
       context: .
       dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
 
-  brightonion_ordering_aggregator:
+  ordering_aggregator:
     image: ${DOCKER_REGISTRY-}brightonion_ordering_aggregator
     build:
       context: .
       dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
 
-  brightonion_identity_api:
+  identity_api:
     image: ${DOCKER_REGISTRY-}brightonion_identity_api
     build:
       context: .
       dockerfile: Services/Identity/Biz.BrightOnion.Identity.API/Dockerfile
     depends_on:
-      - brightonion_sql
+      - sql
 
-  brightonion_identity_bgt:
+  identity_bgt:
     image: ${DOCKER_REGISTRY-}brightonion_identity_bgt
     build:
       context: .
       dockerfile: Services/Identity/Biz.BrightOnion.Identity.BackgroundTasks/Dockerfile
     depends_on:
-      - brightonion_sql
-      - brightonion_rabbit
+      - sql
+      - rabbit
 
-  brightonion_rooms_api:
+  rooms_api:
     image: ${DOCKER_REGISTRY-}brightonion_rooms_api
     build:
       context: .
       dockerfile: Services/Rooms/Biz.BrightOnion.Rooms.API/Dockerfile
     depends_on:
-      - brightonion_sql
+      - sql
 
-  brightonion_rooms_bgt:
+  rooms_bgt:
     image: ${DOCKER_REGISTRY-}brightonion_rooms_bgt
     build:
       context: .
       dockerfile: Services/Rooms/Biz.BrightOnion.Rooms.BackgroundTasks/Dockerfile
     depends_on:
-      - brightonion_sql
-      - brightonion_rabbit
+      - sql
+      - rabbit
 
-  brightonion_order_api:
+  order_api:
     image: ${DOCKER_REGISTRY-}brightonion_order_api
     build:
       context: .
       dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.API/Dockerfile
     depends_on:
-      - brightonion_sql
-      - brightonion_rabbit
+      - sql
+      - rabbit
 
-  brightonion_order_hub:
+  order_hub:
     image: ${DOCKER_REGISTRY-}brightonion_order_hub
     build:
       context: .
       dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.SignalrHub/Dockerfile
     depends_on:
-      - brightonion_rabbit
+      - rabbit
 
-#  brightonion_analytics_api:
+#  analytics_api:
 #    image: ${DOCKER_REGISTRY-}brightonion_analytics_api
 #    build:
 #      context: .

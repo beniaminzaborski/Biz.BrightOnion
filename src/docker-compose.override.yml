@@ -1,19 +1,19 @@
 version: '3.4'
 
 services:
-  brightonion_sql:
+  sql:
     environment:
       SA_PASSWORD: "H0t0ni0n!"
       ACCEPT_EULA: "Y"
     ports:
       - "14330:1433"
 
-  brightonion_rabbit:
+  rabbit:
     ports:
       - "15672:15672"
       - "5672:5672"
 
-  brightonion_jaeger:
+  jaeger:
     ports:
       - 5775:5775/udp
       - 5778:5778
@@ -23,15 +23,15 @@ services:
       - 14268:14268
       - 16686:16686
 
-  brightonion_consul:
+  consul:
     ports:
       - 8500:8500
 
-  brightonion_web:
+  web:
     ports:
       - "5000:80"
 
-  brightonion_api_gateway:
+  api_gateway:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -42,7 +42,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  brightonion_ordering_aggregator:
+  ordering_aggregator:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -53,7 +53,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  brightonion_identity_api:
+  identity_api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -64,11 +64,11 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  brightonion_identity_bgt:
+  identity_bgt:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
 
-  brightonion_rooms_api:
+  rooms_api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -79,11 +79,11 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-  brightonion_rooms_bgt:
+  rooms_bgt:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
 
-  brightonion_order_api:
+  order_api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -94,7 +94,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
     
-  brightonion_order_hub:
+  order_hub:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
@@ -105,7 +105,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
 
-#  brightonion_analytics_api:
+#  analytics_api:
 #    environment:
 #      - ASPNETCORE_ENVIRONMENT=Development
 #      - ASPNETCORE_URLS=https://+:443;http://+:80

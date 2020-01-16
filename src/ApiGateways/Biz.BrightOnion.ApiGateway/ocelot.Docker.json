@@ -5,7 +5,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_identity_api_1",
+          "Host": "brightonion_identity_api_1",
           "Port": 80
         }
       ],
@@ -21,7 +21,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_rooms_api_1",
+          "Host": "brightonion_rooms_api_1",
           "Port": 80
         }
       ],
@@ -37,7 +37,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_ordering_aggregator_1",
+          "Host": "brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -54,7 +54,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_ordering_aggregator_1",
+          "Host": "brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -71,7 +71,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_ordering_aggregator_1",
+          "Host": "brightonion_ordering_aggregator_1",
           "Port": 80
         }
       ],
@@ -88,7 +88,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_order_api_1",
+          "Host": "brightonion_order_api_1",
           "Port": 80
         }
       ],
@@ -104,7 +104,7 @@
       "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "src_brightonion_order_hub_1",
+          "Host": "brightonion_order_hub_1",
           "Port": 80
         }
       ],
