@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Autofac;
@@ -10,9 +11,12 @@ using Biz.BrightOnion.Identity.API.Configuration;
 using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
+using Consul;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,11 +48,12 @@ namespace Biz.BrightOnion.Identity.API
                 .AddCors()
                 .AddCustomControllers()
                 .AddJwtAuthentication(Configuration)
+                .AddConsul(Configuration)
                 .AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationContext context)
+        public void Configure(IApplicationBuilder app, IHostApplicationLifetime appLifetime, IWebHostEnvironment env, ApplicationContext context)
         {
             if (env.IsDevelopment())
             {
@@ -74,7 +79,8 @@ namespace Biz.BrightOnion.Identity.API
                 {
                     endpoints.MapControllers();
                 })
-                .UseHealthChecks("/hc");
+                .UseHealthChecks("/hc")
+                .UseConsul(appLifetime, Configuration);
         }
     }
 
@@ -161,6 +167,17 @@ namespace Biz.BrightOnion.Identity.API
             });
         }
 
+        public static IServiceCollection AddConsul(this IServiceCollection services, IConfiguration configuration)
+        {
+            var consulUrl = configuration.GetValue<string>("AppSettings:ConsulConnection");
+
+            return services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            {
+                var address = consulUrl;
+                consulConfig.Address = new Uri(address);
+            }));
+        }
+
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)
         {
             var callingAssembly = Assembly.GetCallingAssembly();
@@ -171,6 +188,37 @@ namespace Biz.BrightOnion.Identity.API
             return app
                 .UseSwagger()
                 .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{callingAssemblyName} {callingAssemblyVersion}"));
+        }
+
+        public static IApplicationBuilder UseConsul(this IApplicationBuilder app, IHostApplicationLifetime appLifetime, IConfiguration configuration)
+        {
+            var consulClient = app.ApplicationServices.GetRequiredService<IConsulClient>();
+
+            // Get service name
+            var serviceName = configuration.GetValue<string>("AppSettings:ServiceName");
+
+            // Get server IP address
+            var features = app.Properties["server.Features"] as FeatureCollection;
+            var addresses = features.Get<IServerAddressesFeature>();
+            var address = addresses.Addresses.First();
+
+            // Register service with consul
+            var uri = new Uri(address);
+            var agentReg = new AgentServiceRegistration()
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = serviceName,
+                Address = $"{uri.Scheme}://{uri.Host}",
+                Port = uri.Port
+            };
+
+            consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
+
+            appLifetime.ApplicationStopping.Register(() => {
+                consulClient.Agent.ServiceDeregister(agentReg.ID).Wait();
+            });
+
+            return app;
         }
     }
 }

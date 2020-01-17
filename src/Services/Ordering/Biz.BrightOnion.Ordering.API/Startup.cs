@@ -22,10 +22,13 @@ using Biz.BrightOnion.Ordering.Infrastructure;
 using Biz.BrightOnion.Ordering.Infrastructure.Configuration;
 using Biz.BrightOnion.Ordering.Infrastructure.Repositories;
 using Biz.BrightOnion.Ordering.Infrastructure.Services;
+using Consul;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +78,8 @@ namespace Biz.BrightOnion.Ordering.API
 
       services.AddJwtAuthentication(Configuration);
 
+      services.AddConsul(Configuration);
+
       var container = new ContainerBuilder();
       container.Populate(services);
       container.RegisterModule(new MediatorModule());
@@ -83,7 +88,7 @@ namespace Biz.BrightOnion.Ordering.API
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IApplicationLifetime appLifetime, IHostingEnvironment env)
     {
       if (env.IsDevelopment())
       {
@@ -107,6 +112,7 @@ namespace Biz.BrightOnion.Ordering.API
 
       app.UseHttpsRedirection();
       app.UseMvc();
+      app.UseConsul(appLifetime, Configuration);
 
       ConfigureEventBus(app);
     }
@@ -232,5 +238,47 @@ namespace Biz.BrightOnion.Ordering.API
 
       return services;
     }
-  }
+
+    public static IServiceCollection AddConsul(this IServiceCollection services, IConfiguration configuration)
+    {
+        var consulUrl = configuration.GetValue<string>("AppSettings:ConsulConnection");
+
+        return services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+        {
+            var address = consulUrl;
+            consulConfig.Address = new Uri(address);
+        }));
+    }
+
+    public static IApplicationBuilder UseConsul(this IApplicationBuilder app, IApplicationLifetime appLifetime, IConfiguration configuration)
+    {
+        var consulClient = app.ApplicationServices.GetRequiredService<IConsulClient>();
+
+        // Get service name
+        var serviceName = configuration.GetValue<string>("AppSettings:ServiceName");
+
+        // Get server IP address
+        var features = app.Properties["server.Features"] as FeatureCollection;
+        var addresses = features.Get<IServerAddressesFeature>();
+        var address = addresses.Addresses.First();
+
+        // Register service with consul
+        var uri = new Uri(address);
+        var agentReg = new AgentServiceRegistration()
+        {
+            ID = Guid.NewGuid().ToString(),
+            Name = serviceName,
+            Address = $"{uri.Scheme}://{uri.Host}",
+            Port = uri.Port
+        };
+
+        consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
+
+        appLifetime.ApplicationStopping.Register(() => {
+            consulClient.Agent.ServiceDeregister(agentReg.ID).Wait();
+        });
+
+        return app;
+    }
+    }
 }

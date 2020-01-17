@@ -29,6 +29,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NHibernate;
 using RabbitMQ.Client;
+using Consul;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 
 namespace Biz.BrightOnion.Rooms.API
 {
@@ -53,10 +56,11 @@ namespace Biz.BrightOnion.Rooms.API
                 .AddCors()
                 .AddCustomControllers()
                 .AddJwtAuthentication(Configuration)
-                .AddSwagger();
+                .AddSwagger()
+                .AddConsul(Configuration);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostApplicationLifetime appLifetime, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -79,7 +83,8 @@ namespace Biz.BrightOnion.Rooms.API
                 {
                     endpoints.MapControllers();
                 })
-                .UseHealthChecks("/hc");
+                .UseHealthChecks("/hc")
+                .UseConsul(appLifetime, Configuration);
         }
     }
 
@@ -238,6 +243,17 @@ namespace Biz.BrightOnion.Rooms.API
             });
         }
 
+        public static IServiceCollection AddConsul(this IServiceCollection services, IConfiguration configuration)
+        {
+            var consulUrl = configuration.GetValue<string>("AppSettings:ConsulConnection");
+
+            return services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(consulConfig =>
+            {
+                var address = consulUrl;
+                consulConfig.Address = new Uri(address);
+            }));
+        }
+
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)
         {
             var callingAssembly = Assembly.GetCallingAssembly();
@@ -248,6 +264,37 @@ namespace Biz.BrightOnion.Rooms.API
             return app
                 .UseSwagger()
                 .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{callingAssemblyName} {callingAssemblyVersion}"));
+        }
+
+        public static IApplicationBuilder UseConsul(this IApplicationBuilder app, IHostApplicationLifetime appLifetime, IConfiguration configuration)
+        {
+            var consulClient = app.ApplicationServices.GetRequiredService<IConsulClient>();
+
+            // Get service name
+            var serviceName = configuration.GetValue<string>("AppSettings:ServiceName");
+
+            // Get server IP address
+            var features = app.Properties["server.Features"] as FeatureCollection;
+            var addresses = features.Get<IServerAddressesFeature>();
+            var address = addresses.Addresses.First();
+
+            // Register service with consul
+            var uri = new Uri(address);
+            var agentReg = new AgentServiceRegistration()
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = serviceName,
+                Address = $"{uri.Scheme}://{uri.Host}",
+                Port = uri.Port
+            };
+
+            consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
+
+            appLifetime.ApplicationStopping.Register(() => {
+                consulClient.Agent.ServiceDeregister(agentReg.ID).Wait();
+            });
+
+            return app;
         }
     }
 }
