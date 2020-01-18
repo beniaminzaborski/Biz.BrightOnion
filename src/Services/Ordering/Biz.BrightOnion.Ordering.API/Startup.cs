@@ -258,18 +258,20 @@ namespace Biz.BrightOnion.Ordering.API
         var serviceName = configuration.GetValue<string>("AppSettings:ServiceName");
 
         // Get server IP address
-        var features = app.Properties["server.Features"] as FeatureCollection;
-        var addresses = features.Get<IServerAddressesFeature>();
-        var address = addresses.Addresses.First();
+        //var features = app.Properties["server.Features"] as FeatureCollection;
+        //var addresses = features.Get<IServerAddressesFeature>();
+        //var address = addresses.Addresses.First();
 
         // Register service with consul
-        var uri = new Uri(address);
+        //var uri = new Uri(address);
         var agentReg = new AgentServiceRegistration()
         {
             ID = Guid.NewGuid().ToString(),
             Name = serviceName,
-            Address = $"{uri.Scheme}://{uri.Host}",
-            Port = uri.Port
+            //Address = $"{uri.Scheme}://{uri.Host}",
+            Address = $"http://{serviceName}",
+            //Port = uri.Port
+            Port = 80
         };
 
         consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
