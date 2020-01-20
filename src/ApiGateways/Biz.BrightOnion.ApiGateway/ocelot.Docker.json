@@ -3,12 +3,16 @@
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "brightonion_identity_api_1",
-          "Port": 80
-        }
-      ],
+      //"DownstreamHostAndPorts": [
+      //  {
+      //    "Host": "brightonion_identity_api_1",
+      //    "Port": 80
+      //  }
+      //],
+      "ServiceName": "brightonion_identity_api",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
       "UpstreamPathTemplate": "/identity-api/{catchAll}",
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
@@ -19,12 +23,16 @@
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "brightonion_rooms_api_1",
-          "Port": 80
-        }
-      ],
+      //"DownstreamHostAndPorts": [
+      //  {
+      //    "Host": "brightonion_rooms_api_1",
+      //    "Port": 80
+      //  }
+      //],
+      "ServiceName": "brightonion_rooms_api",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
       "UpstreamPathTemplate": "/rooms-api/{catchAll}",
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
@@ -86,12 +94,16 @@
     {
       "DownstreamPathTemplate": "/api/{catchAll}",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "brightonion_order_api_1",
-          "Port": 80
-        }
-      ],
+      //"DownstreamHostAndPorts": [
+      //  {
+      //    "Host": "brightonion_order_api_1",
+      //    "Port": 80
+      //  }
+      //],
+      "ServiceName": "brightonion_order_api",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      },
       "UpstreamPathTemplate": "/ordering-api/{catchAll}",
       "QoSOptions": {
         "ExceptionsAllowedBeforeBreaking": 3,
@@ -113,6 +125,11 @@
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://brightonion_gw_1"
+    "BaseUrl": "http://brightonion_gw_1",
+    "ServiceDiscoveryProvider": {
+      "Host": "brightonion_consul",
+      "Port": 8500,
+      "Type": "Consul"
+    }
   }
 }

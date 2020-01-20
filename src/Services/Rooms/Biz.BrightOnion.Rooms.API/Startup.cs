@@ -32,6 +32,8 @@ using RabbitMQ.Client;
 using Consul;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Biz.BrightOnion.Rooms.API
 {
@@ -278,22 +280,23 @@ namespace Biz.BrightOnion.Rooms.API
             //var addresses = features.Get<IServerAddressesFeature>();
             //var address = addresses.Addresses.First();
 
+            var name = Dns.GetHostName(); // get container id
+            var ip = Dns.GetHostEntry(name).AddressList.FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+
             // Register service with consul
             //var uri = new Uri(address);
             var agentReg = new AgentServiceRegistration()
             {
                 ID = Guid.NewGuid().ToString(),
                 Name = serviceName,
-                //Address = $"{uri.Scheme}://{uri.Host}",
-                Address = $"http://{serviceName}",
-                //Port = uri.Port
-                Port = 80,
-                Checks = new AgentCheckRegistration[] {new AgentCheckRegistration
-                {
-                    HTTP = $"http://{serviceName}/hc",
-                    Timeout = TimeSpan.FromSeconds(3),
-                    Interval = TimeSpan.FromSeconds(10)
-                }}
+                Address = ip.ToString(),
+                Port = 80
+                //Checks = new AgentCheckRegistration[] {new AgentCheckRegistration
+                //{
+                //    HTTP = $"http://{serviceName}/hc",
+                //    Timeout = TimeSpan.FromSeconds(3),
+                //    Interval = TimeSpan.FromSeconds(10)
+                //}}
             };
 
             consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
