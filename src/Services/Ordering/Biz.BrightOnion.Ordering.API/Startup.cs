@@ -271,7 +271,13 @@ namespace Biz.BrightOnion.Ordering.API
             //Address = $"{uri.Scheme}://{uri.Host}",
             Address = $"http://{serviceName}",
             //Port = uri.Port
-            Port = 80
+            Port = 80,
+            Checks = new AgentCheckRegistration[] {new AgentCheckRegistration
+            {
+                HTTP = $"http://{serviceName}/hc",
+                Timeout = TimeSpan.FromSeconds(3),
+                Interval = TimeSpan.FromSeconds(10)
+            }}
         };
 
         consulClient.Agent.ServiceRegister(agentReg).GetAwaiter().GetResult();
