@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Consul;
 using Ocelot.Provider.Polly;
 
 namespace Biz.BrightOnion.ApiGateway
@@ -44,6 +45,7 @@ namespace Biz.BrightOnion.ApiGateway
 
       services
         .AddOcelot(Configuration)
+        .AddConsul()
         .AddPolly();
     }
 
