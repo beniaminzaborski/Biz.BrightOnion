@@ -25,4 +25,8 @@
     <PackageReference Include="Polly.Extensions.Http" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Biz.BrightOnion.ServicesRegistry.Consul\Biz.BrightOnion.ServicesRegistry.Consul.csproj" />
+  </ItemGroup>
+
 </Project>
