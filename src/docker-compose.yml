@@ -8,6 +8,7 @@ services:
   rabbit:
     image: rabbitmq:3-management-alpine
     container_name: brightonion_rabbit
+    hostname: brightonion_rabbit
 
   jaeger:
     image: jaegertracing/all-in-one

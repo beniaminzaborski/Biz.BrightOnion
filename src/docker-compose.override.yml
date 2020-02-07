@@ -12,6 +12,9 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    volumes:
+      - "./rabbitmq-data:/var/lib/rabbitmq"
+    privileged: true
 
   jaeger:
     ports:
@@ -116,3 +119,7 @@ services:
 #    volumes:
 #      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
 #      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+
+# volumes:
+  # rabbitmq:
+    # driver: local
