@@ -12,8 +12,15 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=unique-erlang-cookie
+      - RABBITMQ_NODENAME=rabbit@localhost
+      - RABBITMQ_USE_LONGNAME=true
     volumes:
-      - "./rabbitmq-data:/var/lib/rabbitmq"
+      #- "./rabbit-data:/var/lib/rabbitmq/mnesia"
+      #- "/host_mnt/c/rabbit-data:/var/lib/rabbitmq/mnesia"
+      # - "/host_mnt/c/rabbit-data:/var/lib/rabbitmq/mnesia:rw"
+      - "/docker_data/rabbitmq:/var/lib/rabbitmq/mnesia"
     privileged: true
 
   jaeger:
