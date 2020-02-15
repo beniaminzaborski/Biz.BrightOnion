@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Biz.BrightOnion.Catalog.API": {
+    "Biz.BrightOnion.Rooms.API": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/values",

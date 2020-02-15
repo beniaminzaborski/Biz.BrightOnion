@@ -34,6 +34,11 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using System.Net;
 using System.Net.Sockets;
+using OpenTracing;
+using Jaeger;
+using Jaeger.Samplers;
+using OpenTracing.Util;
+using Jaeger.Reporters;
 
 namespace Biz.BrightOnion.Rooms.API
 {
@@ -59,7 +64,9 @@ namespace Biz.BrightOnion.Rooms.API
                 .AddCustomControllers()
                 .AddJwtAuthentication(Configuration)
                 .AddSwagger()
-                .AddConsul(Configuration);
+                .AddConsul(Configuration)
+                .AddOpenTracing()
+                .AddJaeger(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime appLifetime, IWebHostEnvironment env)
@@ -254,6 +261,41 @@ namespace Biz.BrightOnion.Rooms.API
                 var address = consulUrl;
                 consulConfig.Address = new Uri(address);
             }));
+        }
+
+        public static IServiceCollection AddJaeger(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                string serviceName = serviceProvider.GetRequiredService<IWebHostEnvironment>().ApplicationName;
+
+                var loggerFactory = new LoggerFactory();
+
+                var jaegerAgentHost = configuration.GetValue<string>("AppSettings:JaegerAgentHost");
+                var jaegerAgentPort = configuration.GetValue<int>("AppSettings:JaegerAgentPort");
+
+                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
+                    .WithAgentHost(jaegerAgentHost)
+                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
+
+                var reporter = new RemoteReporter.Builder()
+                    .WithLoggerFactory(loggerFactory)
+                    .WithSender(senderConfig.GetSender())
+                    .Build();
+
+                var tracer = new Tracer.Builder(serviceName)
+                    .WithLoggerFactory(loggerFactory)
+                    .WithReporter(reporter)
+                    .WithSampler(new ConstSampler(true))
+                    .Build();
+
+                if (!GlobalTracer.IsRegistered())
+                    GlobalTracer.Register(tracer);
+
+                return tracer;
+            });
+
+            return services;
         }
 
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)

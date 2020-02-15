@@ -27,6 +27,11 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Biz.BrightOnion.ServicesRegistry;
 using Biz.BrightOnion.ServicesRegistry.Consul.LoadBalancers;
+using OpenTracing;
+using Jaeger.Reporters;
+using Jaeger;
+using Jaeger.Samplers;
+using OpenTracing.Util;
 
 namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
 {
@@ -50,7 +55,9 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
               .AddCustomMvc(Configuration)
               // .AddCustomAuthentication(Configuration)
               .AddApplicationServices()
-              .AddConsul(Configuration);
+              .AddConsul(Configuration)
+              .AddOpenTracing()
+              .AddJaeger(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,9 +122,12 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
         //  return services;
         //}
 
-        public static IServiceCollection AddCustomConfiguration(this IServiceCollection services, IConfiguration configuration) => services
-                        .Configure<ServicesRegistry.Consul.Config.Consul>(configuration.GetSection(nameof(ServicesRegistry.Consul.Config.Consul)));
-
+        public static IServiceCollection AddCustomConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            return services
+                .Configure<ServicesRegistry.Consul.Config.Consul>(configuration.GetSection(nameof(ServicesRegistry.Consul.Config.Consul)))
+                .Configure<Config.Jaeger>(configuration.GetSection(nameof(Config.Jaeger)));
+        }
         public static IServiceCollection AddCustomMvc(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
@@ -225,6 +235,40 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
 
             services.AddScoped<IServiceRegistry, ConsulServiceRegistry>();
             services.AddScoped<IServiceLoadBalancer, FakeGetRandomlyServiceLoadBalancer>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddJaeger(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                string serviceName = serviceProvider.GetRequiredService<IHostingEnvironment>().ApplicationName;
+
+                var loggerFactory = new LoggerFactory();
+
+                var jaegerConfig = configuration.GetSection("Jaeger").Get<Config.Jaeger>();
+
+                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
+                    .WithAgentHost(jaegerConfig.AgentHost)
+                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
+
+                var reporter = new RemoteReporter.Builder()
+                    .WithLoggerFactory(loggerFactory)
+                    .WithSender(senderConfig.GetSender())
+                    .Build();
+
+                var tracer = new Tracer.Builder(serviceName)
+                    .WithLoggerFactory(loggerFactory)
+                    .WithReporter(reporter)
+                    .WithSampler(new ConstSampler(true))
+                    .Build();
+
+                if (!GlobalTracer.IsRegistered())
+                    GlobalTracer.Register(tracer);
+
+                return tracer;
+            });
 
             return services;
         }

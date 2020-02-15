@@ -25,6 +25,9 @@ using Biz.BrightOnion.Ordering.Infrastructure.Configuration;
 using Biz.BrightOnion.Ordering.Infrastructure.Repositories;
 using Biz.BrightOnion.Ordering.Infrastructure.Services;
 using Consul;
+using Jaeger;
+using Jaeger.Reporters;
+using Jaeger.Samplers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +42,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OpenTracing;
+using OpenTracing.Util;
 using RabbitMQ.Client;
 
 namespace Biz.BrightOnion.Ordering.API
@@ -81,6 +86,9 @@ namespace Biz.BrightOnion.Ordering.API
       services.AddJwtAuthentication(Configuration);
 
       services.AddConsul(Configuration);
+
+      services.AddOpenTracing();
+      services.AddJaeger(Configuration);
 
       var container = new ContainerBuilder();
       container.Populate(services);
@@ -250,6 +258,41 @@ namespace Biz.BrightOnion.Ordering.API
             var address = consulUrl;
             consulConfig.Address = new Uri(address);
         }));
+    }
+
+    public static IServiceCollection AddJaeger(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<ITracer>(serviceProvider =>
+        {
+            string serviceName = serviceProvider.GetRequiredService<IHostingEnvironment>().ApplicationName;
+
+            var loggerFactory = new LoggerFactory();
+
+            var jaegerAgentHost = configuration.GetValue<string>("AppSettings:JaegerAgentHost");
+            var jaegerAgentPort = configuration.GetValue<int>("AppSettings:JaegerAgentPort");
+
+            var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
+                .WithAgentHost(jaegerAgentHost)
+                /*.WithAgentPort(jaegerConfig.AgentPort)*/;
+
+            var reporter = new RemoteReporter.Builder()
+                .WithLoggerFactory(loggerFactory)
+                .WithSender(senderConfig.GetSender())
+                .Build();
+
+            var tracer = new Tracer.Builder(serviceName)
+                .WithLoggerFactory(loggerFactory)
+                .WithReporter(reporter)
+                .WithSampler(new ConstSampler(true))
+                .Build();
+
+            if (!GlobalTracer.IsRegistered())
+                GlobalTracer.Register(tracer);
+
+            return tracer;
+        });
+
+        return services;
     }
 
     public static IApplicationBuilder UseConsul(this IApplicationBuilder app, IApplicationLifetime appLifetime, IConfiguration configuration)

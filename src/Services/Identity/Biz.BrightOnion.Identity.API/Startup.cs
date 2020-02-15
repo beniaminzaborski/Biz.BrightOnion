@@ -14,6 +14,9 @@ using Biz.BrightOnion.Identity.API.Data;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
 using Consul;
+using Jaeger;
+using Jaeger.Reporters;
+using Jaeger.Samplers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +30,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTracing;
+using OpenTracing.Util;
 using RabbitMQ.Client;
 
 namespace Biz.BrightOnion.Identity.API
@@ -52,6 +57,12 @@ namespace Biz.BrightOnion.Identity.API
                 .AddJwtAuthentication(Configuration)
                 .AddConsul(Configuration)
                 .AddSwagger();
+
+            services
+                .AddOpenTracing();
+
+            services
+                .AddJaeger(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -178,6 +189,41 @@ namespace Biz.BrightOnion.Identity.API
                 var address = consulUrl;
                 consulConfig.Address = new Uri(address);
             }));
+        }
+
+        public static IServiceCollection AddJaeger(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<ITracer>(serviceProvider =>
+            {
+                string serviceName = serviceProvider.GetRequiredService<IWebHostEnvironment>().ApplicationName;
+
+                var loggerFactory = new LoggerFactory();
+
+                var jaegerAgentHost = configuration.GetValue<string>("AppSettings:JaegerAgentHost");
+                var jaegerAgentPort = configuration.GetValue<int>("AppSettings:JaegerAgentPort");
+
+                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
+                    .WithAgentHost(jaegerAgentHost)
+                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
+
+                var reporter = new RemoteReporter.Builder()
+                    .WithLoggerFactory(loggerFactory)
+                    .WithSender(senderConfig.GetSender())
+                    .Build();
+
+                var tracer = new Tracer.Builder(serviceName)
+                    .WithLoggerFactory(loggerFactory)
+                    .WithReporter(reporter)
+                    .WithSampler(new ConstSampler(true))
+                    .Build();
+
+                if (!GlobalTracer.IsRegistered())
+                    GlobalTracer.Register(tracer);
+
+                return tracer;
+            });
+
+            return services;
         }
 
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder app)

@@ -11,7 +11,7 @@ services:
     hostname: brightonion_rabbit
 
   jaeger:
-    image: jaegertracing/all-in-one
+    image: jaegertracing/all-in-one:latest
     container_name: brightonion_jaeger
 
   consul:
@@ -29,12 +29,16 @@ services:
     build:
       context: .
       dockerfile: ApiGateways/Biz.BrightOnion.ApiGateway/Dockerfile
+    depends_on:
+      - jaeger
 
   ordering_aggregator:
     image: ${DOCKER_REGISTRY-}brightonion_ordering_aggregator
     build:
       context: .
       dockerfile: ApiGateways/Ordering/Biz.BrightOnion.ApiGateway.OrderingAggregator/Dockerfile
+    depends_on:
+      - jaeger
 
   identity_api:
     image: ${DOCKER_REGISTRY-}brightonion_identity_api
@@ -44,6 +48,7 @@ services:
     depends_on:
       - sql
       - consul
+      - jaeger
 
   identity_bgt:
     image: ${DOCKER_REGISTRY-}brightonion_identity_bgt
@@ -53,6 +58,7 @@ services:
     depends_on:
       - sql
       - rabbit
+      - jaeger
 
   rooms_api:
     image: ${DOCKER_REGISTRY-}brightonion_rooms_api
@@ -62,6 +68,7 @@ services:
     depends_on:
       - sql
       - consul
+      - jaeger
 
   rooms_bgt:
     image: ${DOCKER_REGISTRY-}brightonion_rooms_bgt
@@ -71,6 +78,7 @@ services:
     depends_on:
       - sql
       - rabbit
+      - jaeger
 
   order_api:
     image: ${DOCKER_REGISTRY-}brightonion_order_api
@@ -81,6 +89,7 @@ services:
       - sql
       - rabbit
       - consul
+      - jaeger
 
   order_hub:
     image: ${DOCKER_REGISTRY-}brightonion_order_hub
@@ -89,6 +98,7 @@ services:
       dockerfile: Services/Ordering/Biz.BrightOnion.Ordering.SignalrHub/Dockerfile
     depends_on:
       - rabbit
+      - jaeger
 
 #  analytics_api:
 #    image: ${DOCKER_REGISTRY-}brightonion_analytics_api
