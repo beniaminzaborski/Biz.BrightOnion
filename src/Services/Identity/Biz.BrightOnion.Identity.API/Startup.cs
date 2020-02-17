@@ -11,6 +11,7 @@ using Biz.BrightOnion.EventBus.Abstractions;
 using Biz.BrightOnion.EventBus.RabbitMQ;
 using Biz.BrightOnion.Identity.API.Configuration;
 using Biz.BrightOnion.Identity.API.Data;
+using Biz.BrightOnion.Identity.API.HealthChecks;
 using Biz.BrightOnion.Identity.API.Repositories;
 using Biz.BrightOnion.Identity.API.Services;
 using Consul;
@@ -59,10 +60,12 @@ namespace Biz.BrightOnion.Identity.API
                 .AddSwagger();
 
             services
-                .AddOpenTracing();
+                .AddOpenTracing()
+                .AddJaeger(Configuration);
 
             services
-                .AddJaeger(Configuration);
+                .AddHealthChecks()
+                .AddCheck<DatabaseHealthCheck>("database_health_check");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,9 +94,15 @@ namespace Biz.BrightOnion.Identity.API
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
+                    endpoints.MapHealthChecks("/health");
                 })
-                .UseHealthChecks("/hc")
+                //.UseHealthChecks("/health")
                 .UseConsul(appLifetime, Configuration);
+
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapHealthChecks("/health");
+            //});
         }
     }
 
