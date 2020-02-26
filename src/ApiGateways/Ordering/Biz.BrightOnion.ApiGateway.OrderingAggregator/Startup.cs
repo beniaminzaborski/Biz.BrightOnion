@@ -247,22 +247,10 @@ namespace Biz.BrightOnion.ApiGateway.OrderingAggregator
 
                 var loggerFactory = new LoggerFactory();
 
-                var jaegerConfig = configuration.GetSection("Jaeger").Get<Config.Jaeger>();
+                Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
 
-                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
-                    .WithAgentHost(jaegerConfig.AgentHost)
-                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
-
-                var reporter = new RemoteReporter.Builder()
-                    .WithLoggerFactory(loggerFactory)
-                    .WithSender(senderConfig.GetSender())
-                    .Build();
-
-                var tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
-                    .WithReporter(reporter)
-                    .WithSampler(new ConstSampler(true))
-                    .Build();
+                var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                var tracer = config.GetTracer();
 
                 if (!GlobalTracer.IsRegistered())
                     GlobalTracer.Register(tracer);

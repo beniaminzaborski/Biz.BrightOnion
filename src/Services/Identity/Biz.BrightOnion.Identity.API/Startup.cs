@@ -208,23 +208,29 @@ namespace Biz.BrightOnion.Identity.API
 
                 var loggerFactory = new LoggerFactory();
 
-                var jaegerAgentHost = configuration.GetValue<string>("AppSettings:JaegerAgentHost");
-                var jaegerAgentPort = configuration.GetValue<int>("AppSettings:JaegerAgentPort");
+                Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
+                //Environment.SetEnvironmentVariable("JAEGER_AGENT_HOST", "brightonion_jaeger");
+                //Environment.SetEnvironmentVariable("JAEGER_AGENT_PORT", "6831");
+                //Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", "const");
+                //Environment.SetEnvironmentVariable("JAEGER_SAMPLER_MANAGER_HOST_PORT", "brightonion_jaeger:5778");
 
-                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
-                    .WithAgentHost(jaegerAgentHost)
-                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
+                var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                var tracer = config.GetTracer();
 
-                var reporter = new RemoteReporter.Builder()
-                    .WithLoggerFactory(loggerFactory)
-                    .WithSender(senderConfig.GetSender())
-                    .Build();
+                //var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
+                //    .WithAgentHost(jaegerAgentHost)
+                //    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
 
-                var tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
-                    .WithReporter(reporter)
-                    .WithSampler(new ConstSampler(true))
-                    .Build();
+                //var reporter = new RemoteReporter.Builder()
+                //    .WithLoggerFactory(loggerFactory)
+                //    .WithSender(senderConfig.GetSender())
+                //    .Build();
+
+                //var tracer = new Tracer.Builder(serviceName)
+                //    .WithLoggerFactory(loggerFactory)
+                //    .WithReporter(reporter)
+                //    .WithSampler(new ConstSampler(true))
+                //    .Build();
 
                 if (!GlobalTracer.IsRegistered())
                     GlobalTracer.Register(tracer);

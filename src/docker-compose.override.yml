@@ -48,6 +48,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=9000
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "9000:80"
     volumes:
@@ -59,6 +63,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=9010
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "9010:80"
     volumes:
@@ -70,6 +78,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7001
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "7101-7110:80"
     volumes:
@@ -85,6 +97,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7002
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "7201-7210:80"
     volumes:
@@ -100,6 +116,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7003
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "7301-7310:80"
     volumes:
@@ -111,6 +131,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_HTTP_PORT=7004
+      - JAEGER_AGENT_HOST=brightonion_jaeger
+      - JAEGER_AGENT_PORT=6831
+      - JAEGER_SAMPLER_TYPE=const
+      - JAEGER_SAMPLER_MANAGER_HOST_PORT=brightonion_jaeger:5778
     ports:
       - "7401-7410:80"
     volumes:

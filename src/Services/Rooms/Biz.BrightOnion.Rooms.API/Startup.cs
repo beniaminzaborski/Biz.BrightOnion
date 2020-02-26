@@ -271,23 +271,10 @@ namespace Biz.BrightOnion.Rooms.API
 
                 var loggerFactory = new LoggerFactory();
 
-                var jaegerAgentHost = configuration.GetValue<string>("AppSettings:JaegerAgentHost");
-                var jaegerAgentPort = configuration.GetValue<int>("AppSettings:JaegerAgentPort");
+                Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", serviceName);
 
-                var senderConfig = new Jaeger.Configuration.SenderConfiguration(loggerFactory)
-                    .WithAgentHost(jaegerAgentHost)
-                    /*.WithAgentPort(jaegerConfig.AgentPort)*/;
-
-                var reporter = new RemoteReporter.Builder()
-                    .WithLoggerFactory(loggerFactory)
-                    .WithSender(senderConfig.GetSender())
-                    .Build();
-
-                var tracer = new Tracer.Builder(serviceName)
-                    .WithLoggerFactory(loggerFactory)
-                    .WithReporter(reporter)
-                    .WithSampler(new ConstSampler(true))
-                    .Build();
+                var config = Jaeger.Configuration.FromEnv(loggerFactory);
+                var tracer = config.GetTracer();
 
                 if (!GlobalTracer.IsRegistered())
                     GlobalTracer.Register(tracer);
